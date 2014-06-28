@@ -121,12 +121,12 @@
         "UserData" : { "Fn::Base64":
           { "Fn::Join": [ "", [
             "#cloud-config\n\n",
+            "users:\n",
+            "  - name: skydns\n",
+            "    system: true\n",
             "coreos:\n",
             "  update:\n",
             "    reboot-strategy: ", "etcd-lock", "\n",
-            "  users:\n",
-            "    - name: skydns\n",
-            "      system: true\n",
             "  etcd:\n",
             "    discovery: ", { "Ref": "DiscoveryURL" }, "\n",
             "    addr: $", { "Ref": "AdvertisedIPAddress" }, "_ipv4:4001\n",
