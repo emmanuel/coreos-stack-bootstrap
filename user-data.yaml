@@ -18,7 +18,7 @@ coreos:
       command: start
     - name: fleet.service
       command: start
-    - name: skydns.install.service
+    - name: skydns.installer.service
       command: start
       content: |
         [Unit]
@@ -35,11 +35,11 @@ coreos:
       command: start
       content: |
         [Unit]
-        Description=SkyDNS
-        Requires=skydns.install.service
+        Description=skydns
+        Requires=skydns.installer.service
         Requires=etcd.service
         Requires=docker.service
-        After=skydns.install.service
+        After=skydns.installer.service
         After=etcd.service
         After=docker.service
 
@@ -66,3 +66,6 @@ coreos:
         # PrivateTmp=true
         # NoNewPrivileges=true
         ReadOnlyDirectories=/etc
+
+        [Install]
+        WantedBy=multi-user.target
