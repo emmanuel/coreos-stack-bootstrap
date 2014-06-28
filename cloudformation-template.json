@@ -156,7 +156,7 @@
             "      command: start\n",
             "      content: |\n",
             "         [Unit]\n",
-            "         Description=SkyDNS\n",
+            "         Description=skydns\n",
             "         Requires=skydns.install.service\n",
             "         Requires=etcd.service\n",
             "         Requires=docker.service\n",
