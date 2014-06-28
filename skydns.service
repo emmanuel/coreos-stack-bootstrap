@@ -1,0 +1,32 @@
+[Unit]
+Description=SkyDNS
+Requires=skydns.install.service
+Requires=etcd.service
+Requires=docker.service
+After=skydns.install.service
+After=etcd.service
+After=docker.service
+
+[Service]
+User=skydns
+Group=skydns
+Type=simple
+# see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
+# "172.17.42.1:4001 is the known address for etcd on every CoreOS instance from inside of a Docker container"
+ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1 -verbose=true -discover=true
+
+PermissionsStartOnly=true
+# ExecStartPre=/usr/sbin/sysctl -w net.ipv4.ip_forward=1
+ExecStartPre=-/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
+ExecStartPre=-/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
+ExecStartPre=/sbin/iptables -A INPUT -p udp --dport 5333 -j ACCEPT
+ExecStartPre=/sbin/iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
+ExecStopPost=/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
+ExecStopPost=/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
+
+Restart=always
+RestartSec=5
+# WorkingDirectory=/tmp
+# PrivateTmp=true
+# NoNewPrivileges=true
+ReadOnlyDirectories=/etc
