@@ -49,7 +49,9 @@ coreos:
         Type=simple
         # see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
         # "172.17.42.1:4001 is the known address for etcd on every CoreOS instance from inside of a Docker container"
-        ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1 -verbose=true -discover=true
+        ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{\"host\":\"${COREOS_PRIVATE_IPV4}\"}'
+        ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1:5333 -verbose=true -discover=true -domain cluster.local. -local %m.hosts.cluster.local
+        ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
 
         PermissionsStartOnly=true
         # ExecStartPre=/usr/sbin/sysctl -w net.ipv4.ip_forward=1
