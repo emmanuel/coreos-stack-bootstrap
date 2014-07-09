@@ -151,7 +151,7 @@
             "        Type=oneshot\n",
             "        RemainAfterExit=true\n",
             "        ExecStart=-/usr/bin/mkdir -p /var/lib/skydns/bin\n",
-            "        ExecStart=-/usr/bin/wget --no-check-certificate -qO /var/lib/skydns/bin/skydns https://s3-us-west-2.amazonaws.com/coreos-beta/skydns\n",
+            "        ExecStart=-/usr/bin/curl -o /var/lib/skydns/bin/skydns https://s3-us-west-2.amazonaws.com/coreos-beta/skydns\n",
             "        ExecStart=/usr/bin/chown skydns:skydns /var/lib/skydns/bin/skydns\n",
             "        ExecStart=/usr/bin/chmod +x /var/lib/skydns/bin/skydns\n",
             "    - name: skydns.service\n",
