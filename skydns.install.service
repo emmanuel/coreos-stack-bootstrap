@@ -5,6 +5,6 @@ Description=SkyDNS Installer
 Type=oneshot
 RemainAfterExit=true
 ExecStart=-/usr/bin/mkdir -p /var/lib/skydns/bin
-ExecStart=-/usr/bin/curl -o /var/lib/skydns/bin/skydns https://coreos-beta.s3.amazonaws.com/skydns
+ExecStart=-/usr/bin/curl -s -o /var/lib/skydns/bin/skydns https://coreos-beta.s3.amazonaws.com/skydns
 ExecStart=/usr/bin/chown -R skydns:skydns /var/lib/skydns
 ExecStart=/usr/bin/chmod +x /var/lib/skydns/bin/skydns
