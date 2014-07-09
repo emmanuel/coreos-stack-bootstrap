@@ -1,0 +1,5 @@
+.include /usr/lib/systemd/system/docker.service
+
+[Service]
+ExecStart=
+ExecStart=/usr/bin/docker -d -s=btrfs -r=false -H fd:// --dns=172.17.42.1 --dns-search=cluster.local
