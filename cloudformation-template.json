@@ -76,23 +76,23 @@
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
-        "AvailabilityZones": {"Fn::GetAZs": ""},
-        "LaunchConfigurationName": {"Ref": "CoreOSServerLaunchConfig"},
+        "AvailabilityZones": { "Fn::GetAZs": "" },
+        "LaunchConfigurationName": { "Ref": "CoreOSServerLaunchConfig" },
         "MinSize": "3",
         "MaxSize": "12",
-        "DesiredCapacity": {"Ref": "ClusterSize"},
+        "DesiredCapacity": { "Ref": "ClusterSize" },
         "Tags": [
-            {"Key": "Name", "Value": { "Ref" : "AWS::StackName" }, "PropagateAtLaunch": true}
+            { "Key": "Name", "Value": { "Ref" : "AWS::StackName" }, "PropagateAtLaunch": true }
         ]
       }
     },
     "CoreOSServerLaunchConfig": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
-        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI" ]},
-        "InstanceType": {"Ref": "InstanceType"},
-        "KeyName": {"Ref": "KeyPair"},
-        "SecurityGroups": [{"Ref": "CoreOSSecurityGroup"}],
+        "ImageId" : { "Fn::FindInMap": [ "RegionMap", { "Ref": "AWS::Region" }, "AMI" ] },
+        "InstanceType": { "Ref": "InstanceType" },
+        "KeyName": { "Ref": "KeyPair" },
+        "SecurityGroups": [{ "Ref": "CoreOSSecurityGroup" }],
         "IamInstanceProfile": "coreos-beta-elb-registration",
         "UserData" : { "Fn::Base64":
           { "Fn::Join": [ "", [
