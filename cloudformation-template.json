@@ -3,39 +3,14 @@
   "Description": "CoreOS on EC2: http://coreos.com/docs/running-coreos/cloud-providers/ec2/",
   "Mappings" : {
       "RegionMap" : {
-
-          "ap-northeast-1" : {
-              "AMI" : "ami-81dc9680"
-          },
-
-          "sa-east-1" : {
-              "AMI" : "ami-012c831c"
-          },
-
-          "ap-southeast-2" : {
-              "AMI" : "ami-a586e29f"
-          },
-
-          "ap-southeast-1" : {
-              "AMI" : "ami-1ed8874c"
-          },
-
-          "us-east-1" : {
-              "AMI" : "ami-66be440e"
-          },
-
-          "us-west-2" : {
-              "AMI" : "ami-8bfe82bb"
-          },
-
-          "us-west-1" : {
-              "AMI" : "ami-a1b5b3e4"
-          },
-
-          "eu-west-1" : {
-              "AMI" : "ami-d928e3ae"
-          }
-
+          "ap-northeast-1" : { "AMI" : "ami-2dadfd2c" },
+          "sa-east-1" : { "AMI" : "ami-0b389616" },
+          "ap-southeast-2" : { "AMI" : "ami-dd83e4e7" },
+          "ap-southeast-1" : { "AMI" : "ami-ac9dc4fe" },
+          "us-east-1" : { "AMI" : "ami-8c4e83e4" },
+          "us-west-2" : { "AMI" : "ami-2d4e371d" },
+          "us-west-1" : { "AMI" : "ami-ebb9b9ae" },
+          "eu-west-1" : { "AMI" : "ami-c75b8cb0" }
       }
   },
   "Parameters": {
