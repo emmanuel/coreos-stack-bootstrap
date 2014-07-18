@@ -109,7 +109,7 @@
             "    addr: $", { "Ref": "AdvertisedIPAddress" }, "_ipv4:4001\n",
             "    peer-addr: $", { "Ref": "AdvertisedIPAddress" }, "_ipv4:7001\n",
             "  fleet:\n",
-            "    metadata: ", "region=us-west,az=us-west-2,elastic_ip=false,public_ip=$public_ipv4,instance_type=", { "Ref": "InstanceType" }, "\n",
+            "    metadata: ", "region=", { "Ref": "AWS::Region" }, ",public_ip=$public_ipv4,instance_type=", { "Ref": "InstanceType" }, "\n",
             "    public-ip: ", "$", { "Ref": "AdvertisedIPAddress" }, "_ipv4", "\n",
             "  units:\n",
             "    - name: etcd.service\n",
