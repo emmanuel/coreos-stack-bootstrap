@@ -52,25 +52,32 @@
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "CoreOS SecurityGroup",
-        "SecurityGroupIngress": [
-          {"IpProtocol": "tcp", "FromPort": "22", "ToPort": "22", "CidrIp": {"Ref": "AllowSSHFrom"}}
-        ]
+        "SecurityGroupIngress": [ {
+          "IpProtocol": "tcp",
+          "FromPort": "22",
+          "ToPort": "22",
+          "CidrIp": { "Ref": "AllowSSHFrom" }
+        } ]
       }
     },
-    "Ingress4001": {
+    "Ingress4001EtcdPeer": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "CoreOSSecurityGroup"}, "IpProtocol": "tcp", "FromPort": "4001", "ToPort": "4001", "SourceSecurityGroupId": {
-          "Fn::GetAtt" : [ "CoreOSSecurityGroup", "GroupId" ] 
-        }
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "4001",
+        "ToPort": "4001",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
-    "Ingress7001": {
+    "Ingress7001EtcdLeader": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "CoreOSSecurityGroup"}, "IpProtocol": "tcp", "FromPort": "7001", "ToPort": "7001", "SourceSecurityGroupId": {
-          "Fn::GetAtt" : [ "CoreOSSecurityGroup", "GroupId" ] 
-        } 
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "7001",
+        "ToPort": "7001",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
     "CoreOSServerAutoScale": {
