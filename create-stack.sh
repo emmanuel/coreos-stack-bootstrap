@@ -15,9 +15,10 @@ echo "EC2 Key Pair: $STACK_KEY_PAIR"
 aws cloudformation create-stack \
   --stack-name $STACK_NAME \
   --template-body file://$PWD/cloudformation-template.json \
-  --parameters "ParameterKey=InstanceType,ParameterValue=$STACK_INSTANCE_TYPE,UsePreviousValue=false" \
-  "ParameterKey=ClusterSize,ParameterValue=$STACK_CLUSTER_SIZE,UsePreviousValue=false" \
-  "ParameterKey=DiscoveryURL,ParameterValue=$STACK_DISCOVERY_URL,UsePreviousValue=false" \
-  "ParameterKey=AdvertisedIPAddress,ParameterValue=private,UsePreviousValue=false" \
-  "ParameterKey=AllowSSHFrom,ParameterValue=0.0.0.0/0,UsePreviousValue=false" \
-  "ParameterKey=KeyPair,ParameterValue=$STACK_KEY_PAIR,UsePreviousValue=false"
+  --parameters \
+    "ParameterKey=InstanceType,ParameterValue=$STACK_INSTANCE_TYPE,UsePreviousValue=false" \
+    "ParameterKey=ClusterSize,ParameterValue=$STACK_CLUSTER_SIZE,UsePreviousValue=false" \
+    "ParameterKey=DiscoveryURL,ParameterValue=$STACK_DISCOVERY_URL,UsePreviousValue=false" \
+    "ParameterKey=AdvertisedIPAddress,ParameterValue=private,UsePreviousValue=false" \
+    "ParameterKey=AllowSSHFrom,ParameterValue=0.0.0.0/0,UsePreviousValue=false" \
+    "ParameterKey=KeyPair,ParameterValue=$STACK_KEY_PAIR,UsePreviousValue=false"

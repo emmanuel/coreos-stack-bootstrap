@@ -83,7 +83,7 @@
     "Ingress2181ZookeeperClient": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
         "IpProtocol": "tcp",
         "FromPort": "2181",
         "ToPort": "2181",
@@ -93,7 +93,7 @@
     "Ingress2888ZookeeperPeer": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
         "IpProtocol": "tcp",
         "FromPort": "2888",
         "ToPort": "2888",
@@ -103,7 +103,7 @@
     "Ingress3888ZookeeperPeer": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
-        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
         "IpProtocol": "tcp",
         "FromPort": "3888",
         "ToPort": "3888",
