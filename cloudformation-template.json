@@ -119,7 +119,7 @@
         "MaxSize": "12",
         "DesiredCapacity": { "Ref": "ClusterSize" },
         "Tags": [
-            { "Key": "Name", "Value": { "Ref" : "AWS::StackName" }, "PropagateAtLaunch": true }
+            { "Key": "Name", "Value": { "Ref": "AWS::StackName" }, "PropagateAtLaunch": true }
         ]
       }
     },
