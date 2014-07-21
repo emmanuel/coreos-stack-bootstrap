@@ -80,6 +80,36 @@
         "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
+    "Ingress2181ZookeeperClient": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "2181",
+        "ToPort": "2181",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress2888ZookeeperPeer": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "2888",
+        "ToPort": "2888",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress3888ZookeeperPeer": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": {"Ref": "CoreOSSecurityGroup"},
+        "IpProtocol": "tcp",
+        "FromPort": "3888",
+        "ToPort": "3888",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
