@@ -5,9 +5,10 @@ STACK_DISCOVERY_URL=${2:-`curl -s https://discovery.etcd.io/new`}
 STACK_INSTANCE_TYPE=${3:-m3.medium}
 STACK_CLUSTER_SIZE=${4:-3}
 
-echo $STACK_NAME
-echo $STACK_DISCOVERY_URL
-echo $STACK_INSTANCE_TYPE x $STACK_CLUSTER_SIZE
+echo "Creating CloudFormation Stack with these parameters:"
+echo "Name: $STACK_NAME"
+echo "Discovery URL: $STACK_DISCOVERY_URL"
+echo "Instance Type x Cluster Size: $STACK_INSTANCE_TYPE x $STACK_CLUSTER_SIZE"
 
 aws cloudformation create-stack \
 --stack-name $STACK_NAME \
