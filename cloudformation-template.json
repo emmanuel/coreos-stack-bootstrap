@@ -110,6 +110,16 @@
         "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
+    "Ingress9092KafkaBroker": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "9092",
+        "ToPort": "9092",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
