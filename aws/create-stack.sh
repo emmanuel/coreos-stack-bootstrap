@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Thanks StackOverflow! http://stackoverflow.com/a/4774063
+SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
+
 STACK_NAME=${1:-"CoreOS-test-$RANDOM"}
 STACK_DISCOVERY_URL=${2:-`curl -s https://discovery.etcd.io/new`}
 STACK_INSTANCE_TYPE=${3:-m3.medium}
@@ -14,7 +17,7 @@ echo "EC2 Key Pair: $STACK_KEY_PAIR"
 
 aws cloudformation create-stack \
   --stack-name $STACK_NAME \
-  --template-body file://$PWD/cloudformation-template.json \
+  --template-body file://$SCRIPT_PATH/cloudformation-template.json \
   --parameters \
     "ParameterKey=InstanceType,ParameterValue=$STACK_INSTANCE_TYPE,UsePreviousValue=false" \
     "ParameterKey=ClusterSize,ParameterValue=$STACK_CLUSTER_SIZE,UsePreviousValue=false" \
