@@ -1,0 +1,26 @@
+[Unit]
+Description=Host sFlow Agent
+Requires=hsflowd.install.service
+Wants=skydns.service
+After=skydns.service
+
+[Service]
+Type=simple
+User=hsflowd
+Group=hsflowd
+EnvironmentFile=/etc/environment
+ExecStart=/var/lib/hsflowd/bin/hsflowd -d -u %m \
+  -p /var/lib/hsflowd/run/hsflowd.pid \
+  -f /var/lib/hsflowd/etc/hsflowd.conf
+
+PermissionsStartOnly=true
+# Environment=MOD_STATISTIC="-m statistic --mode random --probability 0.0025"
+# Environment=ULOG_CONFIG="--ulog-nlgroup 1 --ulog-prefix SFLOW --ulog-qthreshold 1"
+# ExecStartPre=/sbin/iptables -I INPUT 1 -j ULOG -m statistic --mode random --probability 0.0025 --ulog-nlgroup 1 --ulog-prefix SFLOW --ulog-qthreshold 1
+# ExecStartPre=/sbin/iptables -I OUTPUT 1 -j ULOG -m statistic --mode random --probability 0.0025 --ulog-nlgroup 1 --ulog-prefix SFLOW --ulog-qthreshold 1
+# TODO: How to remove these iptables logging directives?
+# ExecStopPost=/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
+# ExecStopPost=/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
+Restart=always
+RestartSec=5
+ReadOnlyDirectories=/etc

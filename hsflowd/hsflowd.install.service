@@ -1,0 +1,12 @@
+[Unit]
+Description=Host sFlow Agent Installer
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=-/usr/bin/mkdir -p /var/lib/hsflowd/bin
+# ExecStart=-/usr/bin/mkdir -p /var/lib/hsflowd/etc
+# ExecStart=-/usr/bin/mkdir -p /var/lib/hsflowd/run
+ExecStart=-/usr/bin/curl -s -o /var/lib/hsflowd/bin/hsflowd https://coreos-beta.s3.amazonaws.com/hsflowd
+ExecStart=/usr/bin/chown -R hsflowd:hsflowd /var/lib/hsflowd
+ExecStart=/usr/bin/chmod +x /var/lib/hsflowd/bin/hsflowd
