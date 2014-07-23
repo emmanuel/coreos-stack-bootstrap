@@ -186,6 +186,7 @@
             "        ExecStart=/usr/bin/chmod 755 /var/lib/skydns/bin/skydns\n",
             "    - name: skydns.service\n",
             "      command: start\n",
+            "      enable: true\n",
             "      content: |\n",
             "        [Unit]\n",
             "        Description=skydns\n",
