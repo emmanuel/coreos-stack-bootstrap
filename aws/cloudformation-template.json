@@ -273,7 +273,7 @@
             "        # PermissionsStartOnly=true\n",
             "        # ReadOnlyDirectories=/etc\n",
             "        # EnvironmentFile=/etc/environment\n",
-            "        ExecStart=/usr/bin/docker run --name gmond --env GANGLIA_DEBUG_LEVEL=2 --hostname gmond.%m.hosts.cluster.local --publish 6343:6343/udp --publish 8649:8649 emmanuel/gmond:0.0.1\n",
+            "        ExecStart=/usr/bin/docker run --name gmond --env GMOND_DEBUG_LEVEL=2 --hostname gmond.%m.hosts.cluster.local --publish 6343:6343/udp --publish 8649:8649 emmanuel/gmond:0.0.2\n",
             "        [Install]\n",
             "        WantedBy=multi-user.target\n",
             "write_files:\n",
