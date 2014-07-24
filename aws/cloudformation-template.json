@@ -110,6 +110,26 @@
         "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
+    "Ingress6343SFlowMetrics": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "udp",
+        "FromPort": "6343",
+        "ToPort": "6343",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress8649GangliaGmetadPolling": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8649",
+        "ToPort": "8649",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
     "Ingress9092KafkaBroker": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
