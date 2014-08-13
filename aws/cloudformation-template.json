@@ -229,7 +229,7 @@
             "        EnvironmentFile=/etc/environment\n",
             "        \n",
             "        ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{\"host\":\"${COREOS_PRIVATE_IPV4}\"}'\n",
-            "        ExecStart=/var/lib/skydns/bin/skydns -addr 0.0.0.0:5333 -verbose=true -discover=true -domain cluster.local. -local %m.hosts.cluster.local\n",
+            "        ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1:5333 -verbose=true -discover=true -domain cluster.local. -local %m.hosts.cluster.local\n",
             "        ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m\n",
             "        \n",
             "        PermissionsStartOnly=true\n",
