@@ -240,6 +240,8 @@
             "          google/cadvisor:latest\n",
             "        Restart=always\n",
             "        RestartSec=5\n",
+            "        [Install]\n",
+            "        WantedBy=multi-user.target\n",
             "write_files:\n",
             "  - path: /etc/profile.d/alias.sh\n",
             "    content: |\n",
