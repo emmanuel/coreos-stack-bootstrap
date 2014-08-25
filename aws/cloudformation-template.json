@@ -140,6 +140,16 @@
         "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
+    "Ingress10001GangliaWeb": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "10001",
+        "ToPort": "10001",
+        "CidrIp": { "Ref": "AllowSSHFrom" }
+      }
+    },
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
