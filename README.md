@@ -3,11 +3,13 @@
 Use to initialize and configure our CoreOS cluster.
 
 The cluster runs on AWS EC2 using Cloud Formation. cloud-init includes:
+
 * skydns
 * collectd
 * cadvisor (containerized)
 
 Fleet is then used to deploy:
+
 * graphite
 
 # Requirements
@@ -38,6 +40,8 @@ aws/launch_units.sh
 ```
 
 # Handy hints
+
+You can test some changes to your cloud without needing to destroy and re-create. SCP your file to a host and:
 
 ``` bash
 sudo /usr/bin/coreos-cloudinit --from-file /tmp/user-data.yml
