@@ -15,7 +15,6 @@ ExecStart=/usr/bin/docker run --rm \
   --env GRAPHITE_SERVER_NUMBER=%i \
   --hostname graphite-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
-  --publish 8080:80 \
   --publish 2003:2003/udp \
   emmanuel/graphite:latest
 
