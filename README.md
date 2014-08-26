@@ -1,12 +1,30 @@
-# CoreOS cloud-init for SkyDNS on EC2
+# Nordstrom Sandbox Cluster for Rapid Validation, Initialization
 
-Configuration files to get SkyDNS installed & running on CoreOS hosts (not in a container). 
+Use to initialize and configure our CoreOS cluster.
 
-This is a CoreOS cloud init user data YAML file, and a correspondingly updated AWS CloudFormation JSON file. 
+The cluster runs on AWS EC2 using Cloud Formation. cloud-init includes:
+* skydns
+* collectd
+* cadvisor (containerized)
+
+Fleet is then used to deploy:
+* graphite
 
 # Requirements
 
 URL to a binary of SkyDNS
+
+# Initializing and configuring the cluster
+
+```bash
+aws/creeate-stack.sh
+```
+
+Wait a few minutes, then:
+
+```bash
+aws/launch_units.sh
+```
 
 # Handy hints
 
