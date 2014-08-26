@@ -18,6 +18,7 @@ Fleet is then used to deploy:
 
 * install aws client
 * aws client needs to be configured with our lab account params (or better yet, with a delegated user account):
+
 ```bash
 aws configure
 ```
@@ -30,6 +31,7 @@ aws/create-stack.sh
 ```
 
 Wait a few minutes, then get a public hostname or ip from one of your new instances from the AWS console. Then set:
+
 ```bash
 export FLEETCTL_TUNNEL={resolvable address of one of your cloud instances}
 aws/launch_units.sh
