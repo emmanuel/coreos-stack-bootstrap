@@ -18,7 +18,7 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_udp/_gr
 ExecStart=/usr/bin/printf "Announced\n"
 
 # graphite-1.test.cluster.local
-# _graphite._tcp.test.cluster.local 9092
+# _graphite._udp.test.cluster.local 2003
 Restart=always
 RestartSec=30
 
