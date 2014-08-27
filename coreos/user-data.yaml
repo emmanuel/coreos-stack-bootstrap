@@ -62,6 +62,34 @@ coreos:
         ReadOnlyDirectories=/etc
         [Install]
         WantedBy=multi-user.target
+    - name: cadvisor.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=cAdvisor
+        Requires=docker.service
+        After=docker.service
+        [Service]
+        Type=simple
+        Environment=ENV=test
+        ExecStart=/usr/bin/docker run \
+          --volume=/var/run:/var/run:rw \
+          --volume=/sys:/sys:ro \
+          --volume=/var/lib/docker/:/var/lib/docker:ro \
+          --publish=8080:8080 \
+          --name=cadvisor \
+          --dns-search=${ENV}.cluster.local \
+          google/cadvisor:latest \
+            -storage_driver=influxdb \
+            -storage_driver_host=influxdb-1:8086 \
+            -storage_driver_name=cadvisor \
+            -storage_driver_user=root \
+            -storage_driver_password=ro
+        Restart=always
+        RestartSec=5
+        [Install]
+        WantedBy=multi-user.target
     - name: sysinfo_influxdb.service
       command: start
       content: |
