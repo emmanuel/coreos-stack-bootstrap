@@ -1,0 +1,14 @@
+[Unit]
+Description=sysinfo_influxdb
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker run \
+  --name=sysinfo_influxdb \
+  nordstrom/sysinfo_influxdb:latest
+
+Restart=always
+RestartSec=5
+
