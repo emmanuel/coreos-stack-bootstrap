@@ -243,7 +243,7 @@
             "          google/cadvisor:latest \\\n",
             "            -storage_driver=influxdb \\\n",
             "            -storage_driver_host=influxdb-1:8086 \\\n",
-            "            -storage_driver_name=cadvisor \\\n",
+            "            -storage_driver_db=cadvisor \\\n",
             "            -storage_driver_user=root \\\n",
             "            -storage_driver_password=root",
             "        Restart=always\n",

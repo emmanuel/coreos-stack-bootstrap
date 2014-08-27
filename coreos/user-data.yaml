@@ -84,7 +84,7 @@ coreos:
           google/cadvisor:latest \
             -storage_driver=influxdb \
             -storage_driver_host=influxdb-1:8086 \
-            -storage_driver_name=cadvisor \
+            -storage_driver_db=cadvisor \
             -storage_driver_user=root \
             -storage_driver_password=ro
         Restart=always
