@@ -70,6 +70,7 @@ coreos:
         Description=cAdvisor
         Requires=docker.service
         After=docker.service
+        After=skydns.service
         [Service]
         Type=simple
         Environment=ENV=test
@@ -97,6 +98,7 @@ coreos:
         Description=sysinfo_influxdb
         Requires=docker.service
         After=docker.service
+        After=skydns.service
         [Service]
         Type=simple
         Environment="ENV=test"
