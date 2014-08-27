@@ -239,7 +239,7 @@
             "          --volume=/var/lib/docker/:/var/lib/docker:ro \\\n",
             "          --publish=8080:8080 \\\n",
             "          --name=cadvisor \\\n",
-            "          --dns-search=${ENV}.cluster.local \\\n"
+            "          --dns-search=${ENV}.cluster.local \\\n",
             "          google/cadvisor:latest \\\n",
             "            -storage_driver=influxdb \\\n",
             "            -storage_driver_host=influxdb-1:8086 \\\n",
