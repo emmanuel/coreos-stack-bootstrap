@@ -1,0 +1,1 @@
+This sysinfo_influxdb agent only supports a single influxdb host.

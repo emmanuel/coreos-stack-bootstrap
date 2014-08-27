@@ -5,10 +5,11 @@ After=docker.service
 
 [Service]
 Type=simple
+Environment="ENV=test"
+Restart=always
+RestartSec=10
+
 ExecStart=/usr/bin/docker run \
   --name=sysinfo_influxdb \
+  --dns-search ${ENV}.cluster.local \
   nordstrom/sysinfo_influxdb:latest
-
-Restart=always
-RestartSec=5
-
