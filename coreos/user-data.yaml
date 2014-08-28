@@ -78,6 +78,7 @@ coreos:
           --volume=/var/run:/var/run:rw \
           --volume=/sys:/sys:ro \
           --volume=/var/lib/docker/:/var/lib/docker:ro \
+          --volume=/tmp:/tmp:rw \
           --publish=8080:8080 \
           --name=cadvisor \
           --dns-search=${ENV}.cluster.local \
@@ -86,7 +87,7 @@ coreos:
             -storage_driver_host=influxdb-1:8086 \
             -storage_driver_db=cadvisor \
             -storage_driver_user=root \
-            -storage_driver_password=ro
+            -storage_driver_password=root
         Restart=always
         RestartSec=5
         [Install]

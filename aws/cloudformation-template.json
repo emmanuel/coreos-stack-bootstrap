@@ -237,6 +237,7 @@
             "          --volume=/var/run:/var/run:rw \\\n",
             "          --volume=/sys:/sys:ro \\\n",
             "          --volume=/var/lib/docker/:/var/lib/docker:ro \\\n",
+            "          --volume=/tmp:/tmp:rw \\\n",
             "          --publish=8080:8080 \\\n",
             "          --name=cadvisor \\\n",
             "          --dns-search=${ENV}.cluster.local \\\n",
