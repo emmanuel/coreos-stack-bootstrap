@@ -46,3 +46,6 @@ You can test some changes to your cloud without needing to destroy and re-create
 ``` bash
 sudo /usr/bin/coreos-cloudinit --from-file /tmp/user-data.yml
 ```
+
+We keep our docker images here:
+https://hub.docker.com/account/organizations/nordstrom/
