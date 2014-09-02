@@ -143,6 +143,46 @@
         "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
       }
     },
+    "Ingress8083InfluxAdmin": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8083",
+        "ToPort": "8083",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress8086InfluxAPI": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8086",
+        "ToPort": "8086",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress8090InfluxRaft": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8090",
+        "ToPort": "8090",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
+    "Ingress8099InfluxReplication": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupName": { "Ref": "CoreOSSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8099",
+        "ToPort": "8099",
+        "SourceSecurityGroupId": { "Fn::GetAtt": [ "CoreOSSecurityGroup", "GroupId" ] } 
+      }
+    },
     "CoreOSServerAutoScale": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
