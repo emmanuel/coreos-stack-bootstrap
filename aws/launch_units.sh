@@ -10,5 +10,12 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
     exit 1
 fi
 
-fleetctl start graphite/graphite-carbon@1.service
-fleetctl start graphite/graphite-carbon.presence@1.service
+#fleetctl start graphite/graphite-carbon@1.service
+#fleetctl start graphite/graphite-carbon.presence@1.service
+
+fleetctl start influxdb/influxdb@1.service
+fleetctl start influxdb/influxdb.presence@1.service
+#fleetctl start influxdb/influxdb@2.service
+#fleetctl start influxdb/influxdb.presence@2.service
+#fleetctl start influxdb/influxdb@3.service
+#fleetctl start influxdb/influxdb.presence@3.service

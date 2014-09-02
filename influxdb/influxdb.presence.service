@@ -1,0 +1,39 @@
+[Unit]
+Description=InfluxDB Presence
+BindTo=influxdb@%i.service
+After=influxdb@%i.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/environment
+Environment="ENV=test"
+Environment="INFLUXDB_HTTP_API_PORT=8086"
+Environment="INFLUXDB_ADMIN_API_PORT=8083"
+Environment="INFLUXDB_RAFT_PORT=8090"
+Environment="INFLUXDB_REPLICATION_PORT=8099"
+
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_ADMIN_API_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_RAFT_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_RAFT_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_REPLICATION_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
+
+ExecStart=/usr/bin/printf "Announced\n"
+
+# influxdb-1.test.cluster.local
+# _influxdb._tcp.test.cluster.local 8086
+# _influxdb-admin._tcp.test.cluster.local 8083
+# _influxdb-raft._tcp.test.cluster.local 8090
+# _influxdb-replication._tcp.test.cluster.local 8099
+
+Restart=always
+RestartSec=30
+
+[X-Fleet]
+X-ConditionMachineOf=influxdb@%i.service

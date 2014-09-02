@@ -1,0 +1,27 @@
+[Unit]
+Description=InfluxDB daemon
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+PermissionsStartOnly=true
+# ReadOnlyDirectories=/etc
+EnvironmentFile=/etc/environment
+Environment="ENV=test"
+
+ExecStart=/usr/bin/docker run \
+  --name influxdb-%i \
+  --hostname influxdb-%i.${ENV}.cluster.local \
+  --dns-search ${ENV}.cluster.local \
+  --env INFLUXDB_SERVER_NUMBER=%i \
+  --publish 8086:8086 \
+  --publish 8083:8083 \
+  --publish 8090:8090 \
+  --publish 8099:8099 \
+  nordstrom/influxdb:latest
+
+ExecStop=/usr/bin/docker kill influxdb-%i
+
+[X-Fleet]
+X-Conflicts=influxdb@*.service
