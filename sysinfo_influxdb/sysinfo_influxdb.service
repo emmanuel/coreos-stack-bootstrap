@@ -10,6 +10,11 @@ Restart=always
 RestartSec=10
 
 ExecStart=/usr/bin/docker run \
+  --rm \
   --name=sysinfo_influxdb \
   --dns-search ${ENV}.cluster.local \
   nordstrom/sysinfo_influxdb:latest
+    -h influxdb-1:8086 \
+    -d sysinfo \
+    -u root \
+    -p root
