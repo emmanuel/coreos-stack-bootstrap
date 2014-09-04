@@ -1,3 +1,0 @@
-#!/bin/bash
-
-terraform apply --var-file=terraform.tfvars -var token=$(curl https://discovery.etcd.io/new)

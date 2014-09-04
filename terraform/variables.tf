@@ -1,6 +1,4 @@
-variable "etcd_discovery_url" {
-  default = "https://discovery.etcd.io/blah"
-}
+variable "etcd_discovery_url" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 

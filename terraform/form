@@ -1,0 +1,10 @@
+#!/bin/bash
+COMMAND=${1:-"plan"}
+
+if [ ! -f "etcd_discovery_url" ]; then
+  echo "$(curl -s https://discovery.etcd.io/new)" >> etcd_discovery_url
+fi
+ETCD_DISCOVERY_URL=$(cat etcd_discovery_url)
+echo "etcd discovery URL: $ETCD_DISCOVERY_URL"
+
+terraform $COMMAND --var-file=terraform.tfvars -var etcd_discovery_url=$ETCD_DISCOVERY_URL
