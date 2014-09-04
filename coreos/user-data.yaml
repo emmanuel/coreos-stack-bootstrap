@@ -32,6 +32,7 @@ coreos:
         ExecStart=/usr/bin/chmod +x /var/lib/skydns/bin/skydns
     - name: skydns.service
       command: start
+      enable: true
       content: |
         [Unit]
         Description=skydns
@@ -92,6 +93,7 @@ coreos:
         WantedBy=multi-user.target
     - name: sysinfo_influxdb.service
       command: start
+      enable: true
       content: |
         [Unit]
         Description=sysinfo_influxdb
@@ -107,3 +109,5 @@ coreos:
           --name=sysinfo_influxdb \
           --dns-search ${ENV}.cluster.local \
           nordstrom/sysinfo_influxdb:latest
+        [Install]
+        WantedBy=multi-user.target
