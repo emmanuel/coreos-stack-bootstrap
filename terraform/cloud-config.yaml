@@ -5,8 +5,8 @@ coreos:
   update:
     reboot-strategy: etcd-lock
   fleet:
-    # metadata: region=${var.aws_region}, instance_type=${var.aws_instance_type}
     public-ip: $public_ipv4
+    <<: *FLEET_METADATA
   etcd:
     <<: *DISCOVERY_URL
     addr: $public_ipv4:4001
