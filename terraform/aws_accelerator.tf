@@ -11,13 +11,14 @@ resource "aws_launch_configuration" "standard" {
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}" ]
   key_name = "${var.aws_ec2_keypair}"
-  user_data = <<HI
+  user_data = <<USER_DATA
 #cloud-config
-  dynamic:
-    discovery_url: &DISCOVERY_URL
-      discovery: ${var.etcd_discovery_url}
-      ${file("cloud-config.yaml")}
-HI
+
+dynamic:
+  discovery_url: &DISCOVERY_URL
+    discovery: ${var.etcd_discovery_url}
+${file("cloud-config.yaml")}
+USER_DATA
 }
 
 resource "aws_autoscaling_group" "standard" {
