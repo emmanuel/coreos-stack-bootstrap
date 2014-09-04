@@ -3,8 +3,6 @@
 users:
   - name: skydns
     system: true
-  - name: hsflowd
-    system: true
 coreos:
   update:
     reboot-strategy: etcd-lock
