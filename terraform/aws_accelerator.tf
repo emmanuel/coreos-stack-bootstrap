@@ -10,8 +10,14 @@ resource "aws_launch_configuration" "standard" {
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}" ]
-  user_data = "${file("cloud-config.yaml")}"
   key_name = "${var.aws_ec2_keypair}"
+  user_data = <<HI
+#cloud-config
+  dynamic:
+    discovery_url: &DISCOVERY_URL
+      discovery: ${var.etcd_discovery_url}
+      ${file("cloud-config.yaml")}
+HI
 }
 
 resource "aws_autoscaling_group" "standard" {

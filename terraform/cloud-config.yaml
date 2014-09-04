@@ -1,18 +1,16 @@
-#cloud-config
-
 users:
   - name: skydns
     system: true
 coreos:
   update:
     reboot-strategy: etcd-lock
-  etcd:
-    discovery: https://discovery.etcd.io/<token>
-    addr: $public_ipv4:4001
-    peer-addr: $private_ipv4:7001
   fleet:
     # metadata: region=${var.aws_region}, instance_type=${var.aws_instance_type}
     public-ip: $public_ipv4
+  etcd:
+    <<: *DISCOVERY_URL
+    addr: $public_ipv4:4001
+    peer-addr: $private_ipv4:7001
   units:
     - name: etcd.service
       command: start
