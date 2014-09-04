@@ -36,7 +36,7 @@ resource "aws_security_group" "public" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ "${var.AllowSSHFrom}" ]
+    cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
 }
 
@@ -105,7 +105,7 @@ resource "aws_security_group" "influxdb-elb" {
     from_port = 8086 
     to_port =  8086
     protocol = "tcp"
-    cidr_blocks = [ "${var.AllowSSHFrom}" ]
+    cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
 
 }

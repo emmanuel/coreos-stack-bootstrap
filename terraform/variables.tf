@@ -11,7 +11,7 @@ variable "environment" {
 }
 
 # The net block (CIDR) that SSH is available to.
-variable "AllowSSHFrom" {
+variable "allow_ssh_from" {
   default = "0.0.0.0/0"
 }
 
