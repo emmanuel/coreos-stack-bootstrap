@@ -5,11 +5,11 @@ coreos:
   update:
     reboot-strategy: etcd-lock
   fleet:
-    public-ip: $public_ipv4
     <<: *FLEET_METADATA
+    public-ip: $private_ipv4
   etcd:
-    addr: $public_ipv4:4001
     <<: *ETCD_DISCOVERY_URL
+    addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   units:
     - name: etcd.service
