@@ -6,7 +6,7 @@ provider "aws" {
 }
 
 resource "aws_launch_configuration" "standard" {
-  name = "launch-configuration"
+  name = "launch-configuration-${var.environment}"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}" ]
@@ -21,8 +21,8 @@ HI
 }
 
 resource "aws_autoscaling_group" "standard" {
+  name = "AWS Auto-scaling Group (${var.environment})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-  name = "AWS Auto-scaling Group ${var.environment}"
   max_size = 12
   min_size = 3
   health_check_grace_period = 300
@@ -113,7 +113,7 @@ resource "aws_security_group" "influxdb-elb" {
 }
 
 resource "aws_elb" "influxdb" {
-  name = "influxdb-public"
+  name = "influxdb-public-${var.environment}"
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
   listener {
