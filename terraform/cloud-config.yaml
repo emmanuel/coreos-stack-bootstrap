@@ -8,8 +8,8 @@ coreos:
     public-ip: $public_ipv4
     <<: *FLEET_METADATA
   etcd:
-    <<: *DISCOVERY_URL
     addr: $public_ipv4:4001
+    <<: *ETCD_DISCOVERY_URL
     peer-addr: $private_ipv4:7001
   units:
     - name: etcd.service

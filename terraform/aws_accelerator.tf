@@ -15,9 +15,9 @@ resource "aws_launch_configuration" "standard" {
 #cloud-config
 
 dynamic:
-  discovery_url: &DISCOVERY_URL
   fleet_metadata: &FLEET_METADATA
     metadata: public_ip=$public_ipv4,region=${var.aws_region},instance_type=${var.aws_instance_type}
+  discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
 ${file("cloud-config.yaml")}
 USER_DATA
