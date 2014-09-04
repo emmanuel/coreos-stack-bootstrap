@@ -22,7 +22,7 @@ USER_DATA
 }
 
 resource "aws_autoscaling_group" "standard" {
-  name = "AWS Auto-scaling Group (${var.environment})"
+  name = "Cluster (${var.environment} / ${var.aws_instance_type})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 3
