@@ -41,13 +41,12 @@ resource "aws_security_group" "public" {
 }
 
 resource "aws_security_group" "private" {
-
   name = "Private security group (${var.environment})"
   description = "Cluster-private security group rules."
 
-  # etcd http 
+  # etcd http
   ingress {
-    from_port = 4001 
+    from_port = 4001
     to_port =  4001
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
@@ -55,7 +54,7 @@ resource "aws_security_group" "private" {
 
   # etcd raft
   ingress {
-    from_port = 7001 
+    from_port = 7001
     to_port =  7001
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
@@ -63,7 +62,7 @@ resource "aws_security_group" "private" {
 
   # influxdb web
   ingress {
-    from_port = 8083 
+    from_port = 8083
     to_port =  8083
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
@@ -71,7 +70,7 @@ resource "aws_security_group" "private" {
 
   # influxdb api
   ingress {
-    from_port = 8086 
+    from_port = 8086
     to_port =  8086
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
@@ -92,22 +91,19 @@ resource "aws_security_group" "private" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
   }
-
 }
 
 resource "aws_security_group" "influxdb-elb" {
-
   name = "Public influxdb ELB security group (${var.environment})"
   description = "Cluster-private security group rules."
 
   # influxdb api
   ingress {
-    from_port = 8086 
+    from_port = 8086
     to_port =  8086
     protocol = "tcp"
     cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
-
 }
 
 resource "aws_elb" "influxdb" {
