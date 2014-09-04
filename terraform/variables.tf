@@ -17,14 +17,14 @@ variable "AllowSSHFrom" {
 
 variable "amis" {
   default = {
-    #ap-northeast-1 = "ami-fbf3a1fa"
-    #sa-east-1 = "ami-edab02f0"
-    #ap-southeast-2 = "ami-35d1b60f"
-    #ap-southeast-1 = "ami-2a075f78"
-    #us-east-1 = "ami-88e52ce0"
-    us-west-2 = "ami-d52462e5"
-    #us-west-1 = "ami-13eeed56"
-    #eu-west-1 = "ami-7de4350a"
+    ap-northeast-1 = "ami-df1a3cde"
+    sa-east-1 = "ami-41d47f5c"
+    ap-southeast-2 = "ami-99d5b4a3"
+    ap-southeast-1 = "ami-fad78da8"
+    us-east-1 = "ami-7cbc1914"
+    us-west-2 = "ami-2f70371f"
+    us-west-1 = "ami-0dccc348"
+    eu-west-1 = "ami-a2835bd5"
   }
 }
 variable "aws_ec2_keypair" {
