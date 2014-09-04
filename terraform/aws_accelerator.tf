@@ -132,4 +132,15 @@ resource "aws_elb" "influxdb" {
   }
 
   security_groups = [ "${aws_security_group.influxdb-elb.id}" ]
+
 }
+
+# This should work just fine once A ALIAS record creation is supported by terraform
+#resource "aws_route53_record" "influxdb" {
+#   zone_id = "${var.aws_route53_zone_id}"
+#   name = "influxdb.cloud.nlab.io"
+#   type = "A"
+#   ttl = "300"
+#   records = [ "ALIAS ${aws_elb.influxdb.dns_name}" ]
+#   alias_target = 
+#}

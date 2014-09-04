@@ -13,9 +13,6 @@ variable "aws_region" {
 variable "environment" {
   default = "test"
 }
-variable "aws_ec2_keypair" {
-  default = "coreos-beta"
-}
 
 # The net block (CIDR) that SSH is available to.
 variable "allow_ssh_from" {
@@ -33,4 +30,10 @@ variable "amis" {
     us-west-1 = "ami-0dccc348"
     eu-west-1 = "ami-a2835bd5"
   }
+}
+variable "aws_ec2_keypair" {
+  default = "coreos-beta"
+}
+variable "aws_route53_zone_id" {
+  default = "Z23E6ZIBKPSZQE"
 }
