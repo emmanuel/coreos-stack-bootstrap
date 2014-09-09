@@ -17,3 +17,4 @@ fleetctl start influxdb/influxdb.elb@1.service
 
 fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
+fleetctl start grafana/grafana.service
