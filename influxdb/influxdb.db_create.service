@@ -1,0 +1,15 @@
+[Unit]
+Description=InfluxDB Database Creation
+BindTo=influxdb@%i.service
+After=influxdb@%i.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/environment
+
+ExecStart=/usr/bin/curl -X POST 'http://localhost:8086/db?u=root&p=root -d '{"name": "cadvisor"}'
+ExecStart=/usr/bin/curl -X POST 'http://localhost:8086/db?u=root&p=root -d '{"name": "sysinfo"}'
+
+[X-Fleet]
+X-ConditionMachineOf=influxdb@%i.service
