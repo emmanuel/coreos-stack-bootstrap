@@ -5,6 +5,7 @@ After=docker.service
 
 [Service]
 Type=simple
+Environment="ENV=test"
 ExecStart=/usr/bin/docker run \
   --volume=/var/run:/var/run:rw \
   --volume=/sys:/sys:ro \
