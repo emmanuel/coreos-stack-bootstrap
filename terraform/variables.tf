@@ -19,14 +19,14 @@ variable "allow_ssh_from" {
 
 variable "amis" {
   default = {
-    ap-northeast-1 = "ami-df1a3cde"
-    sa-east-1 = "ami-41d47f5c"
-    ap-southeast-2 = "ami-99d5b4a3"
-    ap-southeast-1 = "ami-fad78da8"
-    us-east-1 = "ami-7cbc1914"
-    us-west-2 = "ami-2f70371f"
-    us-west-1 = "ami-0dccc348"
-    eu-west-1 = "ami-a2835bd5"
+    ap-northeast-1 = "ami-4d6b484c"
+    sa-east-1 = "ami-455af158"
+    ap-southeast-2 = "ami-6553335f"
+    ap-southeast-1 = "ami-101e3b42"
+    us-east-1 = "ami-a63a9bce"
+    us-west-2 = "ami-99a0e6a9"
+    us-west-1 = "ami-313c3274"
+    eu-west-1 = "ami-56be6421"
   }
 }
 variable "aws_ec2_keypair" {
