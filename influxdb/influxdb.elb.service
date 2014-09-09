@@ -1,0 +1,27 @@
+[Unit]
+Description=InfluxDB ELB Registration
+BindTo=influxdb.elb@%i.service
+After=influxdb.elb@%i.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+EnvironmentFile=/etc/environment
+Environment="ENV=test"
+Environment="AWS_REGION=us-west-2"
+Environment="ELB_LOAD_BALANCER_NAME=influxdb-public-${ENV}"
+Environment="AWS_ACCESS_KEY=AKIAJ2KKULRY3ERHB2RQ"
+Environment="AWS_SECRET_KEY=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"
+
+ExecStart=/usr/bin/docker run \
+  -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}" \
+  -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}" \
+  nordstrom/awscli \
+    aws elb register-instances-with-load-balancer \
+      --load-balancer-name ${ELB_LOAD_BALANCER_NAME} \
+      --region ${AWS_REGION} \
+      --instances ${EC2_INSTANCE_ID}
+
+[X-Fleet]
+X-ConditionMachineOf=influxdb@%i.service
