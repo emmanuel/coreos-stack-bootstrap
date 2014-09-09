@@ -1,7 +1,7 @@
 [Unit]
 Description=InfluxDB ELB Registration
-BindTo=influxdb.elb@%i.service
-After=influxdb.elb@%i.service
+BindTo=influxdb@%i.service
+After=influxdb@%i.service
 
 [Service]
 Type=simple
