@@ -1,3 +1,5 @@
+#cloud-config
+
 users:
   - name: skydns
     system: true
@@ -5,10 +7,10 @@ coreos:
   update:
     reboot-strategy: etcd-lock
   fleet:
-    <<: *FLEET_METADATA
+    metadata: public_ip=$public_ipv4,region=us-west-2,instance_type=m3.medium
     public-ip: $private_ipv4
   etcd:
-    <<: *ETCD_DISCOVERY_URL
+    discovery: https://discovery.etcd.io/cb98ff0f99ac07d53d84d2636305c36e
     addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   units:
@@ -24,6 +26,16 @@ coreos:
         [Service]
         ExecStart=
         ExecStart=/usr/bin/docker -d -s=btrfs -r=false -H fd:// --dns=172.17.42.1 --dns-search=cluster.local
+    - name: extended-environment.install.service
+      command: start
+      content: |
+        [Unit]
+        Description=Extended environment installer
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/environment'
     - name: skydns.install.service
       command: start
       content: |
