@@ -5,7 +5,10 @@ After=docker.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=5
 Environment="ENV=test"
+
 ExecStart=/usr/bin/docker run \
   --volume=/var/run:/var/run:rw \
   --volume=/sys:/sys:ro \
@@ -20,6 +23,3 @@ ExecStart=/usr/bin/docker run \
     -storage_driver_db=cadvisor \
     -storage_driver_user=root \
     -storage_driver_password=root
-Restart=always
-RestartSec=5
-

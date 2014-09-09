@@ -5,9 +5,9 @@ After=docker.service
 
 [Service]
 Type=simple
-Environment="ENV=test"
 Restart=always
 RestartSec=10
+Environment="ENV=test"
 
 ExecStart=/usr/bin/docker run \
   --rm \
