@@ -8,8 +8,11 @@ Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
 
-ExecStart=/usr/bin/curl -X POST 'http://localhost:8086/db?u=root&p=root -d '{"name": "cadvisor"}'
-ExecStart=/usr/bin/curl -X POST 'http://localhost:8086/db?u=root&p=root -d '{"name": "sysinfo"}'
+ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
+ExecStartPre=-/usr/bin/curl -s -X POST http://localhost:8086/db?u=root&p=root -d '{"name": "cadvisor"}'
+ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
+ExecStartPre=-/usr/bin/curl -s -X POST http://localhost:8086/db?u=root&p=root -d '{"name": "sysinfo"}'
+ExecStart=/usr/bin/printf "Created InfluxDB databases\n"
 
 [X-Fleet]
 X-ConditionMachineOf=influxdb@%i.service
