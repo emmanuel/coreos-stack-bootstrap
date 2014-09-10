@@ -6,12 +6,16 @@ After=influxdb@%i.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-EnvironmentFile=/etc/environment
+Restart=on-failure
+RestartSec=30
+# EnvironmentFile=/etc/environment
+Environment="INFLUXDB_USER=root"
+Environment="INFLUXDB_PASS=root"
 
 ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
-ExecStartPre=-/usr/bin/curl -s -X POST http://localhost:8086/db?u=root&p=root -d '{"name": "cadvisor"}'
+ExecStartPre=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "cadvisor"}'
 ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
-ExecStartPre=-/usr/bin/curl -s -X POST http://localhost:8086/db?u=root&p=root -d '{"name": "sysinfo"}'
+ExecStartPre=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
 ExecStart=/usr/bin/printf "Created InfluxDB databases\n"
 
 [X-Fleet]

@@ -10,10 +10,15 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
     exit 1
 fi
 
+fleetctl submit influxdb/influxdb@.service
+fleetctl submit influxdb/influxdb.presence@.service
+fleetctl submit influxdb/influxdb.elb@.service
+fleetctl submit influxdb/influxdb.db_create@.service
+
 fleetctl start influxdb/influxdb@1.service
 fleetctl start influxdb/influxdb.presence@1.service
-fleetctl start influxdb/influxdb.db_create@1.service
 fleetctl start influxdb/influxdb.elb@1.service
+fleetctl start influxdb/influxdb.db_create@1.service
 
 fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service

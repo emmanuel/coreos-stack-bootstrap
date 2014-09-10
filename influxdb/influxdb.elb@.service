@@ -5,11 +5,10 @@ After=influxdb@%i.service
 
 [Service]
 Type=simple
-Restart=always
-RestartSec=30
+Restart=no
 EnvironmentFile=/etc/environment
 Environment="ENV=test"
-Environment="ELB_LOAD_BALANCER_NAME=influxdb-public-${ENV}"
+Environment="ELB_LOAD_BALANCER_NAME=influxdb-public-test"
 
 ExecStart=/usr/bin/docker run \
   -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}" \
@@ -19,6 +18,15 @@ ExecStart=/usr/bin/docker run \
       --load-balancer-name ${ELB_LOAD_BALANCER_NAME} \
       --region ${AWS_REGION} \
       --instances ${EC2_INSTANCE_ID}
+
+# ExecStop=/usr/bin/docker run \
+#   -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}" \
+#   -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}" \
+#   nordstrom/awscli \
+#     aws elb deregister-instances-from-load-balancer \
+#       --load-balancer-name ${ELB_LOAD_BALANCER_NAME} \
+#       --region ${AWS_REGION} \
+#       --instances ${EC2_INSTANCE_ID}
 
 [X-Fleet]
 X-ConditionMachineOf=influxdb@%i.service
