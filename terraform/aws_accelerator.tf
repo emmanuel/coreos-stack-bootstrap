@@ -9,7 +9,7 @@ resource "aws_launch_configuration" "standard" {
   name = "launch-configuration-${var.environment}"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
-  security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}" ]
+  security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}", "${aws_security_group.elb-ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = "${file("cloud-config.yaml")}"
 #   user_data = <<USER_DATA
@@ -37,9 +37,8 @@ resource "aws_autoscaling_group" "standard" {
 }
 
 resource "aws_security_group" "public" {
-  # vpc_id = "${aws_vpc.a_vpc_name.id}"
-  name = "Public security group (${var.environment})"
-  description = "Public security group allowing ssh from anywhere."
+  name = "Cluster-public (${var.environment})"
+  description = "Allow SSH from anywhere."
 
   # public ssh
   ingress {
@@ -51,7 +50,7 @@ resource "aws_security_group" "public" {
 }
 
 resource "aws_security_group" "private" {
-  name = "Private security group (${var.environment})"
+  name = "Cluster-private (${var.environment})"
   description = "Cluster-private security group rules."
 
   # etcd http
@@ -103,9 +102,23 @@ resource "aws_security_group" "private" {
   }
 }
 
-resource "aws_security_group" "influxdb-elb" {
-  name = "Public influxdb ELB security group (${var.environment})"
-  description = "Cluster-private security group rules."
+resource "aws_security_group" "elb-ingress" {
+  # vpc_id = "${aws_vpc.a_vpc_name.id}"
+  name = "Cluster ELB-accessible (${var.environment})"
+  description = "Allow ingress from ELBs."
+
+  # influxdb api
+  ingress {
+    from_port = 8086
+    to_port =  8086
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.elb-influxdb.id}" ]
+  }
+}
+
+resource "aws_security_group" "elb-influxdb" {
+  name = "InfluxDB ELB (${var.environment})"
+  description = "InfluxDB ELB (${var.environment})."
 
   # influxdb api
   ingress {
@@ -121,10 +134,10 @@ resource "aws_elb" "influxdb" {
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
   listener {
-    instance_port = 8086
-    instance_protocol = "http"
     lb_port = 8086
     lb_protocol = "http"
+    instance_port = 8086
+    instance_protocol = "http"
   }
 
   health_check {
@@ -135,8 +148,7 @@ resource "aws_elb" "influxdb" {
     interval = 30
   }
 
-  security_groups = [ "${aws_security_group.influxdb-elb.id}" ]
-
+  security_groups = [ "${aws_security_group.elb-influxdb.id}" ]
 }
 
 # This should work just fine once A ALIAS record creation is supported by terraform
