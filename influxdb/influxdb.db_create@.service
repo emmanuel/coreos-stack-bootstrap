@@ -6,8 +6,8 @@ After=influxdb@%i.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-Restart=on-failure
-RestartSec=30
+# Restart=on-failure
+# RestartSec=60
 # EnvironmentFile=/etc/environment
 Environment="INFLUXDB_USER=root"
 Environment="INFLUXDB_PASS=root"

@@ -5,6 +5,9 @@ After=influxdb@%i.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=30
+
 EnvironmentFile=/etc/environment
 Environment="ENV=test"
 Environment="INFLUXDB_HTTP_API_PORT=8086"
@@ -31,9 +34,6 @@ ExecStart=/usr/bin/printf "Announced\n"
 # _influxdb-admin._tcp.test.cluster.local 8083
 # _influxdb-raft._tcp.test.cluster.local 8090
 # _influxdb-replication._tcp.test.cluster.local 8099
-
-Restart=always
-RestartSec=30
 
 [X-Fleet]
 X-ConditionMachineOf=influxdb@%i.service
