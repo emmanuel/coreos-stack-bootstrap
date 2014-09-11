@@ -153,7 +153,7 @@ resource "aws_elb" "influxdb" {
 
 # This should work just fine once A ALIAS record creation is supported by terraform
 #resource "aws_route53_record" "influxdb" {
-#   zone_id = "${var.aws_route53_zone_id}"
+#   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
 #   name = "influxdb.cloud.nlab.io"
 #   type = "A"
 #   ttl = "300"

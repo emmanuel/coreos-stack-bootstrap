@@ -32,6 +32,6 @@ variable "amis" {
 variable "aws_ec2_keypair" {
   default = "coreos-beta"
 }
-variable "aws_route53_zone_id" {
+variable "aws_route53_zone_id_cloud_nlab_io" {
   default = "Z23E6ZIBKPSZQE"
 }
