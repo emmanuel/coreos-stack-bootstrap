@@ -71,7 +71,7 @@ coreos:
         ReadOnlyDirectories=/etc
         EnvironmentFile=/etc/environment
         
-        ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"$private_ipv4}"}'
+        ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"$private_ipv4"}'
         ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1:5333 -verbose=true -discover=true -domain cluster.local. -local %m.hosts.cluster.local
         ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
         
