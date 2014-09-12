@@ -3,6 +3,6 @@ MAINTAINER Paul Payne "paul@payne.io"
 
 ADD dist/sysinfo_influxdb /bin/sysinfo_influxdb
 
-ENTRYPOINT ["/bin/sysinfo_influxdb", "-D"]
+ENTRYPOINT ["/bin/sysinfo_influxdb"]
 
 CMD ["-D"]
