@@ -8,18 +8,35 @@ Type=simple
 Restart=always
 RestartSec=5
 Environment="ENV=test"
+Environment="INFLUXDB_HOSTNAME=influxdb-1"
+Environment="INFLUXDB_PORT=8086"
+Environment="INFLUXDB_DATABASE_NAME=cadvisor"
+Environment="INFLUXDB_DATABASE_USER=root"
+Environment="INFLUXDB_DATABASE_PASS=root"
+Environment="IMAGE_NAME=nordstrom/cadvisor"
+Environment="CONTAINER_NAME=cadvisor"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill ${CONTAINER_NAME}
+ExecStartPre=-/usr/bin/docker rm ${CONTAINER_NAME}
+ExecStartPre=/usr/bin/docker pull ${IMAGE_NAME}
 
 ExecStart=/usr/bin/docker run \
+  --name=${CONTAINER_NAME} \
+  --publish=8080:8080 \
   --volume=/var/run:/var/run:rw \
   --volume=/sys:/sys:ro \
   --volume=/var/lib/docker/:/var/lib/docker:ro \
-  --publish=8080:8080 \
-  --name=cadvisor \
   --dns-search=${ENV}.cluster.local \
-  google/cadvisor:latest \
-    -log_dir=/ \
-    -storage_driver=influxdb \
-    -storage_driver_host=influxdb-1:8086 \
-    -storage_driver_db=cadvisor \
-    -storage_driver_user=root \
-    -storage_driver_password=root
+  ${IMAGE_NAME} \
+    --logtostderr \
+    --storage_driver=influxdb \
+    --storage_driver_host=${INFLUXDB_HOSTNAME}:${INFLUXDB_PORT} \
+    --storage_driver_db=${INFLUXDB_DATABASE_NAME} \
+    --storage_driver_user=${INFLUXDB_DATABASE_USER} \
+    --storage_driver_password=${INFLUXDB_DATABASE_PASS} \
+    --housekeeping_interval=1s \
+    --global_housekeeping_interval=3s
+
+[X-Fleet]
+Global=true
