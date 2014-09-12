@@ -153,6 +153,14 @@ resource "aws_elb" "influxdb" {
   security_groups = [ "${aws_security_group.elb-influxdb.id}" ]
 }
 
+resource "aws_route53_record" "influxdb" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "${var.aws_route53_public_dns_name_influxdb}"
+  type = "CNAME"
+  ttl = "60"
+  records = [ "${aws_elb.influxdb.dns_name}" ]
+}
+
 # This should work just fine once A ALIAS record creation is supported by terraform
 #resource "aws_route53_record" "influxdb" {
 #   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
