@@ -9,7 +9,9 @@ resource "aws_launch_configuration" "standard" {
   name = "launch-configuration-${var.environment}"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
-  security_groups = [ "${aws_security_group.public.id}", "${aws_security_group.private.id}", "${aws_security_group.elb-ingress.id}" ]
+  security_groups = [ "${aws_security_group.public.id}",
+                      "${aws_security_group.private.id}",
+                      "${aws_security_group.elb-ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = "${file("cloud-config.yaml")}"
 #   user_data = <<USER_DATA
@@ -131,7 +133,7 @@ resource "aws_security_group" "elb-influxdb" {
 
 resource "aws_elb" "influxdb" {
   name = "influxdb-public-${var.environment}"
-  availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
     lb_port = 8086
