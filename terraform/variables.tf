@@ -35,3 +35,6 @@ variable "aws_ec2_keypair" {
 variable "aws_route53_zone_id_cloud_nlab_io" {
   default = "Z23E6ZIBKPSZQE"
 }
+variable "aws_route53_public_dns_name_influxdb" {
+  default = "influxdb.cloud.nlab.io"
+}
