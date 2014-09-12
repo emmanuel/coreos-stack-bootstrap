@@ -1,5 +1,4 @@
 #!/bin/bash
-cd $(dirname $0)/..
 
 if [ -z "$FLEETCTL_TUNNEL" ]; then
     echo
@@ -10,6 +9,8 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
     exit 1
 fi
 
+SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
+cd $SCRIPT_PATH/..
 fleetctl submit influxdb/influxdb@.service
 fleetctl submit influxdb/influxdb.presence@.service
 fleetctl submit influxdb/influxdb.elb@.service
