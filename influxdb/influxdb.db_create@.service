@@ -12,11 +12,11 @@ RemainAfterExit=true
 Environment="INFLUXDB_USER=root"
 Environment="INFLUXDB_PASS=root"
 
-ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
-ExecStartPre=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "cadvisor"}'
-ExecStartPre=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
-ExecStartPre=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
-ExecStart=/usr/bin/printf "Created InfluxDB databases\n"
+ExecStart=/usr/bin/printf "Creating InfluxDB databases\n"
+ExecStart=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "cadvisor"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
 
 [X-Fleet]
 X-ConditionMachineOf=influxdb@%i.service
