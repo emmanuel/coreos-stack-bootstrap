@@ -24,4 +24,4 @@ ExecStart=/usr/bin/docker run \
       --instances ${EC2_INSTANCE_ID}
 
 [X-Fleet]
-X-ConditionMachineOf=influxdb@%i.service
+MachineOf=influxdb@%i.service

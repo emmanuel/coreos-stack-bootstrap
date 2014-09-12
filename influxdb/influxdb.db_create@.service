@@ -19,4 +19,4 @@ ExecStart=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
 ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
 
 [X-Fleet]
-X-ConditionMachineOf=influxdb@%i.service
+MachineOf=influxdb@%i.service

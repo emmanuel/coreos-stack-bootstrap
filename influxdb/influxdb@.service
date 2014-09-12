@@ -33,4 +33,4 @@ ExecStartPost=/usr/bin/printf "Ready for action"
 
 
 [X-Fleet]
-X-Conflicts=influxdb@*.service
+Conflicts=influxdb@*.service

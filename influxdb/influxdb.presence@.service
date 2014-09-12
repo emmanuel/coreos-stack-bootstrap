@@ -41,4 +41,4 @@ ExecStart=/usr/bin/printf "Announced\n"
 # _influxdb-replication._tcp.test.cluster.local 8099
 
 [X-Fleet]
-X-ConditionMachineOf=influxdb@%i.service
+MachineOf=influxdb@%i.service
