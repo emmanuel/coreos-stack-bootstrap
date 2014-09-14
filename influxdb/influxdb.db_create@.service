@@ -17,6 +17,8 @@ ExecStart=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
 ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "cadvisor"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
 ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB database 'grafana'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "grafana"}'
 
 [X-Fleet]
 MachineOf=influxdb@%i.service
