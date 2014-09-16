@@ -1,2 +1,4 @@
 #!/bin/bash
-echo "etcd_discovery_url = \"$(curl -s https://discovery.etcd.io/new)\"" > etcd_discovery_url.tfvars
+
+DISCOVERY_URL=$(curl -s https://discovery.etcd.io/new)
+echo "etcd_discovery_url = \"${DISCOVERY_URL}\"" > etcd_discovery_url.tfvars

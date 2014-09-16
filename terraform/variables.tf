@@ -3,15 +3,15 @@ variable "aws_secret_key" {}
 variable "instance_aws_access_key" {}
 variable "instance_aws_secret_key" {}
 variable "etcd_discovery_url" {}
+variable "environment" {
+  default = "test"
+}
 
 variable "aws_instance_type" {
   default = "m3.medium"
 }
 variable "aws_region" {
   default = "us-west-2"
-}
-variable "environment" {
-  default = "test"
 }
 
 # The net block (CIDR) that SSH is available to.
