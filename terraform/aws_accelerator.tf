@@ -161,7 +161,24 @@ resource "aws_route53_record" "influxdb" {
   records = [ "${aws_elb.influxdb.dns_name}" ]
 }
 
-# This should work just fine once A ALIAS record creation is supported by terraform
+resource "aws_s3_bucket" "grafana" {
+  bucket = "grafana-${var.environment}-nlab-cloud"
+  acl = "public"
+
+  # provisioner "local-exec" {
+  #   command = "aws s3 sync ../grafana/dist/grafana-1.8.0-rc1 "
+  # }
+}
+
+resource "aws_route53_record" "grafana" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "grafana.${var.environment}.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "60"
+  records = [ "grafana-${var.environment}-nlab-cloud.s3.amazonaws.com" ]
+}
+
+# Something like this should work once Route53 Alias records are supported by Terraform
 #resource "aws_route53_record" "influxdb" {
 #   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
 #   name = "influxdb.cloud.nlab.io"
