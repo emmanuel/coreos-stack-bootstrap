@@ -13,17 +13,16 @@ resource "aws_launch_configuration" "standard" {
                       "${aws_security_group.private.id}",
                       "${aws_security_group.elb-ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
-  user_data = "${file("cloud-config.yaml")}"
-#   user_data = <<USER_DATA
-# #cloud-config
-#
-# dynamic:
-#   fleet_metadata: &FLEET_METADATA
-#     metadata: public_ip=$public_ipv4,region=${var.aws_region},instance_type=${var.aws_instance_type}
-#   discovery_url: &ETCD_DISCOVERY_URL
-#     discovery: ${var.etcd_discovery_url}
-# ${file("cloud-config.yaml")}
-# USER_DATA
+  user_data = <<USER_DATA
+#cloud-config
+
+dynamic:
+  fleet_metadata: &FLEET_METADATA
+    metadata: public_ip=$public_ipv4,region=${var.aws_region},instance_type=${var.aws_instance_type}
+  discovery_url: &ETCD_DISCOVERY_URL
+    discovery: ${var.etcd_discovery_url}
+${file("cloud-config.yaml")}
+USER_DATA
 }
 
 resource "aws_autoscaling_group" "standard" {

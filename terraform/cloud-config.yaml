@@ -1,5 +1,3 @@
-#cloud-config
-
 users:
   - name: skydns
     system: true
@@ -7,10 +5,10 @@ coreos:
   update:
     reboot-strategy: etcd-lock
   fleet:
-    metadata: public_ip=$public_ipv4,region=us-west-2,instance_type=m3.medium
+    <<: *FLEET_METADATA
     public-ip: $private_ipv4
   etcd:
-    discovery: https://discovery.etcd.io/cb98ff0f99ac07d53d84d2636305c36e
+    <<: *ETCD_DISCOVERY_URL
     addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   units:
