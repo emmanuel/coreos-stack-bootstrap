@@ -5,10 +5,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx-light
 
 ADD dist/grafana-1.7.0.tar.gz /
 RUN mv /grafana-1.7.0 /grafana
-ADD ./config.js /grafana/config.js
 
-ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
-ADD ./nginx/.htpasswd /etc/nginx/.htpasswd
+ADD nginx/.htpasswd /etc/nginx/.htpasswd
+ADD conf/nginx.conf /etc/nginx/
+ADD conf/config.js /grafana/
 
 EXPOSE 80
 
