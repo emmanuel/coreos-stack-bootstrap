@@ -5,7 +5,7 @@ After=influxdb.presence@%i.service
 
 [Service]
 Type=oneshot
-# Restart=no
+RemainAfterExit=true
 EnvironmentFile=/etc/aws_environment
 Environment="ENV=test"
 Environment="IMAGE_NAME=nordstrom/awscli"
