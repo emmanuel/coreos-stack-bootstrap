@@ -12,19 +12,19 @@ function (Settings) {
     datasources: {
       sysinfo: {
         type: 'influxdb',
-        url: "http://influxdb.cloud.nlab.io:8086/db/sysinfo",
+        url: "http://influxdb.test.cloud.nlab.io:8086/db/sysinfo",
         username: 'root',
         password: 'root',
       },
       cadvisor: {
         type: 'influxdb',
-        url: "http://influxdb.cloud.nlab.io:8086/db/cadvisor",
+        url: "http://influxdb.test.cloud.nlab.io:8086/db/cadvisor",
         username: 'root',
         password: 'root',
       },
       grafana: {
         type: 'influxdb',
-        url: "http://influxdb.cloud.nlab.io:8086/db/grafana",
+        url: "http://influxdb.test.cloud.nlab.io:8086/db/grafana",
         username: 'root',
         password: 'root',
         grafanaDB: true

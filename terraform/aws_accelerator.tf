@@ -1,4 +1,3 @@
-
 provider "aws" {
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
@@ -170,27 +169,22 @@ resource "aws_route53_record" "influxdb" {
 
 resource "aws_s3_bucket" "grafana" {
   bucket = "grafana-${var.environment}-nlab-cloud"
-  acl = "public"
+  # TODO: tighten up the Grafana access control
+  acl = "public-read"
 
-  # provisioner "local-exec" {
-  #   command = "aws s3 sync ../grafana/dist/grafana-1.8.0-rc1 "
-  # }
+  provisioner "local-exec" {
+    command = "aws s3 cp ../grafana/dist/grafana-1.8.0-rc1 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read"
+    command = "aws s3 cp ../grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
+    command = "aws s3 website s3://grafana-${var.environment}-nlab-cloud --index-document index.html"
+  }
 }
 
-resource "aws_route53_record" "grafana" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "grafana.${var.environment}.cloud.nlab.io"
-  type = "CNAME"
-  ttl = "60"
-  records = [ "grafana-${var.environment}-nlab-cloud.s3.amazonaws.com" ]
-}
-
-# Something like this should work once Route53 Alias records are supported by Terraform
-#resource "aws_route53_record" "influxdb" {
+# Something like this should work once Route53 Alias records are supported by Terraform.
+#   In the meantime, CNAMEs don't work either, because S3 looks at the HTTP Host header.
+# resource "aws_route53_record" "grafana" {
 #   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-#   name = "influxdb.cloud.nlab.io"
+#   name = "grafana.${var.environment}.cloud.nlab.io"
 #   type = "A"
-#   ttl = "300"
-#   records = [ "ALIAS ${aws_elb.influxdb.dns_name}" ]
-#   alias_target = 
-#}
+#   ttl = "60"
+#   records = [ "ALIAS grafana-${var.environment}-nlab-cloud.s3-us-west-2.amazonaws.com" ]
+# }
