@@ -155,7 +155,7 @@ resource "aws_elb" "influxdb" {
 
 resource "aws_route53_record" "influxdb" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "${var.aws_route53_public_dns_name_influxdb}"
+  name = "influxdb.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
   records = [ "${aws_elb.influxdb.dns_name}" ]
