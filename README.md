@@ -24,19 +24,23 @@ Fleet is then used to deploy:
 ```bash
 aws configure
 ```
-* Get AWS ssh private key for the 'coreos-beta' keypair from Paul or Emmanuel, and then ssh-add it. Alternatively, generate your own key pair and upload it to our AWS account (you'll need to refer to this key in the create_stack command below).
+* Get AWS ssh private key for the 'coreos-beta' keypair from Paul or Emmanuel, and then `ssh-add` it. Alternatively, generate your own key pair and upload it to our AWS account (you'll need to refer to this key in the create_stack command below).
 
 # Initializing and configuring the cluster
 
 ```bash
-aws/create-stack.sh
+cd terraform
+source aliases.sh
+# add your keys to cloud-config.yaml & terraform.tfvars
+tfplan
+tfapply
 ```
 
 Wait a few minutes, then get a public hostname or ip from one of your new instances from the AWS console. Then set:
 
 ```bash
 export FLEETCTL_TUNNEL={resolvable address of one of your cloud instances}
-aws/launch_units.sh
+coreos/launch_units.sh
 ```
 
 # Handy hints
