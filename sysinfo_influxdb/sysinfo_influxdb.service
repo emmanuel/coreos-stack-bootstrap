@@ -9,7 +9,7 @@ Restart=always
 RestartSec=10
 Environment="ENV=test"
 
-Environment="INFLUXDB_HOSTNAME=influxdb-1"
+Environment="INFLUXDB_HOSTNAME=influxdb"
 Environment="INFLUXDB_PORT=8086"
 Environment="INFLUXDB_DATABASE_NAME=sysinfo"
 Environment="INFLUXDB_DATABASE_USER=root"
