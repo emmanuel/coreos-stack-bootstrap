@@ -7,6 +7,7 @@ After=influxdb.presence@%i.service
 Type=oneshot
 # Restart=no
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/aws_environment
 Environment="ENV=test"
 Environment="ELB_LOAD_BALANCER_NAME=influxdb-public-test"
 Environment="IMAGE_NAME=nordstrom/awscli"

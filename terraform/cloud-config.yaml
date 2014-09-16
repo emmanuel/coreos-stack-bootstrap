@@ -28,12 +28,12 @@ coreos:
       command: start
       content: |
         [Unit]
-        Description=Extended environment installer
+        Description=AWS runtime environment installer
         
         [Service]
         Type=oneshot
         RemainAfterExit=true
-        ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/environment'
+        ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
     - name: skydns.install.service
       command: start
       content: |
@@ -86,6 +86,8 @@ coreos:
         WantedBy=multi-user.target
 
 write_files:
+  - path: /etc/aws_environment
+    <<: *STATIC_AWS_ENVIRONMENT
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'
