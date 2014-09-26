@@ -2,3 +2,4 @@ s3/skydns
 dist
 terraform/terraform.tfvars
 terraform/cluster_values.tfvars
+terraform/*.tfplan
