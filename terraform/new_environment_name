@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# from: https://gist.github.com/earthgecko/3089509#comment-1250540
-ENVIRONMENT_NAME=$(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5)
-echo "environment = \"${ENVIRONMENT_NAME}\"" > environment.tfvars
