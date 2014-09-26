@@ -22,14 +22,14 @@ variable "allow_ssh_from" {
 # get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template
 variable "amis" {
   default = {
-    ap-northeast-1 = "ami-19210d18"
-    sa-east-1 = "ami-e9ba10f4"
-    ap-southeast-2 = "ami-1706652d"
-    ap-southeast-1 = "ami-26250174"
-    us-east-1 = "ami-0a6ac562"
-    us-west-2 = "ami-49febf79"
-    us-west-1 = "ami-09c8c14c"
-    eu-west-1 = "ami-5070d427"
+    ap-northeast-1 = "ami-9794bd96"
+    sa-east-1 = "ami-3319b32e"
+    ap-southeast-2 = "ami-d3d4b7e9"
+    ap-southeast-1 = "ami-2c486f7e"
+    us-east-1 = "ami-fe60d496"
+    us-west-2 = "ami-01de9d31"
+    us-west-1 = "ami-2981896c"
+    eu-west-1 = "ami-ec98399b"
   }
 }
 variable "aws_ec2_keypair" {
