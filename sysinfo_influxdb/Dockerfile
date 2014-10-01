@@ -1,8 +1,6 @@
-FROM nordstrom/baseimage-ubuntu-core-1404:latest
-MAINTAINER Paul Payne "paul@payne.io"
+FROM progrium/busybox
+MAINTAINER Emmanuel Gomez "emmanuel@gomez.io"
 
-ADD dist/sysinfo_influxdb /bin/sysinfo_influxdb
+ADD dist/sysinfo_influxdb /usr/bin/sysinfo_influxdb
 
-ENTRYPOINT ["/bin/sysinfo_influxdb"]
-
-CMD ["-D"]
+ENTRYPOINT ["/usr/bin/sysinfo_influxdb", "-D"]
