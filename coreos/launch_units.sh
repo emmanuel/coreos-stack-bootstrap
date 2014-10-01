@@ -12,6 +12,8 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/..
 
+# Global units
+fleetctl start skydns/skydns.service
 # Add the service templates to Fleet
 fleetctl submit influxdb/influxdb@.service
 fleetctl submit influxdb/influxdb.db_create@.service

@@ -34,56 +34,6 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
-    - name: skydns.install.service
-      command: start
-      content: |
-        [Unit]
-        Description=SkyDNS Installer
-        
-        [Service]
-        Type=oneshot
-        RemainAfterExit=true
-        ExecStart=-/usr/bin/mkdir -p /var/lib/skydns/bin
-        ExecStart=-/usr/bin/curl -s -o /var/lib/skydns/bin/skydns https://coreos-beta.s3.amazonaws.com/skydns
-        ExecStart=/usr/bin/chown -R skydns:skydns /var/lib/skydns
-        ExecStart=/usr/bin/chmod 755 /var/lib/skydns/bin/skydns
-    - name: skydns.service
-      command: start
-      enable: true
-      content: |
-        [Unit]
-        Description=skydns
-        Requires=skydns.install.service
-        Wants=etcd.service
-        Requires=docker.service
-        After=skydns.install.service
-        After=etcd.service
-        After=docker.service
-        
-        [Service]
-        Type=simple
-        User=skydns
-        Group=skydns
-        Restart=always
-        RestartSec=5
-        ReadOnlyDirectories=/etc
-        EnvironmentFile=/etc/environment
-        
-        ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1:5333 -verbose=true -discover=true -domain cluster.local. -local %m.hosts.cluster.local
-        ExecStartPost=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"$private_ipv4"}'
-        ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
-        
-        PermissionsStartOnly=true
-        # ExecStartPre=/usr/sbin/sysctl -w net.ipv4.ip_forward=1
-        ExecStartPre=-/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
-        ExecStartPre=-/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-        ExecStartPre=/sbin/iptables -A INPUT -p udp --dport 5333 -j ACCEPT
-        ExecStartPre=/sbin/iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-        ExecStopPost=/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
-        ExecStopPost=/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-        
-        [Install]
-        WantedBy=multi-user.target
 
 write_files:
   - path: /etc/aws_environment

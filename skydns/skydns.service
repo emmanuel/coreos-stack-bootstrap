@@ -1,35 +1,36 @@
 [Unit]
 Description=SkyDNS
-Requires=skydns.install.service
 Requires=etcd.service
 Requires=docker.service
-After=skydns.install.service
 After=etcd.service
 After=docker.service
 
 [Service]
 Type=simple
-User=skydns
-Group=skydns
-EnvironmentFile=/etc/environment
-# see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
-# "172.17.42.1:4001 is the known address for etcd on every CoreOS instance from inside of a Docker container"
-ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"${COREOS_PRIVATE_IPV4}"}'
-ExecStart=/var/lib/skydns/bin/skydns -addr 172.17.42.1:5333 -verbose=true -discover=true -local %m.hosts.cluster.local -domain cluster.local.
-ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
-
-PermissionsStartOnly=true
-# ExecStartPre=/usr/sbin/sysctl -w net.ipv4.ip_forward=1
-ExecStartPre=-/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
-ExecStartPre=-/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-ExecStartPre=/sbin/iptables -A INPUT -p udp --dport 5333 -j ACCEPT
-ExecStartPre=/sbin/iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-ExecStopPost=/sbin/iptables -D INPUT -p udp --dport 5333 -j ACCEPT
-ExecStopPost=/sbin/iptables -t nat -D PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5333
-
 Restart=always
 RestartSec=5
-# WorkingDirectory=/tmp
-# PrivateTmp=true
-# NoNewPrivileges=true
-ReadOnlyDirectories=/etc
+EnvironmentFile=/etc/environment
+# Environment="IMAGE_NAME=nordstrom/skydns:latest"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill skydns
+ExecStartPre=-/usr/bin/docker rm skydns
+ExecStartPre=/usr/bin/docker pull nordstrom/skydns:latest
+# re: 172.17.42.1, see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"${COREOS_PRIVATE_IPV4}"}'
+
+ExecStart=/usr/bin/docker run \
+  --name skydns \
+  --net host \
+  nordstrom/skydns:latest \
+    -verbose \
+    -addr 172.17.42.1:53 \
+    -machines 127.0.0.1:4001 \
+    -nameservers 8.8.8.8:53,8.8.4.4:53 \
+    -local "%m.hosts.cluster.local" \
+    -domain cluster.local.
+
+ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
+
+[X-Fleet]
+Global=true
