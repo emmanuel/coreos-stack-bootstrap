@@ -1,12 +1,12 @@
 FROM nordstrom/baseimage-ubuntu-core-1404:latest
 MAINTAINER Emmanuel Gomez "emmanuel@gomez.io"
 
-# http://s3.amazonaws.com/influxdb/influxdb_0.8.0_amd64.deb
-ADD dist/influxdb_0.8.0_amd64.deb /
+# http://s3.amazonaws.com/influxdb/influxdb_0.8.3_amd64.deb
+ADD dist/influxdb_0.8.3_amd64.deb /
 ADD conf/config.toml /opt/influxdb/shared/config.toml
 
 RUN mkdir -p /opt/influxdb/shared/data && \
-    dpkg -i /influxdb_0.8.0_amd64.deb && \
+    dpkg -i /influxdb_0.8.3_amd64.deb && \
     rm -rf /opt/influxdb/shared/data && \
     chown -R daemon:daemon /opt/influxdb
 

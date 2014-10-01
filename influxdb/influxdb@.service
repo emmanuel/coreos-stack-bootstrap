@@ -15,7 +15,7 @@ Environment="CONTAINER_NAME=influxdb-%i"
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill ${CONTAINER_NAME}
 ExecStartPre=-/usr/bin/docker rm ${CONTAINER_NAME}
-ExecStartPre=/usr/bin/docker pull ${IMAGE_NAME}
+ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:latest
 
 ExecStart=/usr/bin/docker run \
   --name ${CONTAINER_NAME} \
@@ -26,7 +26,7 @@ ExecStart=/usr/bin/docker run \
   --publish 8083:8083 \
   --publish 8090:8090 \
   --publish 8099:8099 \
-  ${IMAGE_NAME}
+  nordstrom/influxdb:latest
 
 ExecStartPost=/usr/bin/sleep 15
 ExecStartPost=/usr/bin/printf "Ready for action"
