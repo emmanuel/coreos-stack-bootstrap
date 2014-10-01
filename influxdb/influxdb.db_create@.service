@@ -8,14 +8,17 @@ Type=oneshot
 RemainAfterExit=true
 Environment="INFLUXDB_USER=root"
 Environment="INFLUXDB_PASS=root"
+Environment="INFLUXDB_DB_NAME_CADVISOR=cadvisor"
+Environment="INFLUXDB_DB_NAME_SYSINFO=sysinfo"
+Environment="INFLUXDB_DB_NAME_GRAFANA=grafana"
 
 ExecStart=/usr/bin/printf "Creating InfluxDB databases\n"
-ExecStart=/usr/bin/printf "Creating InfluxDB database 'cadvisor'\n"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "cadvisor"}'
-ExecStart=/usr/bin/printf "Creating InfluxDB database 'sysinfo'\n"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "sysinfo"}'
-ExecStart=/usr/bin/printf "Creating InfluxDB database 'grafana'\n"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "grafana"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_SYSINFO}'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_GRAFANA}'\n"
+ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
 
 [X-Fleet]
 MachineOf=influxdb@%i.service
