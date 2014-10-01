@@ -1,35 +1,42 @@
 [Unit]
 Description=cAdvisor
 Requires=docker.service
+Requires=skydns.service
 After=docker.service
+After=skydns.service
 
 [Service]
 Type=simple
 Restart=always
-RestartSec=5
+RestartSec=10
+
 Environment="ENV=test"
-Environment="IMAGE_NAME=nordstrom/cadvisor"
-Environment="CONTAINER_NAME=cadvisor"
+Environment="IMAGE_NAME=google/cadvisor:latest"
+Environment="INFLUXDB_DATABASE_USER=root"
+Environment="INFLUXDB_DATABASE_PASS=root"
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill ${CONTAINER_NAME}
-ExecStartPre=-/usr/bin/docker rm ${CONTAINER_NAME}
-ExecStartPre=/usr/bin/docker pull ${IMAGE_NAME}
+ExecStartPre=-/usr/bin/docker kill cadvisor
+ExecStartPre=-/usr/bin/docker rm cadvisor
+ExecStartPre=/usr/bin/docker pull google/cadvisor:latest
 
 ExecStart=/usr/bin/docker run \
-  --name=${CONTAINER_NAME} \
+  --name=cadvisor \
   --hostname %m.cadvisor.${ENV}.cluster.local \
   --publish=8080:8080 \
   --volume=/var/run:/var/run:rw \
   --volume=/sys:/sys:ro \
   --volume=/var/lib/docker/:/var/lib/docker:ro \
   --dns-search=${ENV}.cluster.local \
-  -e "INFLUXDB_HOSTNAME=influxdb" \
-  -e "INFLUXDB_PORT=8086" \
-  -e "INFLUXDB_DATABASE_NAME=cadvisor" \
-  -e "INFLUXDB_DATABASE_USER=root" \
-  -e "INFLUXDB_DATABASE_PASS=root" \
-  ${IMAGE_NAME}
+  google/cadvisor:latest \
+    --logtostderr \
+    --storage_driver=influxdb \
+    --storage_driver_host=influxdb:8086 \
+    --storage_driver_db=cadvisor \
+    --storage_driver_user=${INFLUXDB_DATABASE_USER} \
+    --storage_driver_password=${INFLUXDB_DATABASE_PASS} \
+    --housekeeping_interval=5s \
+    --global_housekeeping_interval=10s
 
 [X-Fleet]
 Global=true
