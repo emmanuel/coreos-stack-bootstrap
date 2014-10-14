@@ -43,6 +43,21 @@ export FLEETCTL_TUNNEL={resolvable address of one of your cloud instances}
 coreos/launch_units.sh
 ```
 
+# Tests
+
+After starting up the cluster via Terraform, and setting your FLEETCTL_TUNNEL variable, run tests:
+
+To install rspec:
+```bash
+bundle install
+```
+
+To run tests:
+```
+rspec -f d
+```
+
+
 # Handy hints
 
 You can test some changes to your cloud without needing to destroy and re-create. SCP your file to a host and:
