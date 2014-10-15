@@ -1,9 +1,31 @@
+require 'singleton'
+require 'json'
+
 class CloudStatus 
+
+  include Singleton
+
+  attr_reader :cloud_domain
 
   public
 
+  def initialize
+    @cluster_values_filepath = 'terraform/cluster_values.tfvars'
+    @cloud_domain = 'cloud.nlab.io'
+  end
+
   def ip
     ENV['FLEETCTL_TUNNEL']
+  end
+
+  def has_cluster_values_file?
+    return File.exist?(@cluster_values_filepath)
+  end
+
+  def environment_name
+    return nil unless has_cluster_values_file?
+    return @environment_name unless @environment_name.nil?
+    @environment_name = File.open(@cluster_values_filepath, &:readline).match(/"(.*)"/)[1]
   end
 
   def machines
@@ -42,7 +64,12 @@ end
 RSpec.describe CloudStatus do
   
   before :all do
-    @status = CloudStatus.new
+    @status = CloudStatus.instance
+  end
+
+  it "should have an environment name set in terraform/cluster_values.tfvars" do
+    expect(@status.has_cluster_values_file?).to be_truthy, "terraform/cluster_values.tfvars file does not exist. Please run new_cluster_values from the terraform directory."
+    expect(@status.environment_name).to_not be_nil
   end
 
   it "should have FLEETCTL_TUNNEL environment variable set for local tests" do
@@ -63,6 +90,21 @@ RSpec.describe CloudStatus do
                     )
     unit_names.each do |unit_name|
       expect(@status.has_unit?(unit_name)).to be_truthy, "The #{unit_name} unit was not found."
+    end
+  end
+
+  it "should be able to access influxdb public port and get time-series data" do
+    influxdb_url = "influxdb.#{@status.environment_name}.#{@status.cloud_domain}"
+    query = "q=select * from /.*/ limit 1" #list-series
+
+    dbs = %W(sysinfo cadvisor grafana)
+    dbs.each do |db|
+      out = %x(curl -G -f -s 'http://#{influxdb_url}:8086/db/sysinfo/series?u=root&p=root' --data-urlencode '#{query}')
+
+      expect(out).to_not include("Could not resolve host")
+      expect(out).to start_with("[{"), "The response from the influxdb server is not JSON."
+      response = JSON.parse(out)
+      expect(response.size).to be > 0, "The influxdb #{db} database contains no series."
     end
   end
 
