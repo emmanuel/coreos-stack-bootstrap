@@ -32,6 +32,7 @@ aws configure
 cd terraform
 source aliases.sh
 # add your keys to cloud-config.yaml & terraform.tfvars
+new_cluster_values
 tfplan
 tfapply
 ```
