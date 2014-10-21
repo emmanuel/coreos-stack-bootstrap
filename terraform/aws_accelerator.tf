@@ -108,6 +108,46 @@ resource "aws_security_group" "private" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
   }
+
+  # zookeeper client
+  ingress {
+    from_port = 2181
+    to_port =  2181
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+
+  # zookeeper client
+  ingress {
+    from_port = 2181
+    to_port =  2181
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+
+  # zookeeper peer
+  ingress {
+    from_port = 2888
+    to_port =  2888
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+  
+  # zookeeper leader election
+  ingress {
+    from_port = 3888
+    to_port =  3888
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+  
+  # zookeeper kafka
+  ingress {
+    from_port = 9092
+    to_port =  9092
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
 }
 
 resource "aws_security_group" "elb-ingress" {
