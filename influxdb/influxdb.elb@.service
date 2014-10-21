@@ -8,14 +8,15 @@ Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/aws_environment
 Environment="ENV=test"
-Environment="IMAGE_NAME=nordstrom/awscli"
 
 TimeoutStartSec=0
 ExecStartPre=/usr/bin/docker pull nordstrom/awscli
 
+ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${INFLUXDB_ELB_LOAD_BALANCER_NAME}) in region (${AWS_REGION})"
 ExecStart=/usr/bin/docker run \
-  -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}" \
-  -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}" \
+  --name influxdb.elb-%1 \
+  --env "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}" \
+  --env "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}" \
   nordstrom/awscli \
     aws elb register-instances-with-load-balancer \
       --load-balancer-name ${INFLUXDB_ELB_LOAD_BALANCER_NAME} \
