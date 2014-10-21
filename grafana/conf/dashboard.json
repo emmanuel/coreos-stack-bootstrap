@@ -1,0 +1,1020 @@
+{
+  "id": null,
+  "title": "Grafana",
+  "originalTitle": "Grafana",
+  "tags": [],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "rows": [
+    {
+      "title": "New row",
+      "height": "150px",
+      "collapse": true,
+      "editable": true,
+      "panels": [
+        {
+          "id": 1,
+          "span": 12,
+          "editable": true,
+          "type": "text",
+          "mode": "html",
+          "content": "<div class=\"text-center\" style=\"padding-top: 15px\">\n<img src=\"//grafana.org/assets/img/logo_transparent_200x75.png\"> \n</div>",
+          "style": {},
+          "title": "Welcome to"
+        }
+      ]
+    },
+    {
+      "title": "Welcome to Grafana",
+      "height": "210px",
+      "collapse": true,
+      "editable": true,
+      "panels": [
+        {
+          "id": 2,
+          "span": 6,
+          "type": "text",
+          "mode": "html",
+          "content": "<br/>\n\n<div class=\"row-fluid\">\n  <div class=\"span6\">\n    <ul>\n      <li>\n        <a href=\"http://grafana.org/docs#configuration\" target=\"_blank\">Configuration</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/troubleshooting\" target=\"_blank\">Troubleshooting</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/support\" target=\"_blank\">Support</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/features/intro\" target=\"_blank\">Getting started</a>  (Must read!)\n      </li>\n    </ul>\n  </div>\n  <div class=\"span6\">\n    <ul>\n      <li>\n        <a href=\"http://grafana.org/docs/features/graphing\" target=\"_blank\">Graphing</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/features/annotations\" target=\"_blank\">Annotations</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/features/graphite\" target=\"_blank\">Graphite</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/features/influxdb\" target=\"_blank\">InfluxDB</a>\n      </li>\n      <li>\n        <a href=\"http://grafana.org/docs/features/opentsdb\" target=\"_blank\">OpenTSDB</a>\n      </li>\n    </ul>\n  </div>\n</div>",
+          "style": {},
+          "title": "Documentation Links"
+        },
+        {
+          "id": 3,
+          "span": 6,
+          "type": "text",
+          "mode": "html",
+          "content": "<br/>\n\n<div class=\"row-fluid\">\n  <div class=\"span12\">\n    <ul>\n      <li>Ctrl+S saves the current dashboard</li>\n      <li>Ctrl+F Opens the dashboard finder</li>\n      <li>Ctrl+H Hide/show row controls</li>\n      <li>Click and drag graph title to move panel</li>\n      <li>Hit Escape to exit graph when in fullscreen or edit mode</li>\n      <li>Click the colored icon in the legend to change series color</li>\n      <li>Ctrl or Shift + Click legend name to hide other series</li>\n    </ul>\n  </div>\n</div>\n",
+          "style": {},
+          "title": "Tips & Shortcuts"
+        }
+      ]
+    },
+    {
+      "title": "test",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "id": 4,
+          "span": 4,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "percent",
+            "short"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": 100,
+            "rightMax": null,
+            "leftMin": 0,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 1,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (nice * 100) / total from \"129958db7f2d4240b102077683258ffd.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "nice",
+              "interval": ""
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (user * 100) / total from \"129958db7f2d4240b102077683258ffd.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "user"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (wait * 100) / total from \"129958db7f2d4240b102077683258ffd.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "wait"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (sys * 100) / total from \"129958db7f2d4240b102077683258ffd.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "sys"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (idle * 100) / total from \"129958db7f2d4240b102077683258ffd.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "idle"
+            }
+          ],
+          "aliasColors": {},
+          "aliasYAxis": {},
+          "title": "CPU - 129958db7f2d4240b102077683258ffd",
+          "datasource": null,
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "interval": ">10s"
+        },
+        {
+          "id": 6,
+          "span": 4,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "percent",
+            "short"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": 100,
+            "rightMax": null,
+            "leftMin": 0,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 1,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (nice * 100) / total from \"51249037dbdc45b78744e109ac9b0dae.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "nice",
+              "interval": ""
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (user * 100) / total from \"51249037dbdc45b78744e109ac9b0dae.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "user"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (wait * 100) / total from \"51249037dbdc45b78744e109ac9b0dae.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "wait"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (sys * 100) / total from \"51249037dbdc45b78744e109ac9b0dae.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "sys"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (idle * 100) / total from \"51249037dbdc45b78744e109ac9b0dae.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "idle"
+            }
+          ],
+          "aliasColors": {},
+          "aliasYAxis": {},
+          "title": "CPU - 51249037dbdc45b78744e109ac9b0dae",
+          "datasource": null,
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "interval": ">10s"
+        },
+        {
+          "id": 9,
+          "span": 4,
+          "type": "graph",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "percent",
+            "short"
+          ],
+          "grid": {
+            "max": null,
+            "min": null,
+            "leftMax": 100,
+            "rightMax": null,
+            "leftMin": 0,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 1,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "options": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (nice * 100) / total from \"c920b1a362d5402cb891aad09d26535e.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "nice",
+              "interval": ""
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (user * 100) / total from \"c920b1a362d5402cb891aad09d26535e.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "user"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (wait * 100) / total from \"c920b1a362d5402cb891aad09d26535e.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "wait"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (sys * 100) / total from \"c920b1a362d5402cb891aad09d26535e.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "sys"
+            },
+            {
+              "target": "randomWalk('random walk')",
+              "function": "mean",
+              "column": "value",
+              "series": "129958db7f2d4240b102077683258ffd.cpu",
+              "query": "select (idle * 100) / total from \"c920b1a362d5402cb891aad09d26535e.cpu\" where $timeFilter group by time($interval) order asc",
+              "rawQuery": true,
+              "alias": "idle"
+            }
+          ],
+          "aliasColors": {},
+          "aliasYAxis": {},
+          "title": "CPU - c920b1a362d5402cb891aad09d26535e",
+          "datasource": null,
+          "renderer": "flot",
+          "annotate": {
+            "enable": false
+          },
+          "seriesOverrides": [],
+          "interval": ">10s"
+        }
+      ]
+    },
+    {
+      "title": "New row",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 5,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": 4000000000,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "max",
+              "column": "total",
+              "series": "129958db7f2d4240b102077683258ffd.mem",
+              "query": "select max(total) from \"129958db7f2d4240b102077683258ffd.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "total",
+              "hide": false
+            },
+            {
+              "function": "max",
+              "column": "actualused",
+              "series": "129958db7f2d4240b102077683258ffd.mem",
+              "query": "select max(actualused) from \"129958db7f2d4240b102077683258ffd.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "used"
+            },
+            {
+              "function": "max",
+              "column": "actualfree",
+              "series": "129958db7f2d4240b102077683258ffd.mem",
+              "query": "select max(actualfree) from \"129958db7f2d4240b102077683258ffd.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "free"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Memory - 129958db7f2d4240b102077683258ffd",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 7,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": 4000000000,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "max",
+              "column": "total",
+              "series": "51249037dbdc45b78744e109ac9b0dae.mem",
+              "query": "select max(total) from \"51249037dbdc45b78744e109ac9b0dae.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "total",
+              "hide": false
+            },
+            {
+              "function": "max",
+              "column": "actualused",
+              "series": "51249037dbdc45b78744e109ac9b0dae.mem",
+              "query": "select max(actualused) from \"51249037dbdc45b78744e109ac9b0dae.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "used"
+            },
+            {
+              "function": "max",
+              "column": "actualfree",
+              "series": "51249037dbdc45b78744e109ac9b0dae.mem",
+              "query": "select max(actualfree) from \"51249037dbdc45b78744e109ac9b0dae.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "free"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Memory - 51249037dbdc45b78744e109ac9b0dae",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 8,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": 4000000000,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": true,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "max",
+              "column": "total",
+              "series": "c920b1a362d5402cb891aad09d26535e.mem",
+              "query": "select max(total) from \"c920b1a362d5402cb891aad09d26535e.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "total",
+              "hide": false
+            },
+            {
+              "function": "max",
+              "column": "actualused",
+              "series": "c920b1a362d5402cb891aad09d26535e.mem",
+              "query": "select max(actualused) from \"c920b1a362d5402cb891aad09d26535e.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "used"
+            },
+            {
+              "function": "max",
+              "column": "actualfree",
+              "series": "c920b1a362d5402cb891aad09d26535e.mem",
+              "query": "select max(actualfree) from \"c920b1a362d5402cb891aad09d26535e.mem\" where $timeFilter group by time($interval) order asc",
+              "alias": "free"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Memory - c920b1a362d5402cb891aad09d26535e",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        }
+      ]
+    },
+    {
+      "title": "New row",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 10,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": false,
+            "rightSide": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "sum",
+              "column": "recv_bytes",
+              "series": "129958db7f2d4240b102077683258ffd.network",
+              "query": "select iface, sum(recv_bytes) from \"129958db7f2d4240b102077683258ffd.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv (bytes)",
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "function": "sum",
+              "column": "trans_bytes",
+              "series": "129958db7f2d4240b102077683258ffd.network",
+              "query": "select iface, sum(trans_bytes) from \"129958db7f2d4240b102077683258ffd.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans (bytes)",
+              "rawQuery": false,
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "recv_errs",
+              "series": "129958db7f2d4240b102077683258ffd.network",
+              "query": "select iface, mean(recv_errs) from \"129958db7f2d4240b102077683258ffd.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv errors"
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "trans_errs",
+              "series": "129958db7f2d4240b102077683258ffd.network",
+              "query": "select iface, mean(trans_errs) from \"129958db7f2d4240b102077683258ffd.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans errors"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Network - 129958db7f2d4240b102077683258ffd",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 11,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": false,
+            "rightSide": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "sum",
+              "column": "recv_bytes",
+              "series": "51249037dbdc45b78744e109ac9b0dae.network",
+              "query": "select iface, sum(recv_bytes) from \"51249037dbdc45b78744e109ac9b0dae.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv (bytes)",
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "function": "sum",
+              "column": "trans_bytes",
+              "series": "51249037dbdc45b78744e109ac9b0dae.network",
+              "query": "select iface, sum(trans_bytes) from \"51249037dbdc45b78744e109ac9b0dae.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans (bytes)",
+              "rawQuery": false,
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "recv_errs",
+              "series": "51249037dbdc45b78744e109ac9b0dae.network",
+              "query": "select iface, mean(recv_errs) from \"51249037dbdc45b78744e109ac9b0dae.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv errors",
+              "interval": ""
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "trans_errs",
+              "series": "51249037dbdc45b78744e109ac9b0dae.network",
+              "query": "select iface, mean(trans_errs) from \"51249037dbdc45b78744e109ac9b0dae.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans errors"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Network - 51249037dbdc45b78744e109ac9b0dae",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "graph",
+          "id": 12,
+          "datasource": null,
+          "renderer": "flot",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_formats": [
+            "bytes",
+            "short"
+          ],
+          "grid": {
+            "leftMax": null,
+            "rightMax": null,
+            "leftMin": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "annotate": {
+            "enable": false
+          },
+          "resolution": 100,
+          "lines": true,
+          "fill": 0,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": true,
+            "total": false,
+            "avg": false,
+            "alignAsTable": false,
+            "rightSide": false
+          },
+          "percentage": false,
+          "zerofill": true,
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "targets": [
+            {
+              "function": "sum",
+              "column": "recv_bytes",
+              "series": "c920b1a362d5402cb891aad09d26535e.network",
+              "query": "select iface, sum(recv_bytes) from \"c920b1a362d5402cb891aad09d26535e.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv (bytes)",
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "function": "sum",
+              "column": "trans_bytes",
+              "series": "c920b1a362d5402cb891aad09d26535e.network",
+              "query": "select iface, sum(trans_bytes) from \"c920b1a362d5402cb891aad09d26535e.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans (bytes)",
+              "rawQuery": false,
+              "condition": "",
+              "interval": ""
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "recv_errs",
+              "series": "c920b1a362d5402cb891aad09d26535e.network",
+              "query": "select iface, mean(recv_errs) from \"c920b1a362d5402cb891aad09d26535e.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g recv errors",
+              "interval": ""
+            },
+            {
+              "target": "",
+              "function": "mean",
+              "column": "trans_errs",
+              "series": "c920b1a362d5402cb891aad09d26535e.network",
+              "query": "select iface, mean(trans_errs) from \"c920b1a362d5402cb891aad09d26535e.network\" where $timeFilter group by time($interval), iface order asc",
+              "groupby_field": "iface",
+              "alias": "$g trans errors"
+            }
+          ],
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "title": "Network - c920b1a362d5402cb891aad09d26535e",
+          "interval": ">10s",
+          "leftYAxisLabel": ""
+        }
+      ]
+    }
+  ],
+  "nav": [
+    {
+      "type": "timepicker",
+      "collapse": false,
+      "enable": true,
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "now": true,
+      "notice": false
+    }
+  ],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": [],
+    "enable": true
+  },
+  "annotations": {
+    "list": [],
+    "enable": false
+  },
+  "refresh": "5s",
+  "version": 6
+}
