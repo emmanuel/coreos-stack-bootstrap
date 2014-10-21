@@ -1,8 +1,7 @@
-///// @scratch /configuration/config.js/1
- // == Configuration
- // config.js is where you will find the core Grafana configuration. This file contains parameter that
- // must be set before Grafana is run for the first time.
- ///
+// == Configuration
+// config.js is where you will find the core Grafana configuration. This file contains parameter that
+// must be set before Grafana is run for the first time.
+
 define(['settings'],
 function (Settings) {
   
@@ -12,30 +11,31 @@ function (Settings) {
     datasources: {
       sysinfo: {
         type: 'influxdb',
-        url: "http://influxdb.test.cloud.nlab.io:8086/db/sysinfo",
+        url: "http://influxdb.iywqa.cloud.nlab.io:8086/db/sysinfo",
         username: 'root',
-        password: 'root',
+        password: 'root'
       },
       cadvisor: {
         type: 'influxdb',
-        url: "http://influxdb.test.cloud.nlab.io:8086/db/cadvisor",
+        url: "http://influxdb.iywqa.cloud.nlab.io:8086/db/cadvisor",
         username: 'root',
-        password: 'root',
+        password: 'root'
       },
       grafana: {
         type: 'influxdb',
-        url: "http://influxdb.test.cloud.nlab.io:8086/db/grafana",
+        url: "http://influxdb.iywqa.cloud.nlab.io:8086/db/grafana",
         username: 'root',
         password: 'root',
         grafanaDB: true
+      // },
+      // elasticsearch: {
+      //   type: 'elasticsearch',
+      //   url: "http://my.elastic.server.com:9200",
+      //   index: 'grafana-dash',
+      //   grafanaDB: true,
       }
     },
 
-    /* Global configuration options
-    * ========================================================
-    */
-
-    // specify the limit for dashboard search results
     search: {
       max_results: 20
     },
@@ -59,7 +59,7 @@ function (Settings) {
     // Change window title prefix from 'Grafana - <dashboard title>'
     window_title_prefix: 'Grafana - ',
 
-    // Add your own custom pannels
+    // Add your own custom panels
     plugins: {
       // list of plugin panels
       panels: [],
