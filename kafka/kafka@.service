@@ -1,0 +1,20 @@
+[Unit]
+Description=kafka
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/environment
+Environment="TAG=0.8.1.1"
+Environment="ENV=test"
+ExecStart=/usr/bin/docker run --rm \
+                              --name kafka-%i \
+                              --env KAFKA_SERVER_NUMBER=%i \
+                              --hostname kafka-%i.${ENV}.cluster.local \
+                              --dns-search ${ENV}.cluster.local \
+                              --publish 9092:9092 \
+                              nordstrom/kafka:${TAG}
+
+ExecStop=/usr/bin/docker kill kafka-%i
+
+[X-Fleet]
+Conflicts=kafka@*.service

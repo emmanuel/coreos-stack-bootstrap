@@ -17,3 +17,4 @@ influxdb/launch_units.sh
 fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
 zookeeper/launch_units.sh
+kafka/launch_units.sh

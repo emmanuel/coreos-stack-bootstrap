@@ -1,0 +1,25 @@
+[Unit]
+Description=kafka.presence
+BindTo=kafka@%i.service
+After=kafka@%i.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/environment
+Environment="ENV=test"
+Environment="KAFKA_BROKER_PORT=9092"
+
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/kafka-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_kafka/%i {\"host\":\"kafka-%i.${ENV}.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_kafka/%i "{\"host\":\"kafka-%i.${ENV}.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}"
+
+ExecStart=/usr/bin/printf "Announced\n"
+
+# kafka-1.test.cluster.local
+# _kafka._tcp.test.cluster.local 9092
+Restart=always
+RestartSec=30
+
+[X-Fleet]
+MachineOf=kafka@%i.service
