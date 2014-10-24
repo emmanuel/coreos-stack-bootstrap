@@ -9,4 +9,4 @@ ExecStart=/usr/bin/docker run --name zookeeper-%i-data \
                               nordstrom/baseimage-ubuntu true
 
 [X-Fleet]
-MachineOf=zookeeper@%i.service
+Conflicts=zookeeper.data@*.service

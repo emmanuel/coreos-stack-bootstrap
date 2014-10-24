@@ -26,4 +26,4 @@ ExecStart=/usr/bin/docker run --rm \
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
-Conflicts=zookeeper@*.service
+MachineOf=zookeeper.data@%i.service
