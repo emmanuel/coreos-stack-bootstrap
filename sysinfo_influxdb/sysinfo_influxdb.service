@@ -11,25 +11,20 @@ Restart=always
 RestartSec=10
 
 Environment="ENV=test"
-Environment="INFLUXDB_HOSTNAME=influxdb"
-Environment="INFLUXDB_PORT=8086"
-Environment="INFLUXDB_DATABASE_NAME=sysinfo"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
-Environment="CONTAINER_NAME=sysinfo_influxdb"
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill ${CONTAINER_NAME}
-ExecStartPre=-/usr/bin/docker rm ${CONTAINER_NAME}
+ExecStartPre=-/usr/bin/docker kill sysinfo_influxdb
+ExecStartPre=-/usr/bin/docker rm sysinfo_influxdb
 ExecStartPre=/usr/bin/docker pull nordstrom/sysinfo_influxdb:latest
 
 ExecStart=/usr/bin/docker run \
-  --name=${CONTAINER_NAME} \
-  --hostname %m.${CONTAINER_NAME}.${ENV}.cluster.local \
+  --name=sysinfo_influxdb \
   --dns-search ${ENV}.cluster.local \
   nordstrom/sysinfo_influxdb:latest \
-    -h ${INFLUXDB_HOSTNAME}:${INFLUXDB_PORT} \
-    -d ${INFLUXDB_DATABASE_NAME} \
+    -h influxdb:8086 \
+    -d sysinfo \
     -u ${INFLUXDB_DATABASE_USER} \
     -p ${INFLUXDB_DATABASE_PASS} \
     -P "%m" \
