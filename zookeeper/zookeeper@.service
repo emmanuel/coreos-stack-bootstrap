@@ -6,6 +6,12 @@ Type=simple
 EnvironmentFile=/etc/environment
 Environment="TAG=3.4.5"
 Environment="ENV=test"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill zookeeper-%i
+ExecStartPre=-/usr/bin/docker rm zookeeper-%i
+ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+
 ExecStart=/usr/bin/docker run --rm \
                               --name zookeeper-%i \
                               --env ZK_SERVER_NUMBER=%i \
