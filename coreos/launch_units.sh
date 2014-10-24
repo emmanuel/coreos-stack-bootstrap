@@ -30,9 +30,13 @@ fleetctl start influxdb/influxdb.elb@1.service
 fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
 # zookeeper templates
+fleetctl submit zookeeper/zookeeper.data@.service
 fleetctl submit zookeeper/zookeeper@.service
 fleetctl submit zookeeper/zookeeper.presence@.service
 # zookeeper service instances
+fleetctl start zookeeper/zookeeper.data@1
+fleetctl start zookeeper/zookeeper.data@2
+fleetctl start zookeeper/zookeeper.data@3
 fleetctl start zookeeper/zookeeper@1
 fleetctl start zookeeper/zookeeper@2
 fleetctl start zookeeper/zookeeper@3

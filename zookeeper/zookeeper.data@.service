@@ -1,0 +1,12 @@
+[Unit]
+Description=Zookeeper data volumes
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker run --name zookeeper-%i-data \
+                              --volume /var/lib/zookeeper \
+                              --net none \
+                              nordstrom/baseimage-ubuntu true
+
+[X-Fleet]
+MachineOf=zookeeper@%i.service

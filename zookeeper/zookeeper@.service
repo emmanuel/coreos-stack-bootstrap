@@ -14,9 +14,10 @@ ExecStart=/usr/bin/docker run --rm \
                               --publish 2181:2181 \
                               --publish 2888:2888 \
                               --publish 3888:3888 \
+                              --volumes-from zookeeper-%i-data \
                               nordstrom/zookeeper:${TAG}
 
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
-X-Conflicts=zookeeper@*.service
+Conflicts=zookeeper@*.service
