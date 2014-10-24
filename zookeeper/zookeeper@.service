@@ -1,0 +1,22 @@
+[Unit]
+Description=zookeeper
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/environment
+Environment="TAG=3.4.5"
+Environment="ENV=test"
+ExecStart=/usr/bin/docker run --rm \
+                              --name zookeeper-%i \
+                              --env ZK_SERVER_NUMBER=%i \
+                              --hostname zookeeper-%i.${ENV}.cluster.local \
+                              --dns-search ${ENV}.cluster.local \
+                              --publish 2181:2181 \
+                              --publish 2888:2888 \
+                              --publish 3888:3888 \
+                              nordstrom/zookeeper:${TAG}
+
+ExecStop=/usr/bin/docker kill zookeeper-%i
+
+[X-Fleet]
+X-Conflicts=zookeeper@*.service
