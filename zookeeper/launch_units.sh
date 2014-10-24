@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH/..
+cd $SCRIPT_PATH
 
 # zookeeper templates
 fleetctl submit zookeeper.data@.service

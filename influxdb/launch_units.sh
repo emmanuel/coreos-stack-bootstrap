@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH/..
+cd $SCRIPT_PATH
 
 # Add the service templates to Fleet
 fleetctl submit influxdb@.service
