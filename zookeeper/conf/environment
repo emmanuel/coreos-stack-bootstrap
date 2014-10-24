@@ -15,6 +15,6 @@ PIDFILE=$PIDDIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 JAVA=/usr/bin/java
 ZOOMAIN="org.apache.zookeeper.server.quorum.QuorumPeerMain"
-ZOO_LOG4J_PROP="INFO,ROLLINGFILE"
+ZOO_LOG4J_PROP="INFO,CONSOLE"
 JMXLOCALONLY=false
 JAVA_OPTS=""
