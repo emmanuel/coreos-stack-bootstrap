@@ -12,34 +12,8 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/..
 
-# Global units
 fleetctl start skydns/skydns.service
-# Add the service templates to Fleet
-# influxdb
-fleetctl submit influxdb/influxdb@.service
-fleetctl submit influxdb/influxdb.db_create@.service
-fleetctl submit influxdb/influxdb.presence@.service
-fleetctl submit influxdb/influxdb.elb@.service
-# Start instantiated units from the templates (+ a number)
-# influxdb
-fleetctl start influxdb/influxdb@1.service
-fleetctl start influxdb/influxdb.db_create@1.service
-fleetctl start influxdb/influxdb.presence@1.service
-fleetctl start influxdb/influxdb.elb@1.service
-# Global units
+influxdb/launch_units.sh
 fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
-# zookeeper templates
-fleetctl submit zookeeper/zookeeper.data@.service
-fleetctl submit zookeeper/zookeeper@.service
-fleetctl submit zookeeper/zookeeper.presence@.service
-# zookeeper service instances
-fleetctl start zookeeper/zookeeper.data@1
-fleetctl start zookeeper/zookeeper.data@2
-fleetctl start zookeeper/zookeeper.data@3
-fleetctl start zookeeper/zookeeper@1
-fleetctl start zookeeper/zookeeper@2
-fleetctl start zookeeper/zookeeper@3
-fleetctl start zookeeper/zookeeper.presence@1
-fleetctl start zookeeper/zookeeper.presence@2
-fleetctl start zookeeper/zookeeper.presence@3
+zookeeper/launch_units.sh
