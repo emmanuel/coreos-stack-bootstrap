@@ -1,7 +1,5 @@
 [Unit]
 Description=zookeeper.presence
-BindTo=zookeeper@%i.service
-After=zookeeper@%i.service
 
 [Service]
 Type=simple
@@ -24,5 +22,5 @@ Restart=always
 RestartSec=30
 
 [X-Fleet]
-X-ConditionMachineOf=zookeeper@%i.service
-# X-Conflicts=zookeeper.presence@*.service
+#X-ConditionMachineOf=zookeeper@%i.service
+X-Conflicts=zookeeper.presence@*.service

@@ -1,5 +1,7 @@
 [Unit]
 Description=zookeeper
+After=zookeeper.presence@%i.service
+After=zookeeper.data@%i.service
 
 [Service]
 Type=simple
@@ -26,4 +28,6 @@ ExecStart=/usr/bin/docker run --rm \
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
+MachineOf=zookeeper.presence@%i.service
 MachineOf=zookeeper.data@%i.service
+Conflicts=zookeeper@*.service
