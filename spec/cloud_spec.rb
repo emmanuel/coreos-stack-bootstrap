@@ -5,7 +5,7 @@ class CloudStatus
 
   include Singleton
 
-  attr_reader :cloud_domain
+  attr_reader :cloud_domain, :influxdb_url
 
   public
 
@@ -52,6 +52,10 @@ class CloudStatus
     unit_names.include?(unit)
   end
 
+  def influxdb_url 
+    "influxdb.#{environment_name}.#{cloud_domain}"
+  end
+
 end
 
 class Unit
@@ -87,23 +91,38 @@ RSpec.describe CloudStatus do
                     cadvisor.service
                     skydns.service
                     sysinfo_influxdb.service
+                    zookeeper@1.service
+                    zookeeper@2.service
+                    zookeeper@3.service
+                    zookeeper.data@1.service
+                    zookeeper.data@2.service
+                    zookeeper.data@3.service
+                    zookeeper.presence@1.service
+                    zookeeper.presence@2.service
+                    zookeeper.presence@3.service
                     )
     unit_names.each do |unit_name|
-      expect(@status.has_unit?(unit_name)).to be_truthy, "The #{unit_name} unit was not found."
+      expect(@status).to have_unit(unit_name), "The #{unit_name} unit was not found."
     end
   end
 
+  it "should be able to access the public influx endpoint" do
+    out = %x(dig +short #{@status.influxdb_url})
+    expect(out).to match(/[0-9]./), "The influxdb url (#{@status.influxdb_url}) is not found (no Route53?)."
+  end
+
   it "should be able to access influxdb public port and get time-series data" do
-    influxdb_url = "influxdb.#{@status.environment_name}.#{@status.cloud_domain}"
+    
     query = "q=select * from /.*/ limit 1" #list-series
 
     dbs = %W(sysinfo cadvisor grafana)
     dbs.each do |db|
-      out = %x(curl -G -f -s 'http://#{influxdb_url}:8086/db/sysinfo/series?u=root&p=root' --data-urlencode '#{query}')
-
+      cmd = "curl -GfsS 'http://#{@status.influxdb_url}:8086/db/sysinfo/series?u=root&p=root' --data-urlencode '#{query}' 2>&1"
+      out = %x(#{cmd})
       expect(out).to_not include("Could not resolve host")
-      expect(out).to start_with("[{"), "The response from the influxdb server is not JSON."
-      response = JSON.parse(out)
+      # expect(out).to start_with("[{"), "The response from the influxdb server is not JSON (#{out})"
+      response = nil
+      expect{ response = JSON.parse(out) }.to_not raise_error
       expect(response.size).to be > 0, "The influxdb #{db} database contains no series."
     end
   end
