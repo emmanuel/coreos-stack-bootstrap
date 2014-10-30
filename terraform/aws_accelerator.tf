@@ -61,7 +61,7 @@ resource "aws_security_group" "private" {
   name = "Cluster-private (${var.environment})"
   description = "Cluster-private security group rules."
 
-  # etcd http
+  # etcd client (http)
   ingress {
     from_port = 4001
     to_port =  4001
@@ -132,8 +132,8 @@ resource "aws_security_group" "private" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
   }
-  
-  # zookeeper kafka
+
+  # kafka client
   ingress {
     from_port = 9092
     to_port =  9092
