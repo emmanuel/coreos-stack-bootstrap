@@ -140,6 +140,22 @@ resource "aws_security_group" "private" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.public.id}" ]
   }
+
+  # elasticsearch client
+  ingress {
+    from_port = 9200
+    to_port =  9200
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+
+  # elasticsearch peer
+  ingress {
+    from_port = 9300
+    to_port =  9300
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
 }
 
 resource "aws_security_group" "elb-ingress" {
