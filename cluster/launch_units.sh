@@ -18,3 +18,4 @@ fleetctl start cadvisor/cadvisor.service
 fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
 zookeeper/launch_units.sh
 kafka/launch_units.sh
+elasticsearch/launch_units.sh
