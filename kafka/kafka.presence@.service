@@ -11,12 +11,15 @@ Environment="KAFKA_BROKER_PORT=9092"
 
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/kafka-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka/%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/kafka/%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}"
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_kafka/%i {\"host\":\"kafka-%i.${ENV}.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_kafka/%i "{\"host\":\"kafka-%i.${ENV}.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
 
 # kafka-1.blue.cluster.local
+# 1.kafka.blue.cluster.local
 # _kafka._tcp.blue.cluster.local 9092
 Restart=always
 RestartSec=30
