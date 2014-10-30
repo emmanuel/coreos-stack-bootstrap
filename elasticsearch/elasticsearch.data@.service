@@ -1,0 +1,14 @@
+[Unit]
+Description=ElasticSearch data volumes
+
+[Service]
+Type=oneshot
+TimeoutStartSec=0
+ExecStartPre=/usr/bin/docker pull nordstrom/baseimage-ubuntu
+ExecStart=/usr/bin/docker run --name elasticsearch-%i-data \
+                              --volume /var/lib/elasticsearch \
+                              --net none \
+                              nordstrom/baseimage-ubuntu true
+
+[X-Fleet]
+Conflicts=elasticsearch.data@*.service
