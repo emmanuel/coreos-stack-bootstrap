@@ -1,5 +1,5 @@
 NAME=zookeeper
-ZOOCFGDIR=/etc/$NAME/conf
+ZOOCFGDIR=/opt/zookeeper-$ZK_RELEASE/conf
 
 # TODO this is really ugly
 # How to find out, which jars are needed?
@@ -12,7 +12,7 @@ USER=$NAME
 GROUP=$NAME
 PIDDIR=/var/run/$NAME
 PIDFILE=$PIDDIR/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
+# SCRIPTNAME=/etc/init.d/$NAME
 JAVA=/usr/bin/java
 ZOOMAIN="org.apache.zookeeper.server.quorum.QuorumPeerMain"
 ZOO_LOG4J_PROP="INFO,CONSOLE"

@@ -1,11 +1,17 @@
 FROM nordstrom/java-7
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-suggests --no-install-recommends zookeeper
+# RUN true \
+#     && apt-get update -q -y \
+#     && apt-get install -q -y --no-install-recommends --no-install-suggests \
+#         zookeeper \
+#     && apt-get clean -q -y
 
-ADD conf /etc/zookeeper/conf/
-ADD ./bin/start.sh /usr/local/bin/start-zookeeper.sh
+ENV ZK_RELEASE 3.4.6
+ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/local/
+# RUN mv /opt/local/zookeeper-$ZK_RELEASE /opt/local/zookeeper
+ADD conf /opt/local/zookeeper-$ZK_RELEASE/conf/
+ADD ./bin/start-zookeeper.sh /usr/local/bin/start-zookeeper.sh
 
 # Zookeeper client port
 EXPOSE 2181
