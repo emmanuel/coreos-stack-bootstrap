@@ -1,19 +1,28 @@
+require 'pathname'
+require 'uri'
+require 'ipaddr'
+
 class CloudStatus 
 
-  attr_reader :cluster_values_filepath, :cloud_domain
+  attr_reader :fleetctl_tunnel_ip, :cluster_values_pathname, :cloud_domain
 
-  def initialize(cluster_values_filepath, cloud_domain)
-    @cluster_values_filepath = Pathname.new(cluster_values_filepath)
+  def initialize(fleetctl_tunnel_ip, cluster_values_filepath, cloud_domain)
+    @fleetctl_tunnel_ip = (fleetctl_tunnel_ip || nil) && IPAddr.new(fleetctl_tunnel_ip)
+    @cluster_values_pathname = Pathname.new(cluster_values_filepath)
     @cloud_domain = cloud_domain
   end
 
+  def influxdb
+    @influxdb ||= InfluxDB.new(environment_name, cloud_domain, 8086, "root", "root")
+  end
+
   def has_cluster_values_file?
-    @cluster_values_filepath.exist?
+    @cluster_values_pathname.exist?
   end
 
   def cluster_values
     @cluster_values ||=
-      Hash[*@cluster_values_filepath.readlines.map { |l| l.chomp.gsub('"', '').split(" = ") }.flatten]
+      Hash[*@cluster_values_pathname.readlines.map { |l| l.chomp.gsub('"', '').split(" = ") }.flatten]
   end
 
   def environment_name
@@ -46,15 +55,27 @@ class CloudStatus
     unit_names.include?(unit)
   end
 
-  def influxdb_hostname 
-    "influxdb.#{environment_name}.#{cloud_domain}"
+
+  FleetMachine = Struct.new(:machine_id, :ip, :metadata) do
+    def initialize(machine_id, ip, metadata)
+      super(machine_id, ip, Hash[*metadata.split(/[,=]/)])
+    end
+  end
+
+  FleetUnit = Struct.new(:unit_name, :machine_id, :active_state, :sub_state)
+
+  InfluxDB = Struct.new(:environment_name, :cloud_domain, :port, :username, :password) do
+    def hostname 
+      "influxdb.#{environment_name}.#{cloud_domain}"
+    end
+
+    def healthcheck_url
+      URI::HTTP.build([userinfo=nil, hostname, port, "/ping", query=nil, fragment=nil])
+    end
+
+    def database_query_url(db, query)
+      url_query = URI.encode_www_form("u" => username, "p" => password, "q" => query)
+      URI::HTTP.build([userinfo=nil, hostname, port, "/db/#{db}/series", url_query, fragment=nil])
+    end
   end
 end
-
-FleetMachine = Struct.new(:machine_id, :ip, :metadata) do
-  def initialize(machine_id, ip, metadata)
-    super(machine_id, ip, Hash[*metadata.split(/[,=]/)])
-  end
-end
-
-FleetUnit = Struct.new(:unit_name, :machine_id, :active_state, :sub_state)

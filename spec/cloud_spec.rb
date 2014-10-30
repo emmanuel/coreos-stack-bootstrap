@@ -4,18 +4,18 @@ require 'ipaddr'
 require 'json'
 require_relative 'cloud_status'
 
-status = CloudStatus.new('terraform/cluster_values.tfvars', 'cloud.nlab.io')
+status = CloudStatus.new(ENV['FLEETCTL_TUNNEL'], 'terraform/cluster_values.tfvars', 'cloud.nlab.io')
 
 RSpec.describe CloudStatus do
-  it "should have an environment name set in terraform/cluster_values.tfvars" do
-    expect(status.cluster_values_filepath).to exist,
-      "#{status.cluster_values_filepath} file does not exist. Please run new_cluster_values from the terraform directory."
+  it "has an environment name set in terraform/cluster_values.tfvars" do
+    expect(status.cluster_values_pathname).to exist,
+      "#{status.cluster_values_pathname} does not exist. Please run new_cluster_values from the terraform directory."
     expect(status.environment_name).to_not be_nil
     expect(status.environment_name).to match(/[a-z]{5}/)
   end
 
-  it "should have FLEETCTL_TUNNEL environment variable set for local tests", focus: true do
-    expect { IPAddr.new(ENV['FLEETCTL_TUNNEL']) }.not_to raise_error,
+  it "has a FLEETCTL_TUNNEL environment variable set for local tests" do
+    expect(status.fleetctl_tunnel_ip).to be_kind_of(IPAddr),
       "For fleet tests, you need to have your FLEETCTL_TUNNEL environment variable exported as the public ip address of a machine in your cluster."
   end
 
@@ -46,49 +46,46 @@ RSpec.describe CloudStatus do
     end
   end
 
-  describe "InfluxDB" do
+  describe "InfluxDB deployment" do
     it "exposes a public DNS hostname" do
-      out = %x(dig +short #{status.influxdb_hostname})
-      expect(out).to_not be_empty, "The InfluxDB hostname (#{status.influxdb_hostname}) was not found (no Route53?)."
-      expect(out).to match(/[0-9]./), "The InfluxDB hostname (#{status.influxdb_hostname}) was not found (no Route53?)."
+      out = %x(dig +short #{status.influxdb.hostname})
+      expect(out).to_not be_empty, "The InfluxDB hostname (#{status.influxdb.hostname}) was not found (no Route53?)."
+      expect(out).to match(/[0-9]./), "The InfluxDB hostname (#{status.influxdb.hostname}) was not found (no Route53?)."
     end
 
-    it "can GET the health endpoint" do
+    it "exposes a health-check endpoint accessible via HTTP GET" do
       out, json = nil, nil
-      cmd = "curl -GfsS 'http://#{status.influxdb_hostname}:8086/ping' 2>&1"
-      expect { out = %x(#{cmd}) }.not_to raise_error
+      expect {
+        out = %x(curl -GfsS '#{status.influxdb.healthcheck_url}' 2>&1)
+      }.not_to raise_error
       expect { json = JSON.parse(out) }.not_to raise_error
       expect(json["status"]).to eq("ok")
     end
 
-    describe "databases" do
-      %W(sysinfo cadvisor grafana).each do |db|
-        it "can verify that the #{db} database has been created" do
-          influx_query = "list series"
-          query = URI.encode_www_form("u" => "root", "p" => "root", "q" => influx_query)
-          url = URI::HTTP.build([nil, status.influxdb_hostname, 8086, "/db/#{db}/series", query, nil])
-          cmd = "curl -GfsS '#{url}' 2>&1"
-          out = %x(#{cmd})
-          expect(out).to_not include("curl:"), "Request failed for series for '#{db}' (at #{url})"
-          expect(out).to_not include("Could not resolve host")
-          response = nil
-          expect { response = JSON.parse(out) }.not_to raise_error
-          expect(response.size).to be > 0, "The influxdb #{db} database contains no series."
+    describe "created databases" do
+      def verify_json_response(db, url, out, error_message)
+        expect(out).to_not include("Could not resolve host")
+        expect(out).to_not include("curl:"), "Request failed for series for '#{db}' (at #{url})"
+        response = nil
+        expect { response = JSON.parse(out) }.not_to raise_error
+        expect(response.size).to be > 0, error_message
+      end
+
+      %w(sysinfo cadvisor grafana).each do |db|
+        it "include '#{db}'" do
+          influxdb_query = "list series"
+          url = status.influxdb.database_query_url(db, influxdb_query)
+          out = %x(curl -GfsS '#{url}' 2>&1)
+          verify_json_response(db, url, out, "The InfluxDB database '#{db}' contains no series.")
         end
 
-        next if db == 'grafana'
+        next if db == 'grafana' # grafana doesn't have any series until someone loads the dashboard
 
-        it "can GET time-series data from the #{db} database" do
-          influx_query = "select * from /.*/ limit 1"
-          query = URI.encode_www_form("u" => "root", "p" => "root", "q" => influx_query)
-          url = URI::HTTP.build([nil, status.influxdb_hostname, 8086, "/db/#{db}/series", query, nil])
-          cmd = "curl -GfsS '#{url}' 2>&1"
-          out = %x(#{cmd})
-          expect(out).to_not include("curl:"), "Request failed for series for '#{db}' (at #{url})"
-          expect(out).to_not include("Could not resolve host")
-          response = nil
-          expect { response = JSON.parse(out) }.not_to raise_error
-          expect(response.size).to be > 0, "The influxdb #{db} database contains no series."
+        it "'#{db}' exposes time-series data via GET" do
+          influxdb_query = "select * from /.*/ limit 1"
+          url = status.influxdb.database_query_url(db, influxdb_query)
+          out = %x(curl -GfsS '#{url}' 2>&1)
+          verify_json_response(db, url, out, "The InfluxDB database '#{db}' contains no data.")
         end
       end
     end
