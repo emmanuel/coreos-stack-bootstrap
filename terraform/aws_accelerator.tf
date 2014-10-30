@@ -17,7 +17,7 @@ resource "aws_launch_configuration" "standard" {
 
 dynamic:
   fleet_metadata: &FLEET_METADATA
-    metadata: public_ip=$public_ipv4,region=${var.aws_region},instance_type=${var.aws_instance_type}
+    metadata: role=control,public_ip=$public_ipv4,region=${var.aws_region},instance_type=${var.aws_instance_type}
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
   # TODO: stop distributing long-lived AWS keys once Terraform supports
