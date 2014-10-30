@@ -141,6 +141,14 @@ resource "aws_security_group" "private" {
     security_groups = [ "${aws_security_group.public.id}" ]
   }
 
+  # logstash forwarder
+  ingress {
+    from_port = 5000
+    to_port =  5000
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.public.id}" ]
+  }
+
   # elasticsearch client
   ingress {
     from_port = 9200
