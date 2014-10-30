@@ -117,14 +117,6 @@ resource "aws_security_group" "private" {
     security_groups = [ "${aws_security_group.public.id}" ]
   }
 
-  # zookeeper client
-  ingress {
-    from_port = 2181
-    to_port =  2181
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.public.id}" ]
-  }
-
   # zookeeper peer
   ingress {
     from_port = 2888
