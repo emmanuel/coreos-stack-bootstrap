@@ -10,6 +10,8 @@ EnvironmentFile=/etc/aws_environment
 Environment="ENV=blue"
 
 TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill influxdb.elb-%i
+ExecStartPre=-/usr/bin/docker rm influxdb.elb-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/awscli
 
 ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${INFLUXDB_ELB_LOAD_BALANCER_NAME}) in region (${AWS_REGION})"
