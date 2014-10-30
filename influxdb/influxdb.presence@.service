@@ -12,7 +12,7 @@ Restart=always
 RestartSec=30
 
 EnvironmentFile=/etc/environment
-Environment="ENV=test"
+Environment="ENV=blue"
 Environment="INFLUXDB_HTTP_API_PORT=8086"
 Environment="INFLUXDB_ADMIN_API_PORT=8083"
 Environment="INFLUXDB_RAFT_PORT=8090"

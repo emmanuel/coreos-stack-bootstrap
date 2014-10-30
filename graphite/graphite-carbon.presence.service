@@ -6,7 +6,7 @@ After=graphite@%i.service
 [Service]
 Type=simple
 EnvironmentFile=/etc/environment
-Environment="ENV=test"
+Environment="ENV=blue"
 Environment="GRAPHITE_CARBON_PORT=2003"
 
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/graphite-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${GRAPHITE_CARBON_PORT}}\n"

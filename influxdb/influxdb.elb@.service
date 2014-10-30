@@ -7,7 +7,7 @@ After=influxdb.presence@%i.service
 Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/aws_environment
-Environment="ENV=test"
+Environment="ENV=blue"
 
 TimeoutStartSec=0
 ExecStartPre=/usr/bin/docker pull nordstrom/awscli

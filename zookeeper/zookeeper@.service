@@ -7,7 +7,7 @@ After=zookeeper.data@%i.service
 Type=simple
 EnvironmentFile=/etc/environment
 Environment="TAG=3.4.5"
-Environment="ENV=test"
+Environment="ENV=blue"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill zookeeper-%i

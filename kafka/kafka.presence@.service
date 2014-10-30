@@ -6,7 +6,7 @@ After=kafka@%i.service
 [Service]
 Type=simple
 EnvironmentFile=/etc/environment
-Environment="ENV=test"
+Environment="ENV=blue"
 Environment="KAFKA_BROKER_PORT=9092"
 
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${KAFKA_BROKER_PORT}}\n"
@@ -16,8 +16,8 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_ka
 
 ExecStart=/usr/bin/printf "Announced\n"
 
-# kafka-1.test.cluster.local
-# _kafka._tcp.test.cluster.local 9092
+# kafka-1.blue.cluster.local
+# _kafka._tcp.blue.cluster.local 9092
 Restart=always
 RestartSec=30
 

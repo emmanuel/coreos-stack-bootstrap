@@ -10,7 +10,7 @@ Type=simple
 Restart=always
 RestartSec=10
 
-Environment="ENV=test"
+Environment="ENV=blue"
 Environment="IMAGE_NAME=google/cadvisor:latest"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"

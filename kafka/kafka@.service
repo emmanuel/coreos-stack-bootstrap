@@ -5,7 +5,7 @@ Description=kafka
 Type=simple
 EnvironmentFile=/etc/environment
 Environment="TAG=0.8.1.1"
-Environment="ENV=test"
+Environment="ENV=blue"
 ExecStart=/usr/bin/docker run --rm \
                               --name kafka-%i \
                               --env KAFKA_SERVER_NUMBER=%i \
