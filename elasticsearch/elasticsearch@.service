@@ -1,11 +1,14 @@
 [Unit]
 Description=ElasticSearch
+Requires=docker.service
 After=docker.service
-After=elasticsearch.presence@%i.service
-After=elasticsearch.data@%i.service
+Requires=skydns.service
+After=skydns.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=60
 EnvironmentFile=/etc/environment
 Environment="TAG=1.3.4"
 Environment="ENV=blue"
@@ -15,20 +18,21 @@ ExecStartPre=-/usr/bin/docker kill elasticsearch-%i
 ExecStartPre=-/usr/bin/docker rm elasticsearch-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 
-ExecStart=/usr/bin/docker run --rm \
-                              --name elasticsearch-%i \
-                              --hostname elasticsearch-%i.${ENV}.cluster.local \
-                              --dns-search ${ENV}.cluster.local \
-                              --env ES_NODE_NAME=elasticsearch-${ENV}-%i \
-                              --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
-                              --publish 9200:9200 \
-                              --publish 9300:9300 \
-                              --volumes-from elasticsearch-%i-data \
-                              nordstrom/elasticsearch:${TAG}
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name elasticsearch-%i \
+  --hostname elasticsearch-%i.${ENV}.cluster.local \
+  --dns-search ${ENV}.cluster.local \
+  --env ES_NODE_NAME=elasticsearch-${ENV}-%i \
+  --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
+  --publish 9200:9200 \
+  --publish 9300:9300 \
+  --volumes-from elasticsearch-data-%i \
+    nordstrom/elasticsearch:${TAG}
 
 ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
-# MachineOf=elasticsearch.presence@%i.service
 MachineOf=elasticsearch.data@%i.service
+# MachineOf=elasticsearch.presence@%i.service
 Conflicts=elasticsearch@*.service
