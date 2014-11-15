@@ -1,0 +1,31 @@
+[Unit]
+Description=syslog-gollector
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill syslog
+ExecStartPre=-/usr/bin/docker rm syslog
+ExecStartPre=/usr/bin/docker pull emmanuel/syslog-gollector:latest
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name syslog \
+  --hostname %m.${ENV}.cluster.local \
+  --dns-search ${ENV}.cluster.local \
+  --publish 8088:8080 \
+  --publish 8000:8000 \
+  emmanuel/syslog-gollector:latest \
+    -parse \
+    -broker kafka-1:9092,kafka-2:9092,kafka-3:9092 \
+    -topic syslog
+
+[X-Fleet]
+Global=true
