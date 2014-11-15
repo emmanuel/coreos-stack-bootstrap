@@ -12,6 +12,7 @@ ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/local/
 # RUN mv /opt/local/zookeeper-$ZK_RELEASE /opt/local/zookeeper
 ADD conf /opt/local/zookeeper-$ZK_RELEASE/conf/
 ADD ./bin/start-zookeeper.sh /usr/local/bin/start-zookeeper.sh
+RUN mkdir -p /var/lib/zookeeper
 
 # Zookeeper client port
 EXPOSE 2181

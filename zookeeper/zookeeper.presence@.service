@@ -1,26 +1,34 @@
 [Unit]
 Description=zookeeper.presence
+BindsTo=zookeeper@%i.service
+Before=zookeeper@%i.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="ZK_CLIENT_PORT=2181"
+Environment="ZK_PEER_PORT=2888"
+Environment="ZK_LEADER_PORT=3888"
 
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/zookeeper-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/tcp/zookeeper/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/tcp/zookeeper/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper-peer/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_PEER_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper-peer/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_PEER_PORT}}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper-leader/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_LEADER_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper-leader/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_LEADER_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
 
-# zookeeper-1.test.cluster.local 2181
-# _zookeeper._tcp.test.cluster.local 2181
-Restart=always
-RestartSec=30
+# zookeeper-1.blue.cluster.local 2181
+# _zookeeper._tcp.blue.cluster.local 2181
+# _zookeeper-peer._tcp.blue.cluster.local 2888
+# _zookeeper-leader._tcp.blue.cluster.local 3888
 
 [X-Fleet]
-#X-ConditionMachineOf=zookeeper@%i.service
-X-Conflicts=zookeeper.presence@*.service
+MachineOf=zookeeper@%i.service
+Conflicts=zookeeper.presence@*.service

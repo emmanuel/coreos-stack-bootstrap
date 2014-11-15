@@ -1,12 +1,11 @@
 [Unit]
 Description=zookeeper
 After=zookeeper.presence@%i.service
-After=zookeeper.data@%i.service
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/environment
-Environment="TAG=3.4.5"
+Environment="TAG=3.4.6"
 Environment="ENV=blue"
 
 TimeoutStartSec=0
@@ -14,20 +13,18 @@ ExecStartPre=-/usr/bin/docker kill zookeeper-%i
 ExecStartPre=-/usr/bin/docker rm zookeeper-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
 
-ExecStart=/usr/bin/docker run --rm \
-                              --name zookeeper-%i \
-                              --env ZK_SERVER_NUMBER=%i \
-                              --hostname zookeeper-%i.${ENV}.cluster.local \
-                              --dns-search ${ENV}.cluster.local \
-                              --publish 2181:2181 \
-                              --publish 2888:2888 \
-                              --publish 3888:3888 \
-                              --volumes-from zookeeper-%i-data \
-                              nordstrom/zookeeper:${TAG}
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name zookeeper-%i \
+  --env ZK_SERVER_NUMBER=%i \
+  --hostname zookeeper-%i.${ENV}.cluster.local \
+  --dns-search ${ENV}.cluster.local \
+  --publish 2181:2181 \
+  --publish 2888:2888 \
+  --publish 3888:3888 \
+    nordstrom/zookeeper:${TAG}
 
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
-MachineOf=zookeeper.presence@%i.service
-MachineOf=zookeeper.data@%i.service
 Conflicts=zookeeper@*.service
