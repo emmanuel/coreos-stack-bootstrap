@@ -8,7 +8,7 @@ variable "environment" {
 }
 
 variable "aws_instance_type" {
-  default = "m3.medium"
+  default = "m3.large"
 }
 variable "aws_region" {
   default = "us-west-2"
