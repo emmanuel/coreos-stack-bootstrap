@@ -12,10 +12,12 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/..
 
-fleetctl destroy skydns/skydns.service
-influxdb/unlaunch_units.sh
+logstash/unlaunch_units.sh
 fleetctl destroy cadvisor/cadvisor.service
 fleetctl destroy sysinfo_influxdb/sysinfo_influxdb.service
-zookeeper/unlaunch_units.sh
-kafka/unlaunch_units.sh
+influxdb/unlaunch_units.sh
+fleetctl destroy syslog-gollector/syslog-gollector.service
 elasticsearch/unlaunch_units.sh
+kafka/unlaunch_units.sh
+zookeeper/unlaunch_units.sh
+fleetctl destroy skydns/skydns.service
