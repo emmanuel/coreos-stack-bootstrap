@@ -1,0 +1,28 @@
+[Unit]
+Description=logspout
+Requires=syslog-gollector.service
+Requires=docker.service
+After=syslog-gollector.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/environment
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill logspout
+ExecStartPre=-/usr/bin/docker rm logspout
+ExecStartPre=/usr/bin/docker pull progrium/logspout
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name=logspout \
+  --net=container:syslog \
+  --volume=/var/run/docker.sock:/tmp/docker.sock \
+  progrium/logspout \
+    syslog://localhost:514
+
+[X-Fleet]
+Global=true
