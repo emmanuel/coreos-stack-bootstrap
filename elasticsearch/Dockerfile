@@ -55,9 +55,9 @@ ENV ES_GROUP elasticsearch
 ADD conf /etc/elasticsearch/
 ADD ./bin/start-elasticsearch.sh /usr/local/bin/start-elasticsearch.sh
 
-RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" && \
-    chown "$ES_USER":"$ES_GROUP" "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" && \
-    chown -R "$ES_USER":"$ES_GROUP" "$CONF_DIR"
+RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
+ && chown "$ES_USER":"$ES_GROUP" "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
+ && chown -R "$ES_USER":"$ES_GROUP" "$CONF_DIR"
 
 # ENV MAX_OPEN_FILES 65535
 # ENV MAX_MAP_COUNT 262144
