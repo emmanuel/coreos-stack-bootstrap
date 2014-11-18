@@ -4,3 +4,4 @@ terraform/terraform.tfvars
 terraform/cluster_values.tfvars
 terraform/*.tfplan
 terraform/terraform.tfstate
+vendor/
