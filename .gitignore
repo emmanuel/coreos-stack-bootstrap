@@ -5,3 +5,4 @@ terraform/cluster_values.tfvars
 terraform/*.tfplan
 terraform/terraform.tfstate
 vendor/
+.vagrant/
