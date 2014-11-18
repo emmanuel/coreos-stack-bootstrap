@@ -12,6 +12,7 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/..
 
+fleetctl start logspout/logspout.service
 fleetctl start skydns/skydns.service
 influxdb/launch_units.sh
 fleetctl start cadvisor/cadvisor.service
@@ -21,4 +22,3 @@ kafka/launch_units.sh
 fleetctl start syslog-gollector/syslog-gollector.service
 elasticsearch/launch_units.sh
 logstash/launch_units.sh
-# logstash-forwarder/logstash-forwarder.service

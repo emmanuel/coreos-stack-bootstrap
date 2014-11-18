@@ -21,3 +21,4 @@ elasticsearch/unlaunch_units.sh
 kafka/unlaunch_units.sh
 zookeeper/unlaunch_units.sh
 fleetctl destroy skydns/skydns.service
+fleetctl destroy logspout/logspout.service
