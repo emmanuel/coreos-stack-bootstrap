@@ -2,6 +2,8 @@
 Description=syslog-gollector
 Requires=docker.service
 After=docker.service
+Requires=logspout.service
+After=logspout.service
 
 [Service]
 Type=simple
@@ -18,10 +20,9 @@ ExecStartPre=/usr/bin/docker pull emmanuel/syslog-gollector:latest
 ExecStart=/usr/bin/docker run \
   --rm \
   --name syslog \
+  --net=container:logspout \
   --hostname %m.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
-  --publish 8088:8080 \
-  --publish 8000:8000 \
   emmanuel/syslog-gollector:latest \
     -parse \
     -broker kafka-1:9092,kafka-2:9092,kafka-3:9092 \
