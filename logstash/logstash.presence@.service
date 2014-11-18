@@ -1,5 +1,7 @@
 [Unit]
 Description=Logstash presence
+BindsTo=logstash@%i.service
+After=logstash@%i.service
 
 [Service]
 Type=simple
@@ -24,4 +26,5 @@ ExecStart=/usr/bin/printf "Announced\n"
 # _logstash._tcp.blue.cluster.local 5000
 
 [X-Fleet]
-Conflicts=logstash.presence@*.service
+MachineOf=logstash@%i.service
+# Conflicts=logstash.presence@*.service

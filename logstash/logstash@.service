@@ -2,7 +2,6 @@
 Description=Logstash
 Requires=docker.service
 After=docker.service
-After=logstash.presence@%i.service
 
 [Service]
 Type=simple
@@ -28,5 +27,4 @@ ExecStart=/usr/bin/docker run \
 ExecStop=/usr/bin/docker kill logstash-%i
 
 [X-Fleet]
-MachineOf=logstash.presence@%i.service
 Conflicts=logstash@*.service
