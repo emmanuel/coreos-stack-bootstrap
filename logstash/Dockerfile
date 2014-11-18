@@ -1,4 +1,4 @@
-FROM nordstrom/java-7
+FROM nordstrom/java-7:0.0.4
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 EXPOSE 5000
