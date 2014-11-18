@@ -9,24 +9,22 @@ PermissionsStartOnly=true
 ReadOnlyDirectories=/etc
 # EnvironmentFile=/etc/environment
 Environment="ENV=blue"
-Environment="IMAGE_NAME=nordstrom/influxdb:latest"
-Environment="CONTAINER_NAME=influxdb-%i"
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill ${CONTAINER_NAME}
-ExecStartPre=-/usr/bin/docker rm ${CONTAINER_NAME}
-ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:latest
+ExecStartPre=-/usr/bin/docker kill influxdb-%i
+ExecStartPre=-/usr/bin/docker rm influxdb-%i
+ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:0.8.6
 
 ExecStart=/usr/bin/docker run \
-  --name ${CONTAINER_NAME} \
-  --hostname ${CONTAINER_NAME}.${ENV}.cluster.local \
+  --name influxdb-%i \
+  --hostname influxdb-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --env INFLUXDB_SERVER_NUMBER=%i \
   --publish 8086:8086 \
   --publish 8083:8083 \
   --publish 8090:8090 \
   --publish 8099:8099 \
-  nordstrom/influxdb:latest
+  nordstrom/influxdb:0.8.6
 
 ExecStartPost=/usr/bin/sleep 15
 ExecStartPost=/usr/bin/printf "Ready for action"
