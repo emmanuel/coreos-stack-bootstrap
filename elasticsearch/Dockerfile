@@ -1,4 +1,4 @@
-FROM nordstrom/java-7
+FROM nordstrom/java-7:0.0.4
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 # RUN true \
@@ -61,8 +61,6 @@ RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
 
 # ENV MAX_OPEN_FILES 65535
 # ENV MAX_MAP_COUNT 262144
-
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 
 # USER elasticsearch:elasticsearch
 
