@@ -10,7 +10,7 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
 fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH/..
+cd $SCRIPT_PATH/.
 
 fleetctl start logspout/logspout.service
 fleetctl start skydns/skydns.service
