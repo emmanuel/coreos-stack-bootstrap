@@ -3,6 +3,8 @@ dist
 terraform/terraform.tfvars
 terraform/cluster_values.tfvars
 terraform/*.tfplan
-terraform/terraform.tfstate
+terraform/terraform.tfstate*
+terraform/etcd_discovery_url.tfvars
 vendor/
 .vagrant/
+.DS_Store
