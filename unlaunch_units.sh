@@ -10,13 +10,13 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
 fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH/..
+cd $SCRIPT_PATH/.
 
 logstash/unlaunch_units.sh
 fleetctl destroy cadvisor/cadvisor.service
 fleetctl destroy sysinfo_influxdb/sysinfo_influxdb.service
 influxdb/unlaunch_units.sh
-fleetctl destroy syslog-gollector/syslog-gollector.service
+fleetctl destroy syslog-gollector/syslog_gollector.service
 elasticsearch/unlaunch_units.sh
 kafka/unlaunch_units.sh
 zookeeper/unlaunch_units.sh
