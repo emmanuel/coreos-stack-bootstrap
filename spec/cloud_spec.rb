@@ -33,9 +33,6 @@ RSpec.describe CloudStatus do
        zookeeper@1.service
        zookeeper@2.service
        zookeeper@3.service
-       zookeeper.data@1.service
-       zookeeper.data@2.service
-       zookeeper.data@3.service
        zookeeper.presence@1.service
        zookeeper.presence@2.service
        zookeeper.presence@3.service
