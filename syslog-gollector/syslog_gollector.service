@@ -21,7 +21,6 @@ ExecStart=/usr/bin/docker run \
   --rm \
   --name syslog \
   --net=container:logspout \
-  --hostname %m.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   emmanuel/syslog-gollector:latest \
     -parse \
