@@ -13,21 +13,23 @@ Environment="ZK_CLIENT_PORT=2181"
 Environment="ZK_PEER_PORT=2888"
 Environment="ZK_LEADER_PORT=3888"
 
+# zookeeper-1.blue.cluster.local 2181
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/zookeeper-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
+# 1.zookeeper.blue.cluster.local 2181
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/zookeeper/%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/zookeeper/%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
+# _zookeeper._tcp.blue.cluster.local 2181
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_CLIENT_PORT}}"
+# _zookeeper-peer._tcp.blue.cluster.local 2888
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper-peer/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_PEER_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper-peer/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_PEER_PORT}}"
+# _zookeeper-leader._tcp.blue.cluster.local 3888
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_zookeeper-leader/%i {\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_LEADER_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zookeeper-leader/%i "{\"host\":\"zookeeper-%i.${ENV}.cluster.local\",\"port\":${ZK_LEADER_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
-
-# zookeeper-1.blue.cluster.local 2181
-# _zookeeper._tcp.blue.cluster.local 2181
-# _zookeeper-peer._tcp.blue.cluster.local 2888
-# _zookeeper-leader._tcp.blue.cluster.local 3888
 
 [X-Fleet]
 MachineOf=zookeeper@%i.service
