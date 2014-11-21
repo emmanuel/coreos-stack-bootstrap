@@ -5,6 +5,9 @@ After=kafka@%i.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=30
+
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="KAFKA_BROKER_PORT=9092"
@@ -21,8 +24,6 @@ ExecStart=/usr/bin/printf "Announced\n"
 # kafka-1.blue.cluster.local
 # 1.kafka.blue.cluster.local
 # _kafka._tcp.blue.cluster.local 9092
-Restart=always
-RestartSec=30
 
 [X-Fleet]
 MachineOf=kafka@%i.service
