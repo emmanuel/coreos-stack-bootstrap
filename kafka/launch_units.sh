@@ -13,3 +13,4 @@ fleetctl start kafka@3
 fleetctl start kafka.presence@1
 fleetctl start kafka.presence@2
 fleetctl start kafka.presence@3
+fleetctl start kafka.create_topics.service

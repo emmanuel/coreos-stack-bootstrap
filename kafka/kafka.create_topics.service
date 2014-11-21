@@ -1,0 +1,22 @@
+[Unit]
+Description=Kafka Topic Creation
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+Environment="ENV=blue"
+Environment="TAG=0.8.1.1"
+Environment="KAFKA_SCALA_VERSION=2.9.2"
+Environment="KAFKA_VERSION=0.8.1.1"
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name kafka.create_topics \
+  --dns-search ${ENV}.cluster.local \
+    nordstrom/kafka:${TAG} \
+      /opt/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}/bin/kafka-topics.sh \
+        --zookeeper zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181 \
+        --create \
+        --topic syslog \
+        --partitions 3 \
+        --replication-factor 3
