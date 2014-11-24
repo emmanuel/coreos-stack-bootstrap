@@ -15,14 +15,14 @@ Environment="ENV=blue"
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill syslog
 ExecStartPre=-/usr/bin/docker rm syslog
-ExecStartPre=/usr/bin/docker pull emmanuel/syslog-gollector:latest
+ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:latest
 
 ExecStart=/usr/bin/docker run \
   --rm \
   --name syslog \
-  --net=container:logspout \
+  --net container:logspout \
   --dns-search ${ENV}.cluster.local \
-  emmanuel/syslog-gollector:latest \
+  nordstrom/syslog_gollector:latest \
     -parse \
     -broker kafka-1:9092,kafka-2:9092,kafka-3:9092 \
     -topic syslog
