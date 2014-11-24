@@ -11,9 +11,9 @@ fleetctl submit zookeeper.presence@.service
 # fleetctl start zookeeper.data@1
 # fleetctl start zookeeper.data@2
 # fleetctl start zookeeper.data@3
-fleetctl start zookeeper@1
-fleetctl start zookeeper@2
-fleetctl start zookeeper@3
 fleetctl start zookeeper.presence@1
 fleetctl start zookeeper.presence@2
 fleetctl start zookeeper.presence@3
+fleetctl start zookeeper@1
+fleetctl start zookeeper@2
+fleetctl start zookeeper@3
