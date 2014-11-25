@@ -19,11 +19,12 @@ ExecStartPre=-/usr/bin/docker kill syslog
 ExecStartPre=-/usr/bin/docker rm syslog
 ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:latest
 
+# binds to logspout's iface, so that logspout can target syslog://localhost:514
+# this means that --dns-search and --publish are set by logspout service
 ExecStart=/usr/bin/docker run \
   --rm \
   --name syslog \
   --net container:logspout \
-  --dns-search ${ENV}.cluster.local \
   nordstrom/syslog_gollector:latest \
     -parse \
     -broker kafka-1:9092,kafka-2:9092,kafka-3:9092 \

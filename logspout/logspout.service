@@ -8,6 +8,7 @@ Type=simple
 Restart=always
 RestartSec=5
 EnvironmentFile=/etc/environment
+Environment="ENV=blue"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill logspout
@@ -17,7 +18,8 @@ ExecStartPre=/usr/bin/docker pull progrium/logspout
 ExecStart=/usr/bin/docker run \
   --rm \
   --name=logspout \
-  --volume=/var/run/docker.sock:/tmp/docker.sock \
+  --dns-search ${ENV}.cluster.local \
+  --volume /var/run/docker.sock:/tmp/docker.sock \
   --publish 8000:8000 \
   --publish 8088:8080 \
   progrium/logspout \
