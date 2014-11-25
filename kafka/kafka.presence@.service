@@ -1,6 +1,6 @@
 [Unit]
 Description=kafka.presence
-BindTo=kafka@%i.service
+BindsTo=kafka@%i.service
 After=kafka@%i.service
 
 [Service]

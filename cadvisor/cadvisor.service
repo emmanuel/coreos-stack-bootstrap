@@ -1,8 +1,8 @@
 [Unit]
 Description=cAdvisor
 Requires=docker.service
-Requires=skydns.service
 After=docker.service
+Requires=skydns.service
 After=skydns.service
 
 [Service]

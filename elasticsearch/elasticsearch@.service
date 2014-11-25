@@ -4,6 +4,8 @@ Requires=docker.service
 After=docker.service
 Requires=skydns.service
 After=skydns.service
+Requires=elasticsearch.data@%i.service
+After=elasticsearch.data@%i.service
 
 [Service]
 Type=simple

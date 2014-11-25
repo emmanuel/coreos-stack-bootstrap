@@ -1,9 +1,11 @@
 [Unit]
 Description=SkyDNS
 Requires=etcd.service
-Requires=docker.service
 After=etcd.service
+Requires=docker.service
 After=docker.service
+Wants=logspout.service
+After=logspout.service
 
 [Service]
 Type=simple

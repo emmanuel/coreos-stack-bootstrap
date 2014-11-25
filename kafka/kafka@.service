@@ -1,5 +1,9 @@
 [Unit]
 Description=Kafka
+Requires=docker.service
+After=docker.service
+Requires=skydns.service
+After=skydns.service
 
 [Service]
 Type=simple

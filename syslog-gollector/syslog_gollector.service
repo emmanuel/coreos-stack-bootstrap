@@ -4,6 +4,8 @@ Requires=docker.service
 After=docker.service
 Requires=logspout.service
 After=logspout.service
+Requires=skydns.service
+After=skydns.service
 
 [Service]
 Type=simple

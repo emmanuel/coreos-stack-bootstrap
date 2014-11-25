@@ -1,5 +1,7 @@
 [Unit]
 Description=Zookeeper data volumes
+Requires=docker.service
+After=docker.service
 
 [Service]
 Type=oneshot
