@@ -7,16 +7,17 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 
-TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill zookeeper-data-%i
-ExecStartPre=-/usr/bin/docker rm zookeeper-data-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:3.4.6
+Environment="TAG=3.4.6"
 
-ExecStart=/usr/bin/docker run \
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+ExecStartPre=-/usr/bin/docker run \
   --net none \
   --name zookeeper-data-%i \
   --volume /var/lib/zookeeper \
-    nordstrom/zookeeper:3.4.6 true
+    nordstrom/zookeeper:${TAG} true
+
+ExecStart=/usr/bin/printf "Zookeeper data volumes started\n"
 
 [X-Fleet]
 Conflicts=zookeeper.data@*.service

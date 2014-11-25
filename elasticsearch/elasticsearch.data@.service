@@ -6,14 +6,18 @@ After=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-TimeoutStartSec=0
+
 Environment="TAG=1.3.5"
-ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
-ExecStart=/usr/bin/docker run \
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
+ExecStartPre=-/usr/bin/docker run \
   --net none \
   --name elasticsearch-data-%i \
   --volume /var/lib/elasticsearch \
     nordstrom/elasticsearch:${TAG} true
+
+ExecStart=/usr/bin/printf "ElasticSearch data volumes started\n"
 
 [X-Fleet]
 Conflicts=elasticsearch.data@*.service
