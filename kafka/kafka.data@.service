@@ -1,0 +1,22 @@
+[Unit]
+Description=Kafka data volumes
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment="TAG=0.8.1.1"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker pull nordstrom/kafka:${TAG}
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name kafka-data-%i \
+  --volume /kafka/data \
+    nordstrom/kafka:${TAG} true
+
+ExecStart=/usr/bin/printf "Kafka data volumes started\n"
+
+[X-Fleet]
+Conflicts=kafka.data@*.service
