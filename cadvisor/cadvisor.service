@@ -11,14 +11,14 @@ Restart=always
 RestartSec=10
 
 Environment="ENV=blue"
-Environment="IMAGE_NAME=google/cadvisor:latest"
+Environment="TAG=latest"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill cadvisor
 ExecStartPre=-/usr/bin/docker rm cadvisor
-ExecStartPre=/usr/bin/docker pull google/cadvisor:latest
+ExecStartPre=/usr/bin/docker pull google/cadvisor:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name=cadvisor \
@@ -28,7 +28,7 @@ ExecStart=/usr/bin/docker run \
   --volume=/sys:/sys:ro \
   --volume=/var/lib/docker/:/var/lib/docker:ro \
   --dns-search=${ENV}.cluster.local \
-  google/cadvisor:latest \
+  google/cadvisor:${TAG} \
     --logtostderr \
     --storage_driver=influxdb \
     --storage_driver_host=influxdb:8086 \

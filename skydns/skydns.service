@@ -12,19 +12,19 @@ Type=simple
 Restart=always
 RestartSec=5
 EnvironmentFile=/etc/environment
-# Environment="IMAGE_NAME=nordstrom/skydns:latest"
+Environment="TAG=latest"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill skydns
 ExecStartPre=-/usr/bin/docker rm skydns
-ExecStartPre=/usr/bin/docker pull nordstrom/skydns:latest
+ExecStartPre=/usr/bin/docker pull nordstrom/skydns:${TAG}
 # re: 172.17.42.1, see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"${COREOS_PRIVATE_IPV4}"}'
 
 ExecStart=/usr/bin/docker run \
   --name skydns \
   --net host \
-  nordstrom/skydns:latest \
+  nordstrom/skydns:${TAG} \
     -verbose \
     -addr 172.17.42.1:53 \
     -machines 127.0.0.1:4001 \
