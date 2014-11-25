@@ -36,5 +36,4 @@ ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
 MachineOf=elasticsearch.data@%i.service
-# MachineOf=elasticsearch.presence@%i.service
 Conflicts=elasticsearch@*.service
