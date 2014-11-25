@@ -12,15 +12,14 @@ MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 # RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886
 
 # TODO: figure out the HTTPS URL for the S3 bucket that backs packages.elasticsearch.org
-RUN true \
-    && apt-get install -q -y --no-install-suggests --no-install-recommends \
+RUN apt-get install -q -y --no-install-suggests --no-install-recommends \
         wget \
-    && wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add - \
-    && echo "deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" | tee -a /etc/apt/sources.list.d/elasticsearch.list \
-    && apt-get update -q -y \
-    && apt-get install -q -y --no-install-suggests --no-install-recommends \
-        elasticsearch \
-    && apt-get clean
+ && wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add - \
+ && echo "deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" | tee -a /etc/apt/sources.list.d/elasticsearch.list \
+ && apt-get update -q -y \
+ && apt-get install -q -y --no-install-suggests --no-install-recommends \
+     elasticsearch \
+ && apt-get clean
 
 RUN /usr/share/elasticsearch/bin/plugin --verbose \
   --install zookeeper \
@@ -42,6 +41,7 @@ EXPOSE 9200
 EXPOSE 9300
 
 ENV PATH /bin:/usr/bin:/sbin:/usr/sbin
+# used to configure elasticsearch
 ENV LOG_DIR /var/log/elasticsearch
 ENV DATA_DIR /var/lib/elasticsearch
 ENV WORK_DIR /tmp/elasticsearch
