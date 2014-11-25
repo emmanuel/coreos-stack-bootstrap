@@ -23,6 +23,10 @@ ExecStart=/usr/bin/docker run \
   --publish 9092:9092 \
     nordstrom/kafka:${TAG}
 
+# give kafka some boot time before dependent units get started
+ExecStartPost=/usr/bin/sleep 15
+ExecStartPost=/usr/bin/printf "Ready for action"
+
 ExecStop=/usr/bin/docker kill kafka-%i
 
 [X-Fleet]
