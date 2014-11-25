@@ -16,7 +16,7 @@ fleetctl start logspout/logspout.service
 fleetctl start skydns/skydns.service
 influxdb/launch_units.sh
 fleetctl start cadvisor/cadvisor.service
-fleetctl start sysinfo-influxdb/sysinfo_influxdb.service
+fleetctl start sysinfo_influxdb/sysinfo_influxdb.service
 zookeeper/launch_units.sh
 kafka/launch_units.sh
 fleetctl start syslog-gollector/syslog_gollector.service
