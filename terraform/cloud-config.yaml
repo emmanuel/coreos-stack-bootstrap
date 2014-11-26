@@ -1,6 +1,3 @@
-users:
-  - name: skydns
-    system: true
 coreos:
   update:
     reboot-strategy: etcd-lock
