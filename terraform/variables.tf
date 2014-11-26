@@ -20,18 +20,18 @@ variable "allow_ssh_from" {
 }
 
 # get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template
-# These are alpha channel, release 494.0.0
+# These are alpha channel, HVM virtualization
 variable "amis" {
   default = {
-    eu-central-1 = "ami-12ae980f"
-    ap-northeast-1 = "ami-9d60599c"
-    sa-east-1 = "ami-23ca7c3e"
-    ap-southeast-2 = "ami-afb9d695"
-    ap-southeast-1 = "ami-0cebc85e"
-    us-east-1 = "ami-3e058d56"
-    us-west-2 = "ami-b14f0481"
-    us-west-1 = "ami-f97264bc"
-    eu-west-1 = "ami-1c47f26b"
+    eu-central-1 = "ami-94231289"
+    ap-northeast-1 = "ami-d8999dd9"
+    sa-east-1 = "ami-7fa41562"
+    ap-southeast-2 = "ami-e3dfb1d9"
+    ap-southeast-1 = "ami-7b98ba29"
+    us-east-1 = "ami-0215876a"
+    us-west-2 = "ami-d72377e7"
+    us-west-1 = "ami-a5adbce0"
+    eu-west-1 = "ami-d8e858af"
   }
 }
 variable "aws_ec2_keypair" {
