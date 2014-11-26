@@ -15,9 +15,10 @@ ExecStartPre=-/usr/bin/docker run \
   --net none \
   --name zookeeper-data-%i \
   --volume /var/lib/zookeeper \
-    nordstrom/zookeeper:${TAG} true
+    nordstrom/zookeeper:${TAG} \
+      /usr/bin/printf "Zookeeper data volumes container started\n"
 
-ExecStart=/usr/bin/printf "Zookeeper data volumes started\n"
+ExecStart=/usr/bin/printf "Zookeeper data volumes available\n"
 
 [X-Fleet]
 Conflicts=zookeeper.data@*.service

@@ -1,6 +1,7 @@
 [Unit]
 Description=zookeeper.presence
-# BindsTo=zookeeper@%i.service
+Wants=zookeeper.data@%i.service
+After=zookeeper.data@%i.service
 Before=zookeeper@%i.service
 
 [Service]
@@ -32,5 +33,5 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zo
 ExecStart=/usr/bin/printf "Announced\n"
 
 [X-Fleet]
-# MachineOf=zookeeper@%i.service
+MachineOf=zookeeper.data@%i.service
 Conflicts=zookeeper.presence@*.service
