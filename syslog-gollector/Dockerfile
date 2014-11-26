@@ -10,4 +10,3 @@ EXPOSE 514/udp
 EXPOSE 8080
 
 ENTRYPOINT ["/bin/syslog-gollector"]
-CMD []
