@@ -7,7 +7,7 @@ variable "environment" {
   default = "test"
 }
 
-variable "aws_instance_type" {
+variable "aws_instance_type_control" {
   default = "m3.large"
 }
 variable "aws_region" {
