@@ -18,7 +18,8 @@ ExecStartPre=/usr/bin/docker pull progrium/logspout:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --rm \
-  --name=logspout \
+  --name logspout \
+  --hostname %m.hosts.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --publish 8000:8000 \
