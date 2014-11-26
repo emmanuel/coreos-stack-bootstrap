@@ -1,12 +1,13 @@
 [Unit]
 Description=ElasticSearch presence
 BindsTo=elasticsearch@%i.service
-Before=elasticsearch@%i.service
+After=elasticsearch@%i.service
 
 [Service]
 Type=simple
 Restart=always
 RestartSec=30
+
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="ES_CLIENT_PORT=9200"
@@ -29,7 +30,6 @@ ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_ela
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_elasticsearch-peer/%i "{\"host\":\"elasticsearch-%i.${ENV}.cluster.local\",\"port\":${ES_PEER_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
-
 
 [X-Fleet]
 MachineOf=elasticsearch@%i.service
