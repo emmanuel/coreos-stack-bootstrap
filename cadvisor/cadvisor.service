@@ -11,7 +11,7 @@ Restart=always
 RestartSec=10
 
 Environment="ENV=blue"
-Environment="TAG=latest"
+Environment="TAG=0.6.2"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
