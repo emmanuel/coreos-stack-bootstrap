@@ -2,10 +2,10 @@
 Description=syslog-gollector
 Requires=docker.service
 After=docker.service
-Requires=logspout.service
-After=logspout.service
 Requires=skydns.service
 After=skydns.service
+Wants=logspout.service
+After=logspout.service
 
 [Service]
 Type=simple

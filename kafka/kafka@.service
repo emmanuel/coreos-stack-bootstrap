@@ -2,9 +2,9 @@
 Description=Kafka
 Requires=docker.service
 After=docker.service
-Requires=skydns.service
+Wants=skydns.service
 After=skydns.service
-Requires=kafka.data@%i.service
+Wants=kafka.data@%i.service
 After=kafka.data@%i.service
 
 [Service]
