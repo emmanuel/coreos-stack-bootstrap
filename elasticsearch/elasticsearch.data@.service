@@ -17,9 +17,10 @@ ExecStartPre=-/usr/bin/docker run \
   --net none \
   --name elasticsearch-data-%i \
   --volume /var/lib/elasticsearch \
-    nordstrom/elasticsearch:${TAG} true
+    nordstrom/elasticsearch:${TAG} \
+      /usr/bin/printf "ElasticSearch data volumes container started\n"
 
-ExecStart=/usr/bin/printf "ElasticSearch data volumes started\n"
+ExecStart=/usr/bin/printf "ElasticSearch data volumes available\n"
 
 [X-Fleet]
 Conflicts=elasticsearch.data@*.service
