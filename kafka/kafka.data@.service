@@ -2,6 +2,8 @@
 Description=Kafka data volumes
 Requires=docker.service
 After=docker.service
+Wants=logspout.service
+After=logspout.service
 
 [Service]
 Type=oneshot
