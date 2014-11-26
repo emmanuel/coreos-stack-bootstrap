@@ -9,6 +9,9 @@ After=zookeeper.data@%i.service
 
 [Service]
 Type=simple
+Restart=always
+RestartSec=60
+
 EnvironmentFile=/etc/environment
 Environment="TAG=3.4.6"
 Environment="ENV=blue"
