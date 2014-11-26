@@ -12,7 +12,7 @@ Type=simple
 Restart=always
 RestartSec=5
 EnvironmentFile=/etc/environment
-Environment="TAG=latest"
+Environment="TAG=2.0.1d"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill skydns
