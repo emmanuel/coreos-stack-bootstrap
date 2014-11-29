@@ -53,7 +53,7 @@ ENV ES_USER elasticsearch
 ENV ES_GROUP elasticsearch
 
 ADD conf /etc/elasticsearch/
-ADD ./bin/start-elasticsearch.sh /usr/local/bin/start-elasticsearch.sh
+ADD bin/start-elasticsearch.sh /bin/start-elasticsearch.sh
 
 RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
  && chown "$ES_USER":"$ES_GROUP" "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
@@ -64,4 +64,4 @@ RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
 
 # USER elasticsearch:elasticsearch
 
-CMD ["/usr/local/bin/start-elasticsearch.sh"]
+CMD ["/bin/start-elasticsearch.sh"]
