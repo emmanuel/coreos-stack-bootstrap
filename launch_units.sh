@@ -13,6 +13,7 @@ SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/.
 
 fleetctl start logspout/logspout.service
+fleetctl start registrator/registrator.service
 fleetctl start skydns/skydns.service
 influxdb/launch_units.sh
 fleetctl start cadvisor/cadvisor.service
