@@ -17,7 +17,6 @@ ExecStartPre=-/usr/bin/docker rm logspout
 ExecStartPre=/usr/bin/docker pull progrium/logspout:${TAG}
 
 ExecStart=/usr/bin/docker run \
-  --rm \
   --name logspout \
   --hostname %m.hosts.cluster.local \
   --dns-search ${ENV}.cluster.local \
