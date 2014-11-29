@@ -23,7 +23,7 @@ RUN apt-get install -q -y --no-install-suggests --no-install-recommends \
 
 RUN /usr/share/elasticsearch/bin/plugin --verbose \
   --install zookeeper \
-  --url https://github.com/grmblfrz/elasticsearch-zookeeper/releases/download/v1.3.1/elasticsearch-zookeeper-1.3.1.zip
+  --url https://github.com/grmblfrz/elasticsearch-zookeeper/releases/download/v1.3.4/elasticsearch-zookeeper-1.3.4.zip
 # ADD dist/elasticsearch-zookeeper-1.3.2_1.zip /tmp/es-zookeeper/elasticsearch-zookeeper-1.3.2_1.zip
 # RUN /usr/share/elasticsearch/bin/plugin --verbose \
 #   --install fabric8io/elasticsearch-zookeeper \
