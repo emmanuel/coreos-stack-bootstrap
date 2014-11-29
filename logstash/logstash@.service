@@ -17,7 +17,6 @@ ExecStartPre=-/usr/bin/docker rm logstash-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/logstash:${TAG}
 
 ExecStart=/usr/bin/docker run \
-  --rm \
   --name logstash-%i \
   --hostname logstash-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
