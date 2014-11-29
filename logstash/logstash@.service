@@ -23,6 +23,10 @@ ExecStart=/usr/bin/docker run \
   --publish 5000:5000 \
     nordstrom/logstash:${TAG}
 
+# give logstash some boot time before dependent units get started
+ExecStartPost=/usr/bin/sleep 30
+ExecStartPost=/usr/bin/printf "Ready for action"
+
 ExecStop=/usr/bin/docker kill logstash-%i
 
 [X-Fleet]
