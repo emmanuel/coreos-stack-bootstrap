@@ -9,6 +9,6 @@ ENV KAFKA_HOME /opt/kafka_$KAFKA_RELEASE
 
 ADD dist/kafka_$KAFKA_RELEASE.tgz /opt/
 ADD conf/server.properties $KAFKA_HOME/config/server.properties
-ADD bin/start.sh /bin/start.sh
+ADD bin/start-kafka.sh /bin/
 
-CMD ["/bin/start.sh"]
+CMD ["/bin/start-kafka.sh"]
