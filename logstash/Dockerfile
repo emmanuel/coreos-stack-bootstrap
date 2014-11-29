@@ -14,4 +14,4 @@ RUN ln -s /opt/logstash-$LOGSTASH_RELEASE /opt/logstash
 # ADD conf/logstash-forwarder.key /etc/pki/tls/private/
 ADD conf/logstash.conf /opt/logstash/conf/
 
-CMD ["/bin/start-logstash.sh"]
+CMD ["/opt/logstash/bin/logstash", "-f", "/opt/logstash/conf/logstash.conf"]
