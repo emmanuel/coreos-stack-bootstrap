@@ -31,6 +31,10 @@ ExecStart=/usr/bin/docker run \
   --volumes-from elasticsearch-data-%i \
     nordstrom/elasticsearch:${TAG}
 
+# give elasticsearch some boot time before dependent units get started
+ExecStartPost=/usr/bin/sleep 30
+ExecStartPost=/usr/bin/printf "Ready for action"
+
 ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
