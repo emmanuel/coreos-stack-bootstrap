@@ -13,15 +13,17 @@ Environment="ENV=blue"
 Environment="ES_CLIENT_PORT=9200"
 Environment="ES_PEER_PORT=9300"
 
-# elasticsearch-1.blue.cluster.local 9200
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/elasticsearch-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${ES_CLIENT_PORT}}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/elasticsearch-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${ES_CLIENT_PORT}}"
+# elasticsearch-1.blue.cluster.local
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/elasticsearch-%i {\"host\":\"%m.hosts.cluster.local\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/elasticsearch-%i "{\"host\":\"%m.hosts.cluster.local\"}"
 
-# 1.elasticsearch.blue.cluster.local 9200
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/elasticsearch/%i {\"host\":\"elasticsearch-%i.${ENV}.cluster.local\",\"port\":${ES_CLIENT_PORT}}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/elasticsearch/%i "{\"host\":\"elasticsearch-%i.${ENV}.cluster.local\",\"port\":${ES_CLIENT_PORT}}"
+# 1.elasticsearch.blue.cluster.local
+# elasticsearch.blue.cluster.local (round-robin)
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/elasticsearch/%i {\"host\":\"elasticsearch-%i.${ENV}.cluster.local\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/elasticsearch/%i "{\"host\":\"elasticsearch-%i.${ENV}.cluster.local\"}"
 
-# _elasticsearch._tcp.blue.cluster.local 9200
+# 1._elasticsearch._tcp.blue.cluster.local 9200
+# _elasticsearch._tcp.blue.cluster.local 9200 (round-robin)
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_elasticsearch/%i {\"host\":\"elasticsearch-%i.${ENV}.cluster.local\",\"port\":${ES_CLIENT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_elasticsearch/%i "{\"host\":\"elasticsearch-%i.${ENV}.cluster.local\",\"port\":${ES_CLIENT_PORT}}"
 
