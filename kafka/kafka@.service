@@ -6,6 +6,8 @@ Wants=skydns.service
 After=skydns.service
 Wants=kafka.data@%i.service
 After=kafka.data@%i.service
+Wants=kafka.conf@%i.service
+After=kafka.conf@%i.service
 
 [Service]
 Type=simple
@@ -21,12 +23,11 @@ ExecStartPre=-/usr/bin/docker rm kafka-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${TAG}
 
 ExecStart=/usr/bin/docker run \
-  --rm \
   --name kafka-%i \
-  --env KAFKA_SERVER_NUMBER=%i \
   --hostname kafka-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --volumes-from kafka-data-%i \
+  --volumes-from kafka-conf-%i \
   --publish 9092:9092 \
     nordstrom/kafka:${TAG}
 
