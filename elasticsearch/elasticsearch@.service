@@ -21,7 +21,6 @@ ExecStartPre=-/usr/bin/docker rm elasticsearch-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 
 ExecStart=/usr/bin/docker run \
-  --rm \
   --name elasticsearch-%i \
   --hostname elasticsearch-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
