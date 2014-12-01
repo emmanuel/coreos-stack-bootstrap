@@ -23,7 +23,6 @@ ExecStart=/usr/bin/docker run \
   --dns-search ${ENV}.cluster.local \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --publish 8000:8000 \
-  --publish 8088:8080 \
   progrium/logspout:${TAG} \
     syslog://172.17.42.1:514
 
