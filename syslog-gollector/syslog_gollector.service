@@ -10,25 +10,29 @@ After=logspout.service
 [Service]
 Type=simple
 Restart=always
-RestartSec=5
+RestartSec=10
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
-Environment="TAG=0.0.1"
+Environment="TAG=0.0.2"
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill syslog
-ExecStartPre=-/usr/bin/docker rm syslog
+ExecStartPre=-/usr/bin/docker kill syslog_gollector
+ExecStartPre=-/usr/bin/docker rm syslog_gollector
 ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:${TAG}
 
-# binds to logspout's iface, so that logspout can target syslog://localhost:514
-# this means that --dns-search and --publish are set by logspout service
+# logspout targets syslog://localhost:514
+# we bind 0.0.0.0 to accept traffic from docker's --publish switch
 ExecStart=/usr/bin/docker run \
-  --rm \
-  --name syslog \
-  --net container:logspout \
+  --name syslog_gollector \
+  --dns-search ${ENV}.cluster.local \
+  --publish 172.17.42.1:514:514 \
+  --publish 172.17.42.1:514:514/udp \
   nordstrom/syslog_gollector:${TAG} \
-    -parse \
-    -broker kafka-1:9092,kafka-2:9092,kafka-3:9092 \
+    -tcp 0.0.0.0:514 \
+    -udp 0.0.0.0:514 \
+    -admin localhost:8080 \
+    -broker kafka:9092 \
+    -parse=false \
     -topic logspout
 
 [X-Fleet]
