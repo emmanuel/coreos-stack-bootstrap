@@ -7,6 +7,7 @@ After=docker.service
 Type=simple
 Restart=always
 RestartSec=5
+
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="TAG=latest"
@@ -24,7 +25,8 @@ ExecStart=/usr/bin/docker run \
   --publish 8000:8000 \
   --publish 8088:8080 \
   progrium/logspout:${TAG} \
-    syslog://localhost:514
+    syslog://172.17.42.1:514
+
 
 [X-Fleet]
 Global=true
