@@ -34,5 +34,6 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_el
 ExecStart=/usr/bin/printf "Announced\n"
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=elasticsearch@%i.service
 Conflicts=elasticsearch.presence@*.service

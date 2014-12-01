@@ -45,5 +45,6 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/logstash
 ExecStart=/usr/bin/printf "Announced\n"
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=logstash@%i.service
 # Conflicts=logstash.presence@*.service

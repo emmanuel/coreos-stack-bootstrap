@@ -44,4 +44,5 @@ ExecStart=/usr/bin/printf "Announced\n"
 # _influxdb-replication._tcp.test.cluster.local 8099
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=influxdb@%i.service

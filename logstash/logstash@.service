@@ -30,4 +30,5 @@ ExecStartPost=/usr/bin/printf "Ready for action"
 ExecStop=/usr/bin/docker kill logstash-%i
 
 [X-Fleet]
+MachineMetadata="role=control"
 Conflicts=logstash@*.service

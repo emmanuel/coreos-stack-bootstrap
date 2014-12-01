@@ -23,4 +23,5 @@ ExecStartPre=-/usr/bin/docker run \
 ExecStart=/usr/bin/printf "Zookeeper data volumes available\n"
 
 [X-Fleet]
+MachineMetadata="role=control"
 Conflicts=zookeeper.data@*.service

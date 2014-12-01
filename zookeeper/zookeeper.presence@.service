@@ -38,5 +38,6 @@ ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_zo
 ExecStart=/usr/bin/printf "Announced\n"
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=zookeeper.data@%i.service
 Conflicts=zookeeper.presence@*.service

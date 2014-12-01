@@ -38,5 +38,6 @@ ExecStartPost=/usr/bin/printf "Ready for action"
 ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=elasticsearch.data@%i.service
 Conflicts=elasticsearch@*.service

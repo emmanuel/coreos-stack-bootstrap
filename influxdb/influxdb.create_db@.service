@@ -21,4 +21,5 @@ ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_GRAFAN
 ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
 
 [X-Fleet]
+MachineMetadata="role=control"
 MachineOf=influxdb@%i.service

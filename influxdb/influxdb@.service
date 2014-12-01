@@ -36,4 +36,5 @@ ExecStartPost=/usr/bin/printf "Ready for action"
 
 
 [X-Fleet]
+MachineMetadata="role=control"
 Conflicts=influxdb@*.service
