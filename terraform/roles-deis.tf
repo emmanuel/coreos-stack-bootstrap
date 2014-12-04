@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "deis" {
-  name = "Cluster (${var.environment} / ${var.aws_instance_type_deis})"
+  name = "deis (${var.environment} / ${var.aws_instance_type_deis})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 0
@@ -12,7 +12,7 @@ resource "aws_autoscaling_group" "deis" {
 }
 
 resource "aws_launch_configuration" "deis" {
-  name = "deis (${var.environment})"
+  name = "deis (${var.environment} / ${var.aws_instance_type_deis})"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type_deis}"
   security_groups = [ "${aws_security_group.cluster.id}",
