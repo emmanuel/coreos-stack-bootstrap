@@ -16,8 +16,8 @@ resource "aws_security_group" "cluster" {
   }
 }
 
-resource "aws_security_group" "public-ssh" {
   name = "Cluster-public (${var.environment})"
+resource "aws_security_group" "public_ssh" {
   description = "Allow SSH from anywhere."
 
   # public ssh

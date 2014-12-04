@@ -15,10 +15,10 @@ resource "aws_launch_configuration" "control" {
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type_control}"
   security_groups = [ "${aws_security_group.cluster.id}",
-                      "${aws_security_group.public-ssh.id}",
-                      "${aws_security_group.cluster-services.id}",
-                      "${aws_security_group.cluster-services-elb-ingress.id}",
-                      "${aws_security_group.cluster-services-control.id}" ]
+                      "${aws_security_group.public_ssh.id}",
+                      "${aws_security_group.cluster_services.id}",
+                      "${aws_security_group.cluster_services-elb_ingress.id}",
+                      "${aws_security_group.cluster_services_control.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = <<USER_DATA
 #cloud-config
@@ -41,7 +41,7 @@ USER_DATA
 }
 
 # services accessible cluster-wide, but (generally) internal-only
-resource "aws_security_group" "cluster-services" {
+resource "aws_security_group" "cluster_services" {
   name = "Cluster services (${var.environment})"
   description = "Allow all cluster instances to access these cluster-services ports."
 
@@ -87,7 +87,7 @@ resource "aws_security_group" "cluster-services" {
 }
 
 # services accessible from outside the cluster via an ELB
-resource "aws_security_group" "cluster-services-elb-ingress" {
+resource "aws_security_group" "cluster_services-elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
   name = "Cluster services accessible via ELB (${var.environment})"
   description = "Allow elb instances to access these cluster service ports."
@@ -97,12 +97,12 @@ resource "aws_security_group" "cluster-services-elb-ingress" {
     from_port = 8086
     to_port =  8086
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb-influxdb.id}" ]
+    security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
   }
 }
 
 # services accessible cluster-wide, but (generally) internal-only
-resource "aws_security_group" "cluster-services-control" {
+resource "aws_security_group" "cluster_services_control" {
   name = "Cluster-private (${var.environment})"
   description = "Allow all cluster-services instances to access these private cluster service ports."
 
@@ -111,7 +111,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 7001
     to_port =  7001
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 
   # influxdb web
@@ -119,7 +119,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 8083
     to_port =  8083
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 
   # influxdb consensus
@@ -127,7 +127,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 8090
     to_port =  8090
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 
   # influxdb replication
@@ -135,7 +135,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 8099
     to_port =  8099
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 
   # zookeeper peer
@@ -143,7 +143,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 2888
     to_port =  2888
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
   
   # zookeeper leader election
@@ -151,7 +151,7 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 3888
     to_port =  3888
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 
   # elasticsearch peer
@@ -159,11 +159,11 @@ resource "aws_security_group" "cluster-services-control" {
     from_port = 9300
     to_port =  9300
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster-services.id}" ]
+    security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
 }
 
-resource "aws_security_group" "elb-influxdb" {
+resource "aws_security_group" "elb_influxdb" {
   name = "InfluxDB ELB (${var.environment})"
   description = "Allow public to access this InfluxDB port."
 
@@ -195,7 +195,7 @@ resource "aws_elb" "influxdb" {
     interval = 30
   }
 
-  security_groups = [ "${aws_security_group.elb-influxdb.id}" ]
+  security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
 }
 
 resource "aws_route53_record" "influxdb" {
