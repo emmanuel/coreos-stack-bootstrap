@@ -29,7 +29,6 @@ ExecStart=/usr/bin/docker run \
   nordstrom/influxdb:0.8.6
 
 # wait until InfluxDB is responding on the API port before dependent units get started
-ExecStartPost=/usr/bin/printf "http://${COREOS_PRIVATE_IPV4}:8086/ping\n"
 ExecStartPost=/bin/bash -c "echo \"Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping...\" \
   && until curl http://${COREOS_PRIVATE_IPV4}:8086/ping >/dev/null 2>&1; do sleep 1; done"
 
