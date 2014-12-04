@@ -43,7 +43,7 @@ USER_DATA
 # services accessible cluster-wide, but (generally) internal-only
 resource "aws_security_group" "cluster-services" {
   name = "Cluster services (${var.environment})"
-  description = "Cluster services communication rules."
+  description = "Allow all cluster instances to access these cluster-services ports."
 
   # etcd client (http)
   ingress {
@@ -90,7 +90,7 @@ resource "aws_security_group" "cluster-services" {
 resource "aws_security_group" "cluster-services-elb-ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
   name = "Cluster services accessible via ELB (${var.environment})"
-  description = "Allow ingress from ELBs for cluster services accessible externally (${var.environment})."
+  description = "Allow elb instances to access these cluster service ports."
 
   # influxdb api
   ingress {
@@ -104,7 +104,7 @@ resource "aws_security_group" "cluster-services-elb-ingress" {
 # services accessible cluster-wide, but (generally) internal-only
 resource "aws_security_group" "cluster-services-control" {
   name = "Cluster-private (${var.environment})"
-  description = "Cluster-services private communication rules."
+  description = "Allow all cluster-services instances to access these private cluster service ports."
 
   # etcd raft
   ingress {
@@ -165,7 +165,7 @@ resource "aws_security_group" "cluster-services-control" {
 
 resource "aws_security_group" "elb-influxdb" {
   name = "InfluxDB ELB (${var.environment})"
-  description = "InfluxDB ELB (${var.environment})."
+  description = "Allow public to access this InfluxDB port."
 
   # influxdb api
   ingress {
