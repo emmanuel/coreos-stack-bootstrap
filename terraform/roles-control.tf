@@ -8,7 +8,6 @@ resource "aws_autoscaling_group" "control" {
   desired_capacity = 3
   force_delete = true
   launch_configuration = "${aws_launch_configuration.control.name}"
-  load_balancers = [ "${aws_elb.etcd.name}", "${aws_elb.influxdb.name}" ]
 }
 
 resource "aws_launch_configuration" "control" {
