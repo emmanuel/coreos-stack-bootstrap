@@ -8,6 +8,7 @@ resource "aws_autoscaling_group" "control" {
   desired_capacity = 3
   force_delete = true
   launch_configuration = "${aws_launch_configuration.control.name}"
+  load_balancers = [ "${aws_elb.etcd.name}", "${aws_elb.influxdb.name}" ]
 }
 
 resource "aws_launch_configuration" "control" {
@@ -28,14 +29,6 @@ dynamic:
     metadata: instance_type=${var.aws_instance_type_control},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
-  # TODO: stop distributing long-lived AWS keys once Terraform supports
-  # IAM instance profiles: https://github.com/hashicorp/terraform/issues/28
-  aws_environment: &STATIC_AWS_ENVIRONMENT
-    content: |
-      AWS_REGION=${var.aws_region}
-      AWS_ACCESS_KEY=${var.instance_aws_access_key}
-      AWS_SECRET_KEY=${var.instance_aws_secret_key}
-      INFLUXDB_ELB_LOAD_BALANCER_NAME=influxdb-public-${var.environment}
 ${file("cloud-config-control.yaml")}
 USER_DATA
 }
@@ -90,9 +83,17 @@ resource "aws_security_group" "cluster_services" {
 resource "aws_security_group" "cluster_services-elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
   name = "Cluster services accessible via ELB (${var.environment})"
-  description = "Allow elb instances to access these cluster service ports."
+  description = "Allow ELB instances to access these cluster service ports."
 
-  # influxdb api
+  # etcd api
+  ingress {
+    from_port = 4001
+    to_port =  4001
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.elb_etcd.id}" ]
+  }
+
+  # InfluxDB api
   ingress {
     from_port = 8086
     to_port =  8086
@@ -104,7 +105,7 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
 # services accessible cluster-wide, but (generally) internal-only
 resource "aws_security_group" "cluster_services_control" {
   name = "Cluster-private (${var.environment})"
-  description = "Allow all cluster-services instances to access these private cluster service ports."
+  description = "Allow all cluster_services instances to access these private cluster service ports."
 
   # etcd raft
   ingress {
@@ -161,6 +162,43 @@ resource "aws_security_group" "cluster_services_control" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.cluster_services.id}" ]
   }
+}
+
+resource "aws_security_group" "elb_etcd" {
+  name = "Etcd internal ELB (${var.environment})"
+  description = "Etcd internal ELB (${var.environment})."
+
+  # etcd api
+  ingress {
+    from_port = 4001
+    to_port =  4001
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.cluster.id}" ]
+  }
+}
+
+resource "aws_elb" "etcd" {
+  name = "etcd-internal-${var.environment}"
+  # internal = true
+  # vpc_zone_identifier = "${var.vpc_zone_identifier}"
+  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
+
+  listener {
+    lb_port = 4001
+    lb_protocol = "http"
+    instance_port = 4001
+    instance_protocol = "http"
+  }
+
+  health_check {
+    healthy_threshold = 10
+    unhealthy_threshold = 2
+    timeout = 3
+    target = "HTTP:4001/version"
+    interval = 30
+  }
+
+  security_groups = [ "${aws_security_group.elb_etcd.id}" ]
 }
 
 resource "aws_security_group" "elb_influxdb" {
