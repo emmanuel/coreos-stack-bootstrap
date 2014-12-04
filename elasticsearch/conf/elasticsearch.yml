@@ -155,11 +155,11 @@ network.publish_host: ${COREOS_PRIVATE_IPV4}
 
 # Path to directory containing configuration (this file and logging.yml):
 #
-#path.conf: /path/to/conf
+# path.conf: /elasticsearch/conf
 
 # Path to directory where to store index data allocated for this node.
 #
-#path.data: /path/to/data
+#path.data: /elasticsearch/data
 #
 # Can optionally include more than one location, causing data to be striped across
 # the locations (a la RAID 0) on a file level, favouring locations with most free
