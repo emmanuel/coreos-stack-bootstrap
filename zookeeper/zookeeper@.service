@@ -2,7 +2,7 @@
 Description=zookeeper
 Requires=docker.service
 After=docker.service
-Requires=skydns.service
+Wants=skydns.service
 After=skydns.service
 Requires=zookeeper.data@%i.service
 After=zookeeper.data@%i.service
