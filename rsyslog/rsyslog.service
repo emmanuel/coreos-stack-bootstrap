@@ -1,0 +1,31 @@
+[Unit]
+Description=Read systemd journal and send to logstash
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5
+
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+Environment="TAG=latest"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill registrator
+ExecStartPre=-/usr/bin/docker rm registrator
+ExecStartPre=/usr/bin/docker pull progrium/registrator:${TAG}
+
+ExecStart=/usr/bin/docker run \
+  --name registrator \
+  --env DEBUG=true \
+  --volume /var/run/docker.sock:/tmp/docker.sock \
+  --hostname %m.hosts.cluster.local \
+  progrium/registrator:${TAG} \
+    skydns2://172.17.42.1:4001/${ENV}-registrator.cluster.local
+
+
+[X-Fleet]
+Global=true
+MachineMetadata="role=control"
