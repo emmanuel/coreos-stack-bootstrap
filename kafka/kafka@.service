@@ -11,7 +11,7 @@ After=kafka.conf@%i.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 RestartSec=60
 EnvironmentFile=/etc/environment
 Environment="TAG=0.8.1.1"

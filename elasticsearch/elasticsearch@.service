@@ -9,7 +9,7 @@ After=elasticsearch.data@%i.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 RestartSec=60
 EnvironmentFile=/etc/environment
 Environment="TAG=1.3.6"

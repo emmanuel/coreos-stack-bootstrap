@@ -5,7 +5,7 @@ After=docker.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment

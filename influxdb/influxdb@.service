@@ -7,7 +7,7 @@ After=skydns.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"

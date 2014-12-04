@@ -7,7 +7,7 @@ After=skydns.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 RestartSec=10
 
 Environment="ENV=blue"
