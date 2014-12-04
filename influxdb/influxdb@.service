@@ -9,8 +9,6 @@ After=skydns.service
 Type=simple
 Restart=always
 RestartSec=30
-PermissionsStartOnly=true
-ReadOnlyDirectories=/etc
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 
