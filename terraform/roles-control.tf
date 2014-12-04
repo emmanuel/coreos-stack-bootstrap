@@ -36,7 +36,7 @@ dynamic:
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
       INFLUXDB_ELB_LOAD_BALANCER_NAME=influxdb-public-${var.environment}
-${file("cloud-config.yaml")}
+${file("cloud-config-control.yaml")}
 USER_DATA
 }
 
