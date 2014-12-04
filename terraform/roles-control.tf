@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "control" {
-  name = "Cluster (${var.environment} / ${var.aws_instance_type_control})"
+  name = "control (${var.environment} / ${var.aws_instance_type_control})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 3
@@ -11,7 +11,7 @@ resource "aws_autoscaling_group" "control" {
 }
 
 resource "aws_launch_configuration" "control" {
-  name = "launch-configuration-${var.environment}"
+  name = "control (${var.environment} / ${var.aws_instance_type_control})"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type_control}"
   security_groups = [ "${aws_security_group.cluster.id}",
