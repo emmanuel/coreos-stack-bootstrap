@@ -21,13 +21,13 @@ ExecStartPre=-/usr/bin/docker rm cadvisor
 ExecStartPre=/usr/bin/docker pull google/cadvisor:${TAG}
 
 ExecStart=/usr/bin/docker run \
-  --name=cadvisor \
+  --name cadvisor \
   --hostname %m.hosts.cluster.local \
-  --publish=8080:8080 \
-  --volume=/var/run:/var/run:rw \
-  --volume=/sys:/sys:ro \
-  --volume=/var/lib/docker/:/var/lib/docker:ro \
-  --dns-search=${ENV}.cluster.local \
+  --publish 8080:8080 \
+  --volume /var/run:/var/run:rw \
+  --volume /sys:/sys:ro \
+  --volume /var/lib/docker/:/var/lib/docker:ro \
+  --dns-search ${ENV}.cluster.local \
   google/cadvisor:${TAG} \
     --logtostderr \
     --storage_driver=influxdb \
