@@ -1,10 +1,7 @@
 [Unit]
 Description=InfluxDB Presence
-BindTo=influxdb@%i.service
-BindTo=skydns.service
-Requires=skydns.service
+BindsTo=influxdb@%i.service
 After=influxdb@%i.service
-After=skydns.service
 
 [Service]
 Type=simple
