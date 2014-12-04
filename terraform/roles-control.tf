@@ -103,7 +103,7 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
 
 # services accessible cluster-wide, but (generally) internal-only
 resource "aws_security_group" "cluster_services_control" {
-  name = "Cluster-private (${var.environment})"
+  name = "Cluster-services private (${var.environment})"
   description = "Allow all cluster_services instances to access these private cluster service ports."
 
   # etcd raft
@@ -256,7 +256,7 @@ resource "aws_s3_bucket" "grafana" {
 }
 
 # Something like this should work once Route53 Alias records are supported by Terraform.
-#   In the meantime, CNAMEs don't work either, because S3 looks at the HTTP Host header.
+#   In the meantime, CNAMEs don't work either, because S3 inspects the HTTP Host header.
 # resource "aws_route53_record" "grafana" {
 #   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
 #   name = "grafana.${var.environment}.cloud.nlab.io"
