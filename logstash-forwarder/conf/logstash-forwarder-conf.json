@@ -1,0 +1,14 @@
+{
+  "network": {
+    "servers": [ "logstash:5000" ],
+
+    "timeout": 15
+  },
+
+  "files": [
+    {
+      "paths": [ "-" ],
+      "fields": { "type": "journald-json" }
+    }
+  ]
+}

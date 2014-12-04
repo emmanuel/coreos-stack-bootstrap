@@ -1,0 +1,33 @@
+[Unit]
+Description=Logstash forwarder
+Requires=docker.service
+After=docker.service
+Requires=skydns.service
+After=skydns.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+StandardOutput=null
+
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+Environment="TAG=0.3.1"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill logstash-forwarder
+ExecStartPre=-/usr/bin/docker rm logstash-forwarder
+ExecStartPre=/usr/bin/docker pull nordstrom/logstash-forwarder:${TAG}
+
+ExecStart=/bin/bash -c "/usr/bin/journalctl -o json -f | /usr/bin/docker run \
+  -i \
+  --rm \
+  --name logstash-forwarder \
+  --dns-search ${ENV}.cluster.local \
+  nordstrom/logstash-forwarder:${TAG}"
+
+
+[X-Fleet]
+Global=true
+MachineMetadata="role=control"
