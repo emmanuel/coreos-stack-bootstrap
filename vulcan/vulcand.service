@@ -1,0 +1,30 @@
+[Unit]
+Description=vulcand
+Wants=skydns.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill vulcand
+ExecStartPre=-/usr/bin/docker rm vulcand
+#ExecStartPre=/usr/bin/docker pull nordstrom/vulcand:${TAG}
+ExecStartPre=/usr/bin/docker pull mailgun/vulcand
+
+ExecStart=/usr/bin/docker run \
+  -d \
+  --name vulcand \
+  --hostname vulcand.${ENV}.cluster.local \
+  --dns-search ${ENV}.cluster.local \
+  --publish 8182:8182 \
+  --publish 8181:8181 \
+  mailgun/vulcand \
+    /go/bin/vulcand \
+    -apiInterface=0.0.0.0 \
+    -apiPort=8182 \
+    -port=8181 \
+    --etcd=http://172.17.42.1:4001
