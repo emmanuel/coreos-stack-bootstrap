@@ -76,6 +76,23 @@ resource "aws_security_group" "cluster_services" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.cluster.id}" ]
   }
+
+  # vulcan listening
+  ingress {
+    from_port = 8181
+    to_port =  8181
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.cluster.id}" ]
+  }
+
+  # vulcan api
+  ingress {
+    from_port = 8182
+    to_port =  8182
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.cluster.id}" ]
+  }
+
 }
 
 # services accessible from outside the cluster via an ELB
