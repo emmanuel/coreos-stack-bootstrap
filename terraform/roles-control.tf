@@ -309,7 +309,7 @@ resource "aws_route53_record" "api" {
   name = "api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
-  records = [ "${api_elb.vulcan.dns_name}" ]
+  records = [ "${aws_elb.vulcan.dns_name}" ]
 }
 
 resource "aws_s3_bucket" "grafana" {
