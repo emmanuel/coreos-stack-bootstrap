@@ -20,6 +20,7 @@ fleetctl destroy syslog-gollector/syslog_gollector.service
 elasticsearch/unlaunch_units.sh
 kafka/unlaunch_units.sh
 zookeeper/unlaunch_units.sh
+fleetctl destroy vulcan/vulcand.service
 fleetctl destroy skydns/skydns.service
 fleetctl destroy registrator/registrator.service
 fleetctl destroy logspout/logspout.service
