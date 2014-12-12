@@ -251,11 +251,11 @@ resource "aws_elb" "influxdb" {
   }
 
   health_check {
-    healthy_threshold = 10
+    healthy_threshold = 3
     unhealthy_threshold = 2
-    timeout = 3
+    timeout = 2
     target = "HTTP:8086/ping"
-    interval = 30
+    interval = 10
   }
 
   security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
