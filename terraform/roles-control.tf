@@ -116,6 +116,15 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
   }
+
+  # Vulcan api
+  ingress {
+    from_port = 80
+    to_port =  8181
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.elb_vulcan.id}" ]
+  }
+
 }
 
 # services accessible cluster-wide, but (generally) internal-only
@@ -258,6 +267,49 @@ resource "aws_route53_record" "influxdb" {
   type = "CNAME"
   ttl = "60"
   records = [ "${aws_elb.influxdb.dns_name}" ]
+}
+
+resource "aws_security_group" "elb_vulcan" {
+  name = "Vulcan ELB (${var.environment})"
+  description = "Allow public to access this vulcan port."
+
+  # vulcan api
+  ingress {
+    from_port = 80
+    to_port =  80
+    protocol = "tcp"
+    cidr_blocks = [ "${var.allow_ssh_from}" ]
+  }
+}
+
+resource "aws_elb" "vulcan" {
+  name = "vulcan-public-${var.environment}"
+  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
+
+  listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = 8181
+    instance_protocol = "http"
+  }
+
+  health_check {
+    healthy_threshold = 3
+    unhealthy_threshold = 2
+    timeout = 2
+    target = "HTTP:8182/v1/status"
+    interval = 10
+  }
+
+  security_groups = [ "${aws_security_group.elb_vulcan.id}" ]
+}
+
+resource "aws_route53_record" "api" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "api.${var.environment}.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "60"
+  records = [ "${api_elb.vulcan.dns_name}" ]
 }
 
 resource "aws_s3_bucket" "grafana" {
