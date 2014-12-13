@@ -13,5 +13,7 @@ RUN ln -s /opt/logstash-$LOGSTASH_RELEASE /opt/logstash
 # ADD conf/logstash-forwarder.crt /etc/pki/tls/certs/
 # ADD conf/logstash-forwarder.key /etc/pki/tls/private/
 ADD conf/logstash.conf /opt/logstash/conf/
+ADD pki/logstash-forwarder.crt /etc/pki/tls/certs/logstash.crt
+ADD pki/logstash-forwarder.key /etc/pki/tls/private/logstash.key
 
 CMD ["/opt/logstash/bin/logstash", "-f", "/opt/logstash/conf/logstash.conf"]
