@@ -2,6 +2,7 @@
 Description=zookeeper.presence
 Wants=zookeeper.data@%i.service
 After=zookeeper.data@%i.service
+Wants=zookeeper@%i.service
 Before=zookeeper@%i.service
 
 [Service]
