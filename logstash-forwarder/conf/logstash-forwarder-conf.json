@@ -1,7 +1,9 @@
 {
   "network": {
     "servers": [ "logstash:5000" ],
-
+    "ssl certificate": "/etc/pki/tls/certs/logstash-forwarder.crt",
+    "ssl key": "/etc/pki/tls/private/logstash-forwarder.key",
+    "ssl ca": "/etc/pki/tls/certs/logstash-forwarder.crt",
     "timeout": 15
   },
 
