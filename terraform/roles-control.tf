@@ -8,6 +8,19 @@ resource "aws_autoscaling_group" "control" {
   desired_capacity = 3
   force_delete = true
   launch_configuration = "${aws_launch_configuration.control.name}"
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+      aws autoscaling put-notification-configuration \
+        --auto-scaling-group-name "${aws_autoscaling_group.control.name}" \
+        --topic-arn "${var.aws_sns_topic_contol_autoscaling_events_arn}" \
+        --notification-types \
+          autoscaling:EC2_INSTANCE_LAUNCH \
+          autoscaling:EC2_INSTANCE_LAUNCH_ERROR \
+          autoscaling:EC2_INSTANCE_TERMINATE \
+          autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+COMMAND
+  }
 }
 
 resource "aws_launch_configuration" "control" {
