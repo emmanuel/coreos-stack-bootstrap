@@ -22,7 +22,7 @@ ExecStartPre=/usr/bin/docker pull google/cadvisor:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name cadvisor \
-  --hostname %m.hosts.cluster.local \
+  --hostname %m \
   --publish 8080:8080 \
   --volume /var/run:/var/run:rw \
   --volume /sys:/sys:ro \
