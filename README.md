@@ -4,17 +4,23 @@ Use to initialize and configure our CoreOS cluster.
 
 The cluster runs on AWS EC2 using Cloud Formation. cloud-init includes:
 
-* skydns
-* collectd
-* cadvisor (containerized)
+* docker (configure containers for local SkyDNS server)
+* etcd
+* fleet
 
 Fleet is then used to deploy:
 
-* graphite
-
-# Requirements
-
-* URL to a binary of SkyDNS
+* logspout: log collection from all containers, forwards to syslog-gollector
+* syslog-gollector: syslog server on each host, forwards to kafka
+* registrator: automated DNS registrations based on container metadata
+* skydns: local DNS server backed by etcd
+* influxdb: time-series database, mainly used for metrics
+* sysinfo_influxdb: collects metrics via CloudFoundry's sigar, sends to influxdb
+* cadvisor: collects metrics about all running containers, sends to influxdb
+* zookeeper: distributed consistent key/value datastore, used by several others
+* kafka: high-volume distributed publish/subscribe message queue, uses zookeeper
+* elasticsearch: distributed, lucene-based search, used for log aggregation
+* logstash: log processing worker. reads from kafka & indexes into elasticsearch
 
 # Local Setup
 
