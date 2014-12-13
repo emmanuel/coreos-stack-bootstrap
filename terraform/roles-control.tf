@@ -325,11 +325,11 @@ resource "aws_s3_bucket" "grafana" {
   # TODO: tighten up the Grafana access control
   acl = "public-read"
 
-  # provisioner "local-exec" {
-  #   command = "aws s3 cp ../grafana/dist/grafana-1.9.0-rc1 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read > /dev/null"
-  #   command = "aws s3 cp ../grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
-  #   command = "aws s3 website s3://grafana-${var.environment}-nlab-cloud --index-document index.html"
-  # }
+  provisioner "local-exec" {
+    command = "aws s3 cp ../grafana/dist/grafana-1.9.0 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read > /dev/null"
+    command = "aws s3 cp ../grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
+    command = "aws s3 website s3://grafana-${var.environment}-nlab-cloud --index-document index.html"
+  }
 }
 
 # Something like this should work once Route53 Alias records are supported by Terraform.
