@@ -17,8 +17,8 @@ resource "aws_launch_configuration" "control" {
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
-                      "${aws_security_group.cluster_services-elb_ingress.id}",
-                      "${aws_security_group.cluster_services_control.id}" ]
+                      "${aws_security_group.cluster_services_control.id}",
+                      "${aws_security_group.cluster_services-elb_ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = <<USER_DATA
 #cloud-config
