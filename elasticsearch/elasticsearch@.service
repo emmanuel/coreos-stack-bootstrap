@@ -31,9 +31,9 @@ ExecStart=/usr/bin/docker run \
   --volumes-from elasticsearch-data-%i \
     nordstrom/elasticsearch:${TAG}
 
-# give elasticsearch some boot time before dependent units get started
-ExecStartPost=/usr/bin/sleep 30
-ExecStartPost=/usr/bin/printf "Ready for action"
+# wait until ElasticSearch is responding on the API port before dependent units get started
+ExecStartPost=/bin/bash -c "echo \"Waiting for ElasticSearch on http://${COREOS_PRIVATE_IPV4}:9200/_cluster/health...\" \
+  && until curl http://${COREOS_PRIVATE_IPV4}:9200/_cluster/health >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill elasticsearch-%i
 
