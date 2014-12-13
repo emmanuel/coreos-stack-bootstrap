@@ -19,7 +19,7 @@ ExecStartPre=/usr/bin/docker pull progrium/logspout:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name logspout \
-  --hostname %m.hosts.cluster.local \
+  --hostname %m \
   --dns-search ${ENV}.cluster.local \
   --env DEBUG=true \
   --volume /var/run/docker.sock:/tmp/docker.sock \
