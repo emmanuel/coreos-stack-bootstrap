@@ -11,11 +11,12 @@ Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
+Environment="TAG=0.8.7"
 
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill influxdb-%i
 ExecStartPre=-/usr/bin/docker rm influxdb-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:0.8.6
+ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name influxdb-%i \
@@ -26,7 +27,7 @@ ExecStart=/usr/bin/docker run \
   --publish 8083:8083 \
   --publish 8090:8090 \
   --publish 8099:8099 \
-  nordstrom/influxdb:0.8.6
+  nordstrom/influxdb:${TAG}
 
 # wait until InfluxDB is responding on the API port before dependent units get started
 ExecStartPost=/bin/bash -c "echo \"Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping...\" \
