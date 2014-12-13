@@ -28,6 +28,14 @@ dynamic:
     metadata: instance_type=${var.aws_instance_type_control},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
+  # TODO: stop distributing long-lived AWS keys once Terraform supports
+  # IAM instance profiles: https://github.com/hashicorp/terraform/issues/28
+  aws_environment: &STATIC_AWS_ENVIRONMENT
+    content: |
+      AWS_REGION=${var.aws_region}
+      AWS_ACCESS_KEY=${var.instance_aws_access_key}
+      AWS_SECRET_KEY=${var.instance_aws_secret_key}
+      INFLUXDB_ELB_LOAD_BALANCER_NAME=influxdb-public-${var.environment}
 ${file("cloud-config-control.yaml")}
 USER_DATA
 }
