@@ -1,6 +1,6 @@
 [Unit]
 Description=InfluxDB Presence
-BindsTo=influxdb@%i.service
+Wants=influxdb@%i.service
 After=influxdb@%i.service
 
 [Service]
