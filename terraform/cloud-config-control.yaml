@@ -21,8 +21,20 @@ coreos:
         [Service]
         ExecStart=
         ExecStart=/usr/bin/docker -d -s=btrfs -r=false -H fd:// --dns=172.17.42.1 --dns-search=cluster.local
+    - name: extended-environment.install.service
+      command: start
+      content: |
+        [Unit]
+        Description=AWS runtime environment installer
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
 
 write_files:
+  - path: /etc/aws_environment
+    <<: *STATIC_AWS_ENVIRONMENT
   # Docker defaults to SSL for all registry interaction, but Deis doesn't yet support it
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
     content: |
