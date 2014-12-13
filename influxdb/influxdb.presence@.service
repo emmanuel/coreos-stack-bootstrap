@@ -15,30 +15,33 @@ Environment="INFLUXDB_ADMIN_API_PORT=8083"
 Environment="INFLUXDB_RAFT_PORT=8090"
 Environment="INFLUXDB_REPLICATION_PORT=8099"
 
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb-%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb-%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+# influxdb-1.blue.cluster.local
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb-%i {\"host\":\"%m.hosts.cluster.local\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb-%i "{\"host\":\"%m.hosts.cluster.local\"}"
 
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb/%i {\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb/%i "{\"host\":\"%m.hosts.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+# 1.influxdb.blue.cluster.local
+# influxdb.blue.cluster.local (round-robin)
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb/%i {\"host\":\"%m.hosts.cluster.local\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb/%i "{\"host\":\"%m.hosts.cluster.local\"}"
 
+# _influxdb._tcp.blue.cluster.local 8086
+# _influxdb._tcp.blue.cluster.local (round-robin)
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+
+# _influxdb-admin._tcp.blue.cluster.local 8083
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_ADMIN_API_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
+
+# _influxdb-raft._tcp.blue.cluster.local 8090
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_RAFT_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_RAFT_PORT}}"
+
+# _influxdb-replication._tcp.blue.cluster.local 8099
 ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i {\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_REPLICATION_PORT}}\n"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i "{\"host\":\"influxdb-%i.${ENV}.cluster.local\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
-
-# influxdb-1.test.cluster.local
-# 1.influxdb.test.cluster.local
-# influxdb.test.cluster.local -> round-robin
-# _influxdb._tcp.test.cluster.local 8086
-# _influxdb-admin._tcp.test.cluster.local 8083
-# _influxdb-raft._tcp.test.cluster.local 8090
-# _influxdb-replication._tcp.test.cluster.local 8099
 
 [X-Fleet]
 MachineMetadata="role=control"
