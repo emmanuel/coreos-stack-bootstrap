@@ -140,8 +140,8 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
 
   # Vulcan api
   ingress {
-    from_port = 80
-    to_port =  8181
+    from_port = 8182
+    to_port =  8182
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_vulcan.id}" ]
   }
