@@ -48,7 +48,8 @@ dynamic:
       AWS_REGION=${var.aws_region}
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
-      INFLUXDB_ELB_LOAD_BALANCER_NAME=influxdb-public-${var.environment}
+      INFLUXDB_ELB_LOAD_BALANCER_NAME=${aws_elb.influxdb.name}
+      VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
 ${file("cloud-config-control.yaml")}
 USER_DATA
 }
