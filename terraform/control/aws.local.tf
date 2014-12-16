@@ -49,72 +49,8 @@ dynamic:
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
       INFLUXDB_ELB_LOAD_BALANCER_NAME=${aws_elb.influxdb.name}
-      VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
 ${file("cloud-config.yaml")}
 USER_DATA
-}
-
-# services accessible cluster-wide, but (generally) internal-only
-resource "aws_security_group" "cluster_services" {
-  name = "Cluster services (${var.environment})"
-  description = "Allow all cluster instances to access these cluster-services ports."
-
-  # etcd client (http)
-  ingress {
-    from_port = 4001
-    to_port =  4001
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # influxdb api
-  ingress {
-    from_port = 8086
-    to_port =  8086
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # zookeeper client
-  ingress {
-    from_port = 2181
-    to_port =  2181
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # kafka client
-  ingress {
-    from_port = 9092
-    to_port =  9092
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # elasticsearch client
-  ingress {
-    from_port = 9200
-    to_port =  9200
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # vulcan listening
-  ingress {
-    from_port = 8181
-    to_port =  8181
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # vulcan api
-  ingress {
-    from_port = 8182
-    to_port =  8182
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
 }
 
 # services accessible from outside the cluster via an ELB
@@ -137,14 +73,6 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     to_port =  8086
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
-  }
-
-  # Vulcan api (health check on 8182, service traffic on 8181)
-  ingress {
-    from_port = 8181
-    to_port =  8182
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
 
 }
@@ -289,49 +217,6 @@ resource "aws_route53_record" "influxdb" {
   type = "CNAME"
   ttl = "60"
   records = [ "${aws_elb.influxdb.dns_name}" ]
-}
-
-resource "aws_security_group" "elb_vulcand" {
-  name = "Vulcan ELB (${var.environment})"
-  description = "Allow public to access this vulcan port."
-
-  # vulcan api
-  ingress {
-    from_port = 80
-    to_port =  80
-    protocol = "tcp"
-    cidr_blocks = [ "${var.allow_ssh_from}" ]
-  }
-}
-
-resource "aws_elb" "vulcand" {
-  name = "vulcand-public-${var.environment}"
-  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 8181
-    instance_protocol = "http"
-  }
-
-  health_check {
-    healthy_threshold = 3
-    unhealthy_threshold = 2
-    timeout = 2
-    target = "HTTP:8182/v1/status"
-    interval = 10
-  }
-
-  security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
-}
-
-resource "aws_route53_record" "api" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "api.${var.environment}.cloud.nlab.io"
-  type = "CNAME"
-  ttl = "60"
-  records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
 resource "aws_s3_bucket" "grafana" {
