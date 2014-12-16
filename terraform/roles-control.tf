@@ -138,9 +138,9 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
   }
 
-  # Vulcan api
+  # Vulcan api (health check on 8182, service traffic on 8181)
   ingress {
-    from_port = 8182
+    from_port = 8181
     to_port =  8182
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
