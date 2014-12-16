@@ -143,7 +143,7 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     from_port = 8182
     to_port =  8182
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_vulcan.id}" ]
+    security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
 
 }
@@ -290,7 +290,7 @@ resource "aws_route53_record" "influxdb" {
   records = [ "${aws_elb.influxdb.dns_name}" ]
 }
 
-resource "aws_security_group" "elb_vulcan" {
+resource "aws_security_group" "elb_vulcand" {
   name = "Vulcan ELB (${var.environment})"
   description = "Allow public to access this vulcan port."
 
@@ -303,8 +303,8 @@ resource "aws_security_group" "elb_vulcan" {
   }
 }
 
-resource "aws_elb" "vulcan" {
-  name = "vulcan-public-${var.environment}"
+resource "aws_elb" "vulcand" {
+  name = "vulcand-public-${var.environment}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
@@ -322,7 +322,7 @@ resource "aws_elb" "vulcan" {
     interval = 10
   }
 
-  security_groups = [ "${aws_security_group.elb_vulcan.id}" ]
+  security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
 }
 
 resource "aws_route53_record" "api" {
@@ -330,7 +330,7 @@ resource "aws_route53_record" "api" {
   name = "api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
-  records = [ "${aws_elb.vulcan.dns_name}" ]
+  records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
 resource "aws_s3_bucket" "grafana" {
