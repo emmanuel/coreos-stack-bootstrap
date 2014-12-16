@@ -1,5 +1,5 @@
 #!/bin/bash
 
-alias tfplan='terraform plan --var-file=terraform.tfvars --var-file cluster_values.tfvars'
-alias tfapply='terraform apply --var-file=terraform.tfvars --var-file cluster_values.tfvars'
-alias tfdestroyplan='terraform plan --var-file=terraform.tfvars --var-file cluster_values.tfvars -destroy --out=destroy.tfplan'
+alias tfplan='terraform plan --var-file ../cluster_values.tfvars --var-file=../terraform.global.tfvars --var-file=terraform.local.tfvars'
+alias tfapply='terraform apply --var-file ../cluster_values.tfvars --var-file=../terraform.global.tfvars --var-file=terraform.local.tfvars'
+alias tfdestroyplan='terraform plan --var-file ../cluster_values.tfvars --var-file=../terraform.global.tfvars --var-file=terraform.global.tfvars -destroy --out=destroy.tfplan'

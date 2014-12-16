@@ -29,7 +29,7 @@ dynamic:
     metadata: instance_type=${var.aws_instance_type_deis},public_ip=$public_ipv4,region=${var.aws_region},role=deis
   etcd_servers: &ETCD_SERVERS
     etcd_servers: "http://${aws_elb.etcd.dns_name}:4001"
-${file("cloud-config-deis.yaml")}
+${file("cloud-config.yaml")}
 USER_DATA
 }
 
