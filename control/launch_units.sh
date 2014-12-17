@@ -12,14 +12,28 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/.
 
-fleetctl start units/logspout/logspout.service
-fleetctl start units/registrator/registrator.service
-fleetctl start units/skydns/skydns.service
-units/influxdb/launch_units.sh
-fleetctl start units/cadvisor/cadvisor.service
-fleetctl start units/sysinfo_influxdb/sysinfo_influxdb.service
-units/zookeeper/launch_units.sh
-units/kafka/launch_units.sh
-fleetctl start units/syslog-gollector/syslog_gollector.service
-units/elasticsearch/launch_units.sh
-units/logstash/launch_units.sh
+fleetctl start units/logspout.service
+fleetctl start units/registrator.service
+fleetctl start units/skydns.service
+
+fleetctl submit units/influxdb{.elb,.presence,.create_db,}@.service
+fleetctl start influxdb{.elb,.presence,}@1
+fleetctl start units/kafka.create_topics@1.service
+
+fleetctl start units/cadvisor.service
+fleetctl start units/sysinfo_influxdb.service
+
+fleetctl submit units/zookeeper{.data,.presence,}@.service
+fleetctl start units/zookeeper{.data,.presence,}@{1-3}.service
+
+fleetctl submit units/kafka{.conf,.data,.presence,.create_topics,}@.service
+fleetctl start units/kafka{.conf,.data,.presence,}@{1-3}.service
+fleetctl start units/kafka.create_topics@1.service
+
+fleetctl start units/syslog_gollector.service
+
+fleetctl submit units/elasticsearch{.data,.presence,}@.service
+fleetctl start units/elasticsearch{.data,.presence,}@{1-3}.service
+
+fleetctl submit units/logstash{.presence,}@.service
+fleetctl start units/logstash{.presence,}@{1-3}.service
