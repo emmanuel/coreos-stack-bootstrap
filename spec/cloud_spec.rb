@@ -4,7 +4,7 @@ require 'ipaddr'
 require 'json'
 require_relative 'cloud_status'
 
-status = CloudStatus.new(ENV['FLEETCTL_TUNNEL'], 'terraform/cluster_values.tfvars', 'cloud.nlab.io')
+status = CloudStatus.new(ENV['FLEETCTL_TUNNEL'], 'cluster_values.tfvars', 'cloud.nlab.io')
 
 RSpec.describe CloudStatus do
   it "has an environment name set in terraform/cluster_values.tfvars" do
