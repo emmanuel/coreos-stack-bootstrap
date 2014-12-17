@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "service" {
-  name = "service (${var.environment} / ${var.aws_instance_type_service})"
+  name = "service (${var.environment} / ${var.aws_instance_type})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 3
@@ -11,9 +11,9 @@ resource "aws_autoscaling_group" "service" {
 }
 
 resource "aws_launch_configuration" "service" {
-  name = "service (${var.environment} / ${var.aws_instance_type_service})"
+  name = "service (${var.environment} / ${var.aws_instance_type})"
   image_id = "${lookup(var.amis, var.aws_region)}"
-  instance_type = "${var.aws_instance_type_service}"
+  instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
@@ -25,7 +25,7 @@ resource "aws_launch_configuration" "service" {
 
 dynamic:
   fleet_metadata: &FLEET_METADATA
-    metadata: instance_type=${var.aws_instance_type_service},public_ip=$public_ipv4,region=${var.aws_region},role=service
+    metadata: instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=service
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
   aws_environment: &STATIC_AWS_ENVIRONMENT

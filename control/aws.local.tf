@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "control" {
-  name = "control (${var.environment} / ${var.aws_instance_type_control})"
+  name = "control (${var.environment} / ${var.aws_instance_type})"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 3
@@ -24,9 +24,9 @@ COMMAND
 }
 
 resource "aws_launch_configuration" "control" {
-  name = "control (${var.environment} / ${var.aws_instance_type_control})"
+  name = "control (${var.environment} / ${var.aws_instance_type})"
   image_id = "${lookup(var.amis, var.aws_region)}"
-  instance_type = "${var.aws_instance_type_control}"
+  instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
@@ -38,7 +38,7 @@ resource "aws_launch_configuration" "control" {
 
 dynamic:
   fleet_metadata: &FLEET_METADATA
-    metadata: instance_type=${var.aws_instance_type_control},public_ip=$public_ipv4,region=${var.aws_region},role=control
+    metadata: instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
   # TODO: stop distributing long-lived AWS keys once Terraform supports

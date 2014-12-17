@@ -7,15 +7,6 @@ variable "environment" {
   default = "test"
 }
 
-variable "aws_instance_type_control" {
-  default = "m3.large"
-}
-variable "aws_instance_type_deis" {
-  default = "m3.large"
-}
-variable "aws_instance_type_service" {
-  default = "m3.large"
-}
 variable "aws_region" {
   default = "us-west-2"
 }

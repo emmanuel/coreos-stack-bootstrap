@@ -1,6 +1,6 @@
 # Nordstrom Sandbox Cluster for Rapid Validation, Initialization
 
-Use to initialize and configure our CoreOS cluster.
+Use to initialize and configure our CoreOS cluster. The control cluster as well as other "sub" clusters.
 
 The cluster runs on AWS EC2 using Cloud Formation. cloud-init includes:
 
@@ -8,7 +8,7 @@ The cluster runs on AWS EC2 using Cloud Formation. cloud-init includes:
 * etcd
 * fleet
 
-Fleet is then used to deploy:
+For the control cluster, fleet is then used to deploy:
 
 * logspout: log collection from all containers, forwards to syslog-gollector
 * syslog-gollector: syslog server on each host, forwards to kafka
@@ -32,13 +32,13 @@ aws configure
 ```
 * Get AWS ssh private key for the 'coreos-beta' keypair from Paul or Emmanuel, and then `ssh-add` it. Alternatively, generate your own key pair and upload it to our AWS account (you'll need to refer to this key in the create_stack command below).
 
-# Initializing and configuring the cluster
+# Initializing and configuring the control cluster
 
 ```bash
-cd terraform
 source aliases.sh
 # add your keys to cloud-config.yaml & terraform.tfvars
 new_cluster_values
+cd control
 tfplan
 tfapply
 ```
@@ -47,12 +47,24 @@ Wait a few minutes, then get a public hostname or ip from one of your new instan
 
 ```bash
 export FLEETCTL_TUNNEL={resolvable address of one of your cloud instances}
-coreos/launch_units.sh
+control/launch_units.sh
 ```
+
+# Initializing "sub" clusters
+
+Similar to the control cluster above, you can bootstrap "sub" clusters _services_ and _deis_. For example:
+
+```bash
+cd services
+tfplan
+tfapply
+./launch_units.sh
+```
+
 
 # Tests
 
-After starting up the cluster via Terraform, and setting your FLEETCTL_TUNNEL variable, run tests:
+After starting up the control cluster via Terraform, and setting your FLEETCTL_TUNNEL variable, run tests:
 
 To install rspec:
 ```bash

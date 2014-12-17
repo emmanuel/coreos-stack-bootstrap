@@ -1,0 +1,1 @@
+../global/aws.global.tf

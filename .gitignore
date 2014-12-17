@@ -8,3 +8,4 @@ terraform/etcd_discovery_url.tfvars
 vendor/
 .vagrant/
 .DS_Store
+cluster_values.tfvars

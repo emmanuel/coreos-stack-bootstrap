@@ -1,4 +1,4 @@
-variable "aws_instance_type_control" {
+variable "aws_instance_type" {
   default = "m3.large"
 }
 
