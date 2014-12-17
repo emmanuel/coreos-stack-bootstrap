@@ -15,7 +15,6 @@ cd $SCRIPT_PATH/.
 fleetctl start units/logspout/logspout.service
 fleetctl start units/registrator/registrator.service
 fleetctl start units/skydns/skydns.service
-fleetctl start units/vulcan/vulcand.service
 units/influxdb/launch_units.sh
 fleetctl start units/cadvisor/cadvisor.service
 fleetctl start units/sysinfo_influxdb/sysinfo_influxdb.service
