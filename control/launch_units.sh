@@ -24,16 +24,16 @@ fleetctl start units/cadvisor.service
 fleetctl start units/sysinfo_influxdb.service
 
 fleetctl submit units/zookeeper{.data,.presence,}@.service
-fleetctl start units/zookeeper{.data,.presence,}@{1-3}.service
+fleetctl start units/zookeeper{.data,.presence,}@{1..3}
 
 fleetctl submit units/kafka{.conf,.data,.presence,.create_topics,}@.service
-fleetctl start units/kafka{.conf,.data,.presence,}@{1-3}.service
-fleetctl start units/kafka.create_topics@1.service
+fleetctl start units/kafka{.conf,.data,.presence,}@{1..3}
+fleetctl start units/kafka.create_topics@1
 
 fleetctl start units/syslog_gollector.service
 
 fleetctl submit units/elasticsearch{.data,.presence,}@.service
-fleetctl start units/elasticsearch{.data,.presence,}@{1-3}.service
+fleetctl start units/elasticsearch{.data,.presence,}@{1..3}.service
 
 fleetctl submit units/logstash{.presence,}@.service
-fleetctl start units/logstash{.presence,}@{1-3}.service
+fleetctl start units/logstash{.presence,}@{1..3}.service
