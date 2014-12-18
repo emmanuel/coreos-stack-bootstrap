@@ -4,10 +4,10 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=kafka.data@%i.service
-After=kafka.data@%i.service
-Wants=kafka.conf@%i.service
-After=kafka.conf@%i.service
+Wants=%p.data@%i.service
+After=%p.data@%i.service
+Wants=%p.conf@%i.service
+After=%p.conf@%i.service
 
 [Service]
 Type=simple
@@ -38,5 +38,5 @@ ExecStartPost=/bin/bash -c "echo \"Waiting for Kafka on tcp://${COREOS_PRIVATE_I
 ExecStop=/usr/bin/docker kill kafka-%i
 
 [X-Fleet]
-MachineOf=kafka.data@%i.service
-Conflicts=kafka@*.service
+MachineOf=%p.data@%i.service
+Conflicts=%p@*.service

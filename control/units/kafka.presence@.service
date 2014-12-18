@@ -28,4 +28,4 @@ ExecStart=/usr/bin/printf "Announced\n"
 
 [X-Fleet]
 MachineOf=kafka@%i.service
-Conflicts=kafka.presence@*.service
+Conflicts=%p@*.service

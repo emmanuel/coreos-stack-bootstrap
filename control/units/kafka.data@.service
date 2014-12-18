@@ -22,4 +22,4 @@ ExecStartPre=-/usr/bin/docker run \
 ExecStart=/usr/bin/printf "Kafka data volumes available\n"
 
 [X-Fleet]
-Conflicts=kafka.data@*.service
+Conflicts=%p@*.service

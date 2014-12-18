@@ -47,4 +47,4 @@ ExecStart=/usr/bin/printf "Announced\n"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=logstash@%i.service
-# Conflicts=logstash.presence@*.service
+Conflicts=%p@*.service

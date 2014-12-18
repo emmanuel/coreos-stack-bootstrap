@@ -24,4 +24,4 @@ ExecStart=/usr/bin/printf "ElasticSearch data volumes available\n"
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=elasticsearch.data@*.service
+Conflicts=%p@*.service

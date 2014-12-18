@@ -41,4 +41,4 @@ ExecStart=/usr/bin/printf "Announced\n"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=zookeeper.data@%i.service
-Conflicts=zookeeper.presence@*.service
+Conflicts=%p@*.service

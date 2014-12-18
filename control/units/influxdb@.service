@@ -35,4 +35,4 @@ ExecStartPost=/bin/bash -c "echo \"Waiting for InfluxDB on http://${COREOS_PRIVA
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=influxdb@*.service
+Conflicts=%p@*.service

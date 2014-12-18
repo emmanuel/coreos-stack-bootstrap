@@ -24,4 +24,4 @@ ExecStart=/usr/bin/printf "Zookeeper data volumes available\n"
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=zookeeper.data@*.service
+Conflicts=%p@*.service

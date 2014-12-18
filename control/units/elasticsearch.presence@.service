@@ -36,4 +36,4 @@ ExecStart=/usr/bin/printf "Announced\n"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=elasticsearch@%i.service
-Conflicts=elasticsearch.presence@*.service
+Conflicts=%p@*.service
