@@ -23,9 +23,9 @@ ExecStart=/usr/bin/docker run \
   --publish 5000:5000 \
     nordstrom/logstash:${TAG}
 
-# give logstash some boot time before dependent units get started
-ExecStartPost=/usr/bin/sleep 30
-ExecStartPost=/usr/bin/printf "Ready for action"
+# wait until Logstash is responding on the lumberjack port before dependent units get started
+# ExecStartPost=/bin/bash -c "echo \"Waiting for Logstash on tcp://${COREOS_PRIVATE_IPV4}:5000...\" \
+#   && until echo 'foo' | ncat ${COREOS_PRIVATE_IPV4} 5000 >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill logstash-%i
 
