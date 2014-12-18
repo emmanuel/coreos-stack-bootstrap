@@ -12,14 +12,28 @@ fi
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 cd $SCRIPT_PATH/.
 
-units/logstash/unlaunch_units.sh
-fleetctl destroy units/cadvisor/cadvisor.service
-fleetctl destroy units/sysinfo_influxdb/sysinfo_influxdb.service
-units/influxdb/unlaunch_units.sh
-fleetctl destroy units/syslog-gollector/syslog_gollector.service
-units/elasticsearch/unlaunch_units.sh
-units/kafka/unlaunch_units.sh
-units/zookeeper/unlaunch_units.sh
-fleetctl destroy units/skydns/skydns.service
-fleetctl destroy units/registrator/registrator.service
-fleetctl destroy units/logspout/logspout.service
+fleetctl destroy units/logstash{.presence,}@{1..3}
+fleetctl destroy units/logstash{.presence,}@.service
+
+fleetctl destroy units/elasticsearch{.data,.presence,}@{1..3}
+fleetctl destroy units/elasticsearch{.data,.presence,}@.service
+
+fleetctl destroy units/syslog_gollector.service
+
+fleetctl destroy units/kafka.create_topics@1
+fleetctl destroy units/kafka{.conf,.data,.presence,}@{1..3}
+fleetctl destroy units/kafka{.conf,.data,.presence,.create_topics,}@.service
+
+fleetctl destroy units/zookeeper{.data,.presence,}@{1..3}
+fleetctl destroy units/zookeeper{.data,.presence,}@.service
+
+fleetctl destroy units/sysinfo_influxdb.service
+fleetctl destroy units/cadvisor.service
+
+fleetctl destroy units/influxdb.create_db@1.service
+fleetctl destroy influxdb{.elb,.presence,}@1
+fleetctl destroy units/influxdb{.elb,.presence,.create_db,}@.service
+
+fleetctl destroy units/skydns.service
+fleetctl destroy units/registrator.service
+fleetctl destroy units/logspout.service
