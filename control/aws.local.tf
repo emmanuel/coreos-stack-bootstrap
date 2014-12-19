@@ -228,8 +228,8 @@ resource "aws_s3_bucket" "grafana" {
   acl = "public-read"
 
   provisioner "local-exec" {
-    command = "aws s3 cp ../grafana/dist/grafana-1.9.0 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read > /dev/null"
-    command = "aws s3 cp ../grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
+    command = "aws s3 cp units/grafana/dist/grafana-1.9.0 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read > /dev/null"
+    command = "aws s3 cp units/grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
     command = "aws s3 website s3://grafana-${var.environment}-nlab-cloud --index-document index.html"
   }
 }
