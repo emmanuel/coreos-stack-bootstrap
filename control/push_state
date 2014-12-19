@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+if [[ $DROPBOX_HOME && ${DROPBOX_HOME-_} ]]; then
+
+  state_dir="$DROPBOX_HOME/Innovation Engagements/ic-state/control"
+
+  if [ ! -d "$state_dir" ]; then
+    mkdir -p "$state_dir"
+    echo "Created directory $state_dir"
+  fi
+
+  cp ./terraform.tfstate "$state_dir/"
+  echo "State pushed to $state_dir"
+
+else 
+  echo "Your \$DROPBOX_HOME environment variable must be set."
+fi

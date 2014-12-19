@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+if [[ $DROPBOX_HOME && ${DROPBOX_HOME-_} ]]; then
+
+  state_dir="$DROPBOX_HOME/Innovation Engagements/ic-state/control"
+  state_file="$state_dir/terraform.tfstate"
+
+  if [ -f "$state_file" ]; then
+
+    cp "$state_file" ./terraform.tfstate 
+    echo "State pulled from $state_dir"
+
+  else
+    echo "The state file does not exist $state_file"
+  fi
+
+else 
+  echo "Your \$DROPBOX_HOME environment variable must be set."
+fi
