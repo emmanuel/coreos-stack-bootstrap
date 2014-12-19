@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd control
+
+echo "cluster_sg = \"$(terraform output cluster_aws_security_group)\"" > ../cluster_outputs.tfvars
+echo "cluster_services_sg = \"$(terraform output cluster_services_aws_security_group)\"" >> ../cluster_outputs.tfvars
+echo "public_ssh_sg = \"$(terraform output public_ssh_aws_security_group)\"" >> ../cluster_outputs.tfvars
+
