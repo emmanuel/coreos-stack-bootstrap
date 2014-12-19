@@ -16,3 +16,4 @@ WantedBy=multi-user.target
 
 [X-Fleet]
 MachineMetadata="role=deis"
+Conflicts=deis-registry@*.service
