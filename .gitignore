@@ -9,3 +9,7 @@ vendor/
 .vagrant/
 .DS_Store
 cluster_values.tfvars
+control/terraform.tfstate
+control/terraform.tfstate.backup
+control/destroy.tfplan
+cluster_outputs.tfvars
