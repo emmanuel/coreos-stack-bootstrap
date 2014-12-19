@@ -15,6 +15,9 @@ resource "aws_security_group" "cluster" {
     cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
 }
+output "cluster_aws_security_group" {
+    value = "${aws_security_group.cluster.id}"
+}
 
 resource "aws_security_group" "public_ssh" {
   name = "SSH from anywhere (${var.environment})"
@@ -27,6 +30,9 @@ resource "aws_security_group" "public_ssh" {
     protocol = "tcp"
     cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
+}
+output "public_ssh_aws_security_group" {
+    value = "${aws_security_group.public_ssh.id}"
 }
 
 # services accessible cluster-wide, but (generally) internal-only
@@ -74,5 +80,8 @@ resource "aws_security_group" "cluster_services" {
     security_groups = [ "${aws_security_group.cluster.id}" ]
   }
 
+}
+output "cluster_services_aws_security_group" {
+    value = "${aws_security_group.cluster_services.id}"
 }
 
