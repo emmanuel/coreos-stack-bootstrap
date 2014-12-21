@@ -14,7 +14,7 @@ TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker pull nordstrom/kafka:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \
-  --name kafka-data-%i \
+  --name kafka.data-%i \
   --volume /kafka/data \
     nordstrom/kafka:${TAG} \
       /usr/bin/printf "Kafka data volumes container started\n"

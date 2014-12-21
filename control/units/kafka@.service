@@ -26,8 +26,8 @@ ExecStart=/usr/bin/docker run \
   --name kafka-%i \
   --hostname kafka-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
-  --volumes-from kafka-data-%i \
-  --volumes-from kafka-conf-%i \
+  --volumes-from kafka.data-%i \
+  --volumes-from kafka.conf-%i \
   --publish 9092:9092 \
     nordstrom/kafka:${TAG}
 

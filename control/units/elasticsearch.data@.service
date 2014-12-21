@@ -15,7 +15,7 @@ TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \
-  --name elasticsearch-data-%i \
+  --name elasticsearch.data-%i \
   --volume /var/lib/elasticsearch \
     nordstrom/elasticsearch:${TAG} \
       /usr/bin/printf "ElasticSearch data volumes container started\n"

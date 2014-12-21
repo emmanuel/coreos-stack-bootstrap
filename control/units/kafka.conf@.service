@@ -14,7 +14,7 @@ TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker pull nordstrom/kafka:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \
-  --name kafka-conf-%i \
+  --name kafka.conf-%i \
   --volume /kafka/conf \
     nordstrom/kafka:${TAG} \
       /bin/bash -c 'echo "$RANDOM" > /kafka/conf/broker_id; \
