@@ -37,3 +37,6 @@ ExecStart=/usr/bin/printf "Announced\n"
 MachineMetadata="role=control"
 MachineOf=elasticsearch@%i.service
 Conflicts=%p@*.service
+
+[Install]
+WantedBy=multi-user.target

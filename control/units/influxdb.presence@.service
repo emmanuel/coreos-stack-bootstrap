@@ -46,3 +46,6 @@ ExecStart=/usr/bin/printf "Announced\n"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=influxdb@%i.service
+
+[Install]
+WantedBy=multi-user.target

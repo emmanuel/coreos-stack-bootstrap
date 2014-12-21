@@ -36,3 +36,6 @@ ExecStartPost=/bin/bash -c "echo \"Waiting for InfluxDB on http://${COREOS_PRIVA
 [X-Fleet]
 MachineMetadata="role=control"
 Conflicts=%p@*.service
+
+[Install]
+WantedBy=multi-user.target

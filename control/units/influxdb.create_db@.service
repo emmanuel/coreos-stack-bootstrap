@@ -23,3 +23,6 @@ ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=influxdb@%i.service
+
+[Install]
+WantedBy=multi-user.target

@@ -41,3 +41,6 @@ ExecStop=/usr/bin/docker kill elasticsearch-%i
 MachineMetadata="role=control"
 MachineOf=%p.data@%i.service
 Conflicts=%p@*.service
+
+[Install]
+WantedBy=multi-user.target

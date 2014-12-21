@@ -36,3 +36,6 @@ ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
 
 [X-Fleet]
 Global=true
+
+[Install]
+WantedBy=multi-user.target

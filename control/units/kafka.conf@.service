@@ -25,3 +25,6 @@ ExecStart=/usr/bin/printf "Kafka conf volumes available\n"
 [X-Fleet]
 MachineOf=kafka.data@%i.service
 Conflicts=%p@*.service
+
+[Install]
+WantedBy=multi-user.target

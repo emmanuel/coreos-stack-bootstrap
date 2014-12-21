@@ -23,3 +23,6 @@ ExecStart=/usr/bin/printf "Kafka data volumes available\n"
 
 [X-Fleet]
 Conflicts=%p@*.service
+
+[Install]
+WantedBy=multi-user.target
