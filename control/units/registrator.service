@@ -14,7 +14,7 @@ EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="TAG=latest"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill registrator
 ExecStartPre=-/usr/bin/docker rm registrator
 ExecStartPre=/usr/bin/docker pull progrium/registrator:${TAG}

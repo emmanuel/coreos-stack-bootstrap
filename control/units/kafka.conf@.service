@@ -10,7 +10,7 @@ Type=oneshot
 RemainAfterExit=yes
 Environment="TAG=0.8.1.1"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker pull nordstrom/kafka:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \

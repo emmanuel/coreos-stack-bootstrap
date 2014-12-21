@@ -17,7 +17,7 @@ EnvironmentFile=/etc/environment
 Environment="TAG=0.8.1.1"
 Environment="ENV=blue"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill kafka-%i
 ExecStartPre=-/usr/bin/docker rm kafka-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${TAG}

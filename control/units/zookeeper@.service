@@ -16,7 +16,7 @@ EnvironmentFile=/etc/environment
 Environment="TAG=3.4.6"
 Environment="ENV=blue"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill zookeeper-%i
 ExecStartPre=-/usr/bin/docker rm zookeeper-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}

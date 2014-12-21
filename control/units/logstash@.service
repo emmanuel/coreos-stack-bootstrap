@@ -11,7 +11,7 @@ EnvironmentFile=/etc/environment
 Environment="TAG=1.4.2"
 Environment="ENV=blue"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill logstash-%i
 ExecStartPre=-/usr/bin/docker rm logstash-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/logstash:${TAG}

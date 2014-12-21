@@ -13,7 +13,7 @@ EnvironmentFile=/etc/environment
 Environment="ENV=blue"
 Environment="TAG=0.8.7"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill influxdb-%i
 ExecStartPre=-/usr/bin/docker rm influxdb-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${TAG}

@@ -9,7 +9,7 @@ RemainAfterExit=true
 EnvironmentFile=/etc/aws_environment
 Environment="ENV=blue"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill influxdb.elb-%i
 ExecStartPre=-/usr/bin/docker rm influxdb.elb-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/awscli

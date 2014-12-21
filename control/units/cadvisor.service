@@ -15,7 +15,7 @@ Environment="TAG=0.6.2"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
-TimeoutStartSec=0
+TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill cadvisor
 ExecStartPre=-/usr/bin/docker rm cadvisor
 ExecStartPre=/usr/bin/docker pull google/cadvisor:${TAG}
