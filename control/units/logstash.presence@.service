@@ -16,31 +16,28 @@ Environment="SYSLOG_TCP_PORT=514"
 Environment="SYSLOG_UDP_PORT=514"
 
 # logstash-1.blue.cluster.local 5000
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/logstash-%i {\"host\":\"%m.hosts.cluster.local\"}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/logstash-%i "{\"host\":\"%m.hosts.cluster.local\"}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/logstash-%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/logstash-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 
 # 1.logstash.blue.cluster.local 5000
 # logstash.blue.cluster.local 5000 (round-robin)
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/logstash/%i {\"host\":\"logstash-%i.${ENV}.cluster.local\"}\n"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/logstash/%i "{\"host\":\"logstash-%i.${ENV}.cluster.local\"}"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/logstash/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}\n"
+ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/logstash/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 
-# Security group currently forbids this traffic (ports 514, 514/udp, 5000)
 # 1._lumberjack._tcp.blue.cluster.local 5000
 # _lumberjack._tcp.blue.cluster.local 5000 (round-robin)
-# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_lumberjack/%i {\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${LUMBERJACK_PORT}}\n"
-# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_lumberjack/%i "{\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${LUMBERJACK_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_lumberjack/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${LUMBERJACK_PORT}}\n"
+# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_lumberjack/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${LUMBERJACK_PORT}}"
 
-# Security group currently forbids this traffic (ports 514, 514/udp, 5000)
 # 1._syslog._tcp.blue.cluster.local 514
 # _syslog._tcp.blue.cluster.local 514 (round-robin)
-# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_syslog/%i {\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${SYSLOG_TCP_PORT}}\n"
-# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_syslog/%i "{\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${SYSLOG_TCP_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_syslog/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${SYSLOG_TCP_PORT}}\n"
+# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_syslog/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${SYSLOG_TCP_PORT}}"
 
-# Security group currently forbids this traffic (ports 514, 514/udp, 5000)
 # 1._syslog._udp.blue.cluster.local 514
 # _syslog._udp.blue.cluster.local 514 (round-robin)
-# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_udp/_syslog/%i {\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${SYSLOG_UDP_PORT}}\n"
-# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_udp/_syslog/%i "{\"host\":\"logstash-%i.${ENV}.cluster.local\",\"port\":${SYSLOG_UDP_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_udp/_syslog/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${SYSLOG_UDP_PORT}}\n"
+# ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_udp/_syslog/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${SYSLOG_UDP_PORT}}"
 
 ExecStart=/usr/bin/printf "Announced\n"
 
