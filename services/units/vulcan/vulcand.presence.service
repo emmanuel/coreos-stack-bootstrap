@@ -14,10 +14,10 @@ Environment="VULCAND_HTTP_API_PORT=8182"
 Environment="VULCAND_HTTP_PORT=8181"
 
 # 1.vulcan.blue.cluster.local
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/vulcan/1 {\"host\":\"%m.hosts.cluster.local\"}\n"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/vulcan/1 {\"host\":\"%m.hosts.cluster.local\"}"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/vulcan/1 "{\"host\":\"%m.hosts.cluster.local\"}"
 
-ExecStart=/usr/bin/printf "Announced\n"
+ExecStart=/usr/bin/printf "Announced"
 
 [X-Fleet]
 MachineMetadata="role=control"

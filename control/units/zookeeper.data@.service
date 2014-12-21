@@ -18,9 +18,9 @@ ExecStartPre=-/usr/bin/docker run \
   --name zookeeper.data-%i \
   --volume /var/lib/zookeeper \
     nordstrom/zookeeper:${TAG} \
-      /usr/bin/printf "Zookeeper data volumes container started\n"
+      /usr/bin/printf "Zookeeper data volumes container started"
 
-ExecStart=/usr/bin/printf "Zookeeper data volumes available\n"
+ExecStart=/usr/bin/printf "Zookeeper data volumes available"
 
 [X-Fleet]
 MachineMetadata="role=control"

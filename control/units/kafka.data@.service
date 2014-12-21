@@ -17,9 +17,9 @@ ExecStartPre=-/usr/bin/docker run \
   --name kafka.data-%i \
   --volume /kafka/data \
     nordstrom/kafka:${TAG} \
-      /usr/bin/printf "Kafka data volumes container started\n"
+      /usr/bin/printf "Kafka data volumes container started"
 
-ExecStart=/usr/bin/printf "Kafka data volumes available\n"
+ExecStart=/usr/bin/printf "Kafka data volumes available"
 
 [X-Fleet]
 Conflicts=%p@*.service

@@ -13,12 +13,12 @@ Environment="ENV=blue"
 Environment="KAFKA_BROKER_PORT=9092"
 
 # kafka-1.blue.cluster.local
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka-%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}\n"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka-%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/kafka-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}"
 
 # 1.kafka.blue.cluster.local
 # kafka.blue.cluster.local (round-robin)
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}\n"
+ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/kafka/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}"
 ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/kafka/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${KAFKA_BROKER_PORT}}"
 
 # 1._kafka._tcp.blue.cluster.local 9092
