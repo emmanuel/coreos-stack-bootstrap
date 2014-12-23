@@ -1,7 +1,7 @@
 [Unit]
 Description=InfluxDB Database Creation
-BindTo=influxdb@%i.service
-After=influxdb@%i.service
+BindTo=influxdb@1.service
+After=influxdb@1.service
 
 [Service]
 Type=oneshot
@@ -21,7 +21,7 @@ ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=influxdb@%i.service
+MachineOf=influxdb@1.service
 
 [Install]
 WantedBy=multi-user.target
