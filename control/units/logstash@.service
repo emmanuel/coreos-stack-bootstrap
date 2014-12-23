@@ -6,7 +6,7 @@ After=docker.service
 [Service]
 Type=simple
 Restart=always
-RestartSec=60
+RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="TAG=1.4.2"
 Environment="ENV=blue"

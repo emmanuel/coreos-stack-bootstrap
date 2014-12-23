@@ -12,7 +12,7 @@ After=%p.conf@%i.service
 [Service]
 Type=simple
 Restart=on-failure
-RestartSec=60
+RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="TAG=0.8.1.1"
 Environment="ENV=blue"
