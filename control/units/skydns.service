@@ -18,7 +18,6 @@ TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill skydns
 ExecStartPre=-/usr/bin/docker rm skydns
 ExecStartPre=/usr/bin/docker pull nordstrom/skydns:${TAG}
-# re: 172.17.42.1, see: http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/#toc_4
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"${COREOS_PRIVATE_IPV4}"}'
 
 ExecStart=/usr/bin/docker run \
@@ -32,6 +31,17 @@ ExecStart=/usr/bin/docker run \
     -local "%m.hosts.cluster.local" \
     -domain cluster.local.
 
+# Hmm, haven't figured out this unprivileged configuration yet...
+# ExecStart=/usr/bin/docker run \
+#   --name skydns \
+#   --publish 172.17.42.1:53:53/udp \
+#   nordstrom/skydns:${TAG} \
+#     -verbose \
+#     -addr 0.0.0.0:53/udp \
+#     -machines 172.17.42.1:4001 \
+#     -nameservers 8.8.8.8:53,8.8.4.4:53 \
+#     -local "%m.hosts.cluster.local" \
+#     -domain cluster.local.
 
 [X-Fleet]
 Global=true
