@@ -34,8 +34,9 @@ ExecStart=/usr/bin/docker run \
     nordstrom/zookeeper:${TAG}
 
 # wait until Zookeeper is responding on the API port before dependent units get started
-ExecStartPost=/bin/bash -c "echo \"Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181...\" \
-  && until echo 'dummy-value' | ncat ${COREOS_PRIVATE_IPV4} 2181 >/dev/null 2>&1; do sleep 1; done"
+ExecStartPost=/usr/bin/printf "Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181..."
+ExecStartPost=/bin/bash -c \
+  "until echo 'dummy-value' | ncat ${COREOS_PRIVATE_IPV4} 2181 >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
