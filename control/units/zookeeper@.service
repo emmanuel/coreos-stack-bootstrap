@@ -4,8 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=%p.data@%i.service
-After=%p.data@%i.service
+Wants=zookeeper.data@%i.service
+After=zookeeper.data@%i.service
 
 [Service]
 Type=simple
@@ -41,8 +41,8 @@ ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=%p.data@%i.service
-Conflicts=%p@*.service
+MachineOf=zookeeper.data@%i.service
+Conflicts=zookeeper@*.service
 
 [Install]
 WantedBy=multi-user.target

@@ -4,10 +4,10 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=%p.data@%i.service
-After=%p.data@%i.service
-Wants=%p.conf@%i.service
-After=%p.conf@%i.service
+Wants=kafka.data@%i.service
+After=kafka.data@%i.service
+Wants=kafka.conf@%i.service
+After=kafka.conf@%i.service
 
 [Service]
 Type=simple
@@ -38,8 +38,8 @@ ExecStart=/usr/bin/docker run \
 ExecStop=/usr/bin/docker kill kafka-%i
 
 [X-Fleet]
-MachineOf=%p.data@%i.service
-Conflicts=%p@*.service
+MachineOf=kafka.data@%i.service
+Conflicts=kafka@*.service
 
 [Install]
 WantedBy=multi-user.target

@@ -24,7 +24,7 @@ ExecStart=/usr/bin/printf "Zookeeper data volumes available"
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=%p@*.service
+Conflicts=zookeeper.volumes@*.service
 
 [Install]
 WantedBy=multi-user.target

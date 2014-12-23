@@ -41,7 +41,7 @@ ExecStart=/usr/bin/printf "Announced"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=zookeeper.data@%i.service
-Conflicts=%p@*.service
+Conflicts=zookeeper.presence@*.service
 
 [Install]
 WantedBy=multi-user.target

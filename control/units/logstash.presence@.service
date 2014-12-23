@@ -44,7 +44,7 @@ ExecStart=/usr/bin/printf "Announced"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=logstash@%i.service
-Conflicts=%p@*.service
+Conflicts=logstash.presence@*.service
 
 [Install]
 WantedBy=multi-user.target

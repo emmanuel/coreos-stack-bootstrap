@@ -31,7 +31,7 @@ ExecStop=/usr/bin/docker kill logstash-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=%p@*.service
+Conflicts=logstash@*.service
 
 [Install]
 WantedBy=multi-user.target

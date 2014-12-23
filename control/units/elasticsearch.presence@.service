@@ -37,7 +37,7 @@ ExecStart=/usr/bin/printf "Announced"
 [X-Fleet]
 MachineMetadata="role=control"
 MachineOf=elasticsearch@%i.service
-Conflicts=%p@*.service
+Conflicts=elasticsearch.presence@*.service
 
 [Install]
 WantedBy=multi-user.target

@@ -23,7 +23,7 @@ ExecStartPre=-/usr/bin/docker run \
 ExecStart=/usr/bin/printf "Kafka data volumes available"
 
 [X-Fleet]
-Conflicts=%p@*.service
+Conflicts=kafka.volumes@*.service
 
 [Install]
 WantedBy=multi-user.target
