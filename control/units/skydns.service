@@ -32,7 +32,6 @@ ExecStart=/usr/bin/docker run \
     -local "%m.hosts.cluster.local" \
     -domain cluster.local.
 
-ExecStopPost=/usr/bin/etcdctl rm /skydns/local/cluster/hosts/%m
 
 [X-Fleet]
 Global=true
