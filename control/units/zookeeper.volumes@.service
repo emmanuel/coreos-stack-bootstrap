@@ -15,7 +15,7 @@ TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker pull nordstrom/zookeeper:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \
-  --name zookeeper.data-%i \
+  --name zookeeper.volumes-%i \
   --volume /var/lib/zookeeper \
     nordstrom/zookeeper:${TAG} \
       /usr/bin/printf "Zookeeper data volumes container started"

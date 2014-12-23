@@ -28,7 +28,7 @@ ExecStart=/usr/bin/docker run \
   --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
   --publish 9200:9200 \
   --publish 9300:9300 \
-  --volumes-from elasticsearch.data-%i \
+  --volumes-from elasticsearch.volumes-%i \
     nordstrom/elasticsearch:${TAG}
 
 # wait until ElasticSearch is responding on the API port before dependent units get started

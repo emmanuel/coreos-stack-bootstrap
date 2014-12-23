@@ -1,5 +1,5 @@
 [Unit]
-Description=Kafka conf volumes
+Description=Kafka data volumes
 Requires=docker.service
 After=docker.service
 Wants=logspout.service
@@ -14,16 +14,15 @@ TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker pull nordstrom/kafka:${TAG}
 ExecStartPre=-/usr/bin/docker run \
   --net none \
-  --name kafka.conf-%i \
+  --name kafka.volumes-%i \
   --volume /kafka/conf \
+  --volume /kafka/data \
     nordstrom/kafka:${TAG} \
-      /bin/bash -c 'echo "$RANDOM" > /kafka/conf/broker_id; \
-                    echo "Broker ID: $(cat /kafka/conf/broker_id)"'
+      /usr/bin/printf "Kafka data volumes container started"
 
-ExecStart=/usr/bin/printf "Kafka conf volumes available"
+ExecStart=/usr/bin/printf "Kafka data volumes available"
 
 [X-Fleet]
-MachineOf=kafka.data@%i.service
 Conflicts=%p@*.service
 
 [Install]

@@ -32,7 +32,7 @@ echo "==================="
 fleetctl destroy logstash{,.presence}@
 fleetctl destroy elasticsearch{,.presence}@
 fleetctl destroy syslog_gollector
-fleetctl destroy kafka{,.conf,.presence}@
+fleetctl destroy kafka{,.presence}@
 fleetctl destroy zookeeper{,.presence}@
 fleetctl destroy sysinfo_influxdb.service
 fleetctl destroy cadvisor.service
