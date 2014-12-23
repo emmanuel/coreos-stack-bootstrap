@@ -29,9 +29,9 @@ ExecStart=/usr/bin/docker run \
   --publish 8099:8099 \
   nordstrom/influxdb:${TAG}
 
-# wait until InfluxDB is responding on the API port before dependent units get started
-ExecStartPost=/bin/bash -c "echo \"Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping...\" \
-  && until curl http://${COREOS_PRIVATE_IPV4}:8086/ping >/dev/null 2>&1; do sleep 1; done"
+# ExecStartPost=/usr/bin/printf "Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping..."
+# ExecStartPost=/bin/bash -c \
+#   "until curl http://${COREOS_PRIVATE_IPV4}:8086/ping >/dev/null 2>&1; do sleep 1; done"
 
 [X-Fleet]
 MachineMetadata="role=control"
