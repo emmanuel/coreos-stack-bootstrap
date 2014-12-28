@@ -21,7 +21,7 @@ fleetctl destroy kafka{,.presence}@
 fleetctl destroy zookeeper{,.presence}@
 fleetctl destroy sysinfo_influxdb
 fleetctl destroy cadvisor
-# fleetctl destroy influxdb.create_db@
+# fleetctl destroy influxdb.create_db
 fleetctl destroy influxdb{,.elb,.presence}@
 fleetctl destroy skydns
 fleetctl destroy registrator

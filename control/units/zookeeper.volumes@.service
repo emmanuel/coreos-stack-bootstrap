@@ -1,5 +1,5 @@
 [Unit]
-Description=Zookeeper data volumes
+Description=Zookeeper volumes
 Requires=docker.service
 After=docker.service
 Wants=logspout.service

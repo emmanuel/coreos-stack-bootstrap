@@ -23,7 +23,7 @@ fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
 fleetctl start zookeeper{,.volumes,.presence}@{1..3}
 fleetctl start kafka{,.volumes,.presence}@{1..3}
-fleetctl start kafka.create_topics@1
+fleetctl start kafka.create_topics
 fleetctl start syslog_gollector
 fleetctl start elasticsearch{,.volumes,.presence}@{1..2}
 fleetctl start logstash{,.presence}@{1..2}

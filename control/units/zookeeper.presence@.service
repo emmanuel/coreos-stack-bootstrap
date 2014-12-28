@@ -1,7 +1,7 @@
 [Unit]
 Description=zookeeper.presence
-Wants=zookeeper.data@%i.service
-After=zookeeper.data@%i.service
+Wants=zookeeper.volumes@%i.service
+After=zookeeper.volumes@%i.service
 Wants=zookeeper@%i.service
 Before=zookeeper@%i.service
 
@@ -40,7 +40,7 @@ ExecStart=/usr/bin/printf "Announced"
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=zookeeper.data@%i.service
+MachineOf=zookeeper.volumes@%i.service
 Conflicts=zookeeper.presence@*.service
 
 [Install]

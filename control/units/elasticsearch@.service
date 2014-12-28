@@ -4,8 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=elasticsearch.data@%i.service
-After=elasticsearch.data@%i.service
+Wants=elasticsearch.volumes@%i.service
+After=elasticsearch.volumes@%i.service
 
 [Service]
 Type=simple
@@ -40,7 +40,7 @@ ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=elasticsearch.data@%i.service
+MachineOf=elasticsearch.volumes@%i.service
 Conflicts=elasticsearch@*.service
 
 [Install]

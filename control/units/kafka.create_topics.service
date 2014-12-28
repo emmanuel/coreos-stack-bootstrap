@@ -1,7 +1,7 @@
 [Unit]
 Description=Kafka Topic Creation
-Requires=kafka@%i.service
-After=kafka@%i.service
+Requires=kafka@1.service
+After=kafka@1.service
 
 [Service]
 Type=oneshot
@@ -14,7 +14,7 @@ Environment="KAFKA_VERSION=0.8.1.1"
 ExecStartPre=-/usr/bin/docker kill kafka.create_topics
 ExecStartPre=-/usr/bin/docker rm kafka.create_topics
 ExecStart=/usr/bin/docker run \
-  --name kafka.create_topics \
+  --name kafka.create_topic.logspout \
   --dns-search ${ENV}.cluster.local \
     nordstrom/kafka:${TAG} \
       /opt/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}/bin/kafka-topics.sh \
@@ -25,4 +25,4 @@ ExecStart=/usr/bin/docker run \
         --replication-factor 3
 
 [X-Fleet]
-MachineOf=kafka@%i.service
+MachineOf=kafka@1.service

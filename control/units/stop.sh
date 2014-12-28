@@ -21,7 +21,7 @@ fleetctl stop kafka{,.presence}@{1..3}
 fleetctl stop zookeeper{,.presence}@{1..3}
 fleetctl stop sysinfo_influxdb
 fleetctl stop cadvisor
-fleetctl stop influxdb.create_db@1
+fleetctl stop influxdb.create_db
 fleetctl stop influxdb{,.elb,.presence}@1
 fleetctl stop skydns
 fleetctl stop registrator

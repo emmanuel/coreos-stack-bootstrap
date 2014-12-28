@@ -4,8 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=kafka.data@%i.service
-After=kafka.data@%i.service
+Wants=kafka.volumes@%i.service
+After=kafka.volumes@%i.service
 Wants=kafka.conf@%i.service
 After=kafka.conf@%i.service
 
@@ -38,7 +38,7 @@ ExecStart=/usr/bin/docker run \
 ExecStop=/usr/bin/docker kill kafka-%i
 
 [X-Fleet]
-MachineOf=kafka.data@%i.service
+MachineOf=kafka.volumes@%i.service
 Conflicts=kafka@*.service
 
 [Install]
