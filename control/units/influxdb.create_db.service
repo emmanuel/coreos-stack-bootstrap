@@ -6,18 +6,33 @@ After=influxdb@1.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
+Environment="ENV=blue"
+Environment="UTIL_RELEASE=14.04"
 Environment="INFLUXDB_USER=root"
 Environment="INFLUXDB_PASS=root"
 Environment="INFLUXDB_DB_NAME_CADVISOR=cadvisor"
 Environment="INFLUXDB_DB_NAME_SYSINFO=sysinfo"
 Environment="INFLUXDB_DB_NAME_GRAFANA=grafana"
 
-ExecStart=/usr/bin/printf "Creating InfluxDB databases"xecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
+ExecStart=/usr/bin/printf "Creating InfluxDB databases"
+ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'"
+ExecStart=/usr/bin/docker run \
+  --name influxdb.create_db.${INFLUXDB_DB_NAME_CADVISOR}.${ENV} \
+  --dns-search ${ENV}.cluster.local \
+  nordstrom/util-ubuntu:${UTIL_RELEASE} \
+    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_SYSINFO}'"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
+ExecStart=/usr/bin/docker run \
+  --name influxdb.create_db.${INFLUXDB_DB_NAME_SYSINFO}.${ENV} \
+  --dns-search ${ENV}.cluster.local \
+  nordstrom/util-ubuntu:${UTIL_RELEASE} \
+    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_GRAFANA}'"
-ExecStart=/usr/bin/curl -s -X POST http://localhost:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
+ExecStart=/usr/bin/docker run \
+  --name influxdb.create_db.${INFLUXDB_DB_NAME_GRAFANA}.${ENV} \
+  --dns-search ${ENV}.cluster.local \
+  nordstrom/util-ubuntu:${UTIL_RELEASE} \
+    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
 
 [X-Fleet]
 MachineMetadata="role=control"
