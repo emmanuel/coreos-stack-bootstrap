@@ -35,6 +35,21 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
+    - name: preload-container-images.install.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=Pre-load container baseimages
+        Requires=docker.service
+        After=docker.service
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        TimeoutStartSec=5m
+        ExecStartPre=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04
+        ExecStartPre=/usr/bin/docker pull nordstrom/util-ubuntu:14.04
 
 write_files:
   - path: /etc/aws_environment
