@@ -4,8 +4,6 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=elasticsearch.volumes@%i.service
-After=elasticsearch.volumes@%i.service
 
 [Service]
 Type=simple
@@ -20,18 +18,24 @@ ExecStartPre=-/usr/bin/docker kill elasticsearch-%i
 ExecStartPre=-/usr/bin/docker rm elasticsearch-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name elasticsearch.volumes-%i \
+  --volume /var/lib/elasticsearch \
+    nordstrom/elasticsearch:${TAG} \
+      /usr/bin/printf "ElasticSearch data volumes container started"
+
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
   --hostname elasticsearch-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --env ES_NODE_NAME=elasticsearch-${ENV}-%i \
   --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
+  --env SERVICE_ID=elasticsearch-%i \
   --publish 9200:9200 \
   --env SERVICE_9200_NAME=elasticsearch \
-  --env SERVICE_9200_ID=elasticsearch-%i \
   --publish 9300:9300 \
   --env SERVICE_9300_NAME=elasticsearch-peer \
-  --env SERVICE_9300_ID=elasticsearch-peer-%i \
   --volumes-from elasticsearch.volumes-%i \
     nordstrom/elasticsearch:${TAG}
 
@@ -44,7 +48,6 @@ ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=elasticsearch.volumes@%i.service
 Conflicts=elasticsearch@*.service
 
 [Install]

@@ -4,8 +4,6 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=zookeeper.volumes@%i.service
-After=zookeeper.volumes@%i.service
 
 [Service]
 Type=simple
@@ -17,20 +15,32 @@ Environment="TAG=3.4.6"
 Environment="ENV=blue"
 
 TimeoutStartSec=5m
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 ExecStartPre=-/usr/bin/docker kill zookeeper-%i
 ExecStartPre=-/usr/bin/docker rm zookeeper-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name zookeeper.volumes-%i \
+  --volume /var/lib/zookeeper \
+    nordstrom/zookeeper:${TAG} \
+      /usr/bin/printf "Zookeeper data volumes container started"
 
 ExecStart=/usr/bin/docker run \
   --rm \
   --name zookeeper-%i \
   --env ZK_SERVER_NUMBER=%i \
   --env ZK_VERSION=${TAG} \
+  --env SERVICE_ID=zookeeper-%i \
   --hostname zookeeper-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --publish 2181:2181 \
+  --env SERVICE_2181_NAME=zookeeper \
   --publish 2888:2888 \
+  --env SERVICE_2888_NAME=zookeeper-peer \
   --publish 3888:3888 \
+  --env SERVICE_3888_NAME=zookeeper-leader \
     nordstrom/zookeeper:${TAG}
 
 # ExecStartPost=/usr/bin/printf "Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181..."
@@ -38,10 +48,10 @@ ExecStart=/usr/bin/docker run \
 #   "until echo 'dummy-value' | ncat ${COREOS_PRIVATE_IPV4} 2181 >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill zookeeper-%i
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/zookeeper-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=zookeeper.volumes@%i.service
 Conflicts=zookeeper@*.service
 
 [Install]

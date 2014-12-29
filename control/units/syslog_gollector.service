@@ -25,6 +25,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:${TAG}
 ExecStart=/usr/bin/docker run \
   --name syslog_gollector \
   --dns-search ${ENV}.cluster.local \
+  --env SERVICE_IGNORE=true \
   --publish 172.17.42.1:514:514 \
   --publish 172.17.42.1:514:514/udp \
   nordstrom/syslog_gollector:${TAG} \

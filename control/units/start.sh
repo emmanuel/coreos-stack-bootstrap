@@ -21,11 +21,11 @@ fleetctl start influxdb@1
 fleetctl start influxdb.create_db
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
-fleetctl start zookeeper{,.volumes}@{1..3}
-fleetctl start kafka{,.volumes}@{1..3}
+fleetctl start zookeeper@{1..3}
+fleetctl start kafka@{1..3}
 fleetctl start kafka.create_topics
 fleetctl start syslog_gollector
-fleetctl start elasticsearch{,.volumes}@{1..2}
+fleetctl start elasticsearch@{1..2}
 fleetctl start logstash@{1..2}
 
 fleetctl start vulcand{,.elb}

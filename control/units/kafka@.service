@@ -4,10 +4,6 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=kafka.volumes@%i.service
-After=kafka.volumes@%i.service
-Wants=kafka.conf@%i.service
-After=kafka.conf@%i.service
 
 [Service]
 Type=simple
@@ -22,14 +18,22 @@ ExecStartPre=-/usr/bin/docker kill kafka-%i
 ExecStartPre=-/usr/bin/docker rm kafka-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${TAG}
 
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name kafka.volumes-%i \
+  --volume /kafka/conf \
+  --volume /kafka/data \
+    nordstrom/kafka:${TAG} \
+      /usr/bin/printf "Kafka data volumes container started"
+
 ExecStart=/usr/bin/docker run \
   --name kafka-%i \
   --hostname kafka-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
   --volumes-from kafka.volumes-%i \
+  --env SERVICE_ID=kafka-%i \
   --publish 9092:9092 \
   --env SERVICE_9092_NAME=kafka \
-  --env SERVICE_9092_ID=kafka-%i \
     nordstrom/kafka:${TAG}
 
 # wait until Kafka is responding on the API port before dependent units get started
@@ -40,7 +44,7 @@ ExecStart=/usr/bin/docker run \
 ExecStop=/usr/bin/docker kill kafka-%i
 
 [X-Fleet]
-MachineOf=kafka.volumes@%i.service
+MachineMetadata="role=control"
 Conflicts=kafka@*.service
 
 [Install]

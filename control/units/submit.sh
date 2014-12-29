@@ -21,11 +21,11 @@ fleetctl submit influxdb@
 fleetctl submit influxdb.create_db
 fleetctl submit cadvisor
 fleetctl submit sysinfo_influxdb
-fleetctl submit zookeeper{,.volumes,.presence}@
-fleetctl submit kafka{,.volumes}@
+fleetctl submit zookeeper@
+fleetctl submit kafka@
 fleetctl submit kafka.create_topics
 fleetctl submit syslog_gollector
-fleetctl submit elasticsearch{,.volumes}@
+fleetctl submit elasticsearch@
 fleetctl submit logstash@
 
 fleetctl submit vulcand{,.elb}

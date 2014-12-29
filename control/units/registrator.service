@@ -23,7 +23,7 @@ ExecStart=/usr/bin/docker run \
   --name registrator \
   --env DEBUG=true \
   --volume /var/run/docker.sock:/tmp/docker.sock \
-  --hostname %m \
+  --hostname ${COREOS_PRIVATE_IPV4} \
   progrium/registrator:${TAG} \
     -ttl 30 \
     -ttl-refresh 20 \

@@ -19,11 +19,11 @@ fleetctl destroy logstash@
 fleetctl destroy elasticsearch@
 fleetctl destroy syslog_gollector
 fleetctl destroy kafka@
-fleetctl destroy zookeeper{,.presence}@
+fleetctl destroy zookeeper@
 fleetctl destroy sysinfo_influxdb
 fleetctl destroy cadvisor
 # fleetctl destroy influxdb.create_db
-fleetctl destroy influxdb{,.elb}@
+fleetctl destroy influxdb@
 fleetctl destroy skydns
 fleetctl destroy registrator
 fleetctl destroy logspout
