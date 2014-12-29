@@ -25,7 +25,9 @@ ExecStart=/usr/bin/docker run \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --hostname %m \
   progrium/registrator:${TAG} \
-    skydns2://172.17.42.1:4001/${ENV}-registrator.cluster.local
+    -ttl 30 \
+    -ttl-refresh 20 \
+    skydns2://172.17.42.1:4001/${ENV}.cluster.local
 
 
 [X-Fleet]

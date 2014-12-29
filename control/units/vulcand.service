@@ -22,8 +22,12 @@ ExecStart=/usr/bin/docker run \
   --name vulcand \
   --hostname vulcand.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
-  --publish 8182:8182 \
   --publish 8181:8181 \
+  --env SERVICE_8181_NAME=vulcand \
+  --env SERVICE_8181_ID=vulcand-%i \
+  --publish 8182:8182 \
+  --env SERVICE_8182_NAME=vulcand-admin \
+  --env SERVICE_8182_ID=vulcand-admin-%i \
   mailgun/vulcand \
     /go/bin/vulcand \
     -apiInterface=0.0.0.0 \

@@ -17,15 +17,15 @@ echo "================"
 fleetctl submit logspout
 fleetctl submit registrator
 fleetctl submit skydns
-fleetctl submit influxdb{,.presence}@
+fleetctl submit influxdb@
 fleetctl submit influxdb.create_db
 fleetctl submit cadvisor
 fleetctl submit sysinfo_influxdb
 fleetctl submit zookeeper{,.volumes,.presence}@
-fleetctl submit kafka{,.volumes,.presence}@
+fleetctl submit kafka{,.volumes}@
 fleetctl submit kafka.create_topics
 fleetctl submit syslog_gollector
-fleetctl submit elasticsearch{,.volumes,.presence}@
+fleetctl submit elasticsearch{,.volumes}@
 fleetctl submit logstash@
 
-fleetctl submit vulcand{,.presence,.elb}
+fleetctl submit vulcand{,.elb}

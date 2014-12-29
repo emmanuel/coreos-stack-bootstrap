@@ -14,16 +14,16 @@ cd $SCRIPT_PATH
 
 echo "Stopping services"
 echo "================="
-fleetctl stop vulcand{,.elb,.presence}
-fleetctl stop logstash{,.presence}@{1..2}
-fleetctl stop elasticsearch{,.presence}@{1..2}
+fleetctl stop vulcand{,.elb}
+fleetctl stop logstash@{1..2}
+fleetctl stop elasticsearch@{1..2}
 fleetctl stop syslog_gollector
-fleetctl stop kafka{,.presence}@{1..3}
+fleetctl stop kafka@{1..3}
 fleetctl stop zookeeper{,.presence}@{1..3}
 fleetctl stop sysinfo_influxdb
 fleetctl stop cadvisor
 fleetctl stop influxdb.create_db
-fleetctl stop influxdb{,.elb,.presence}@1
+fleetctl stop influxdb{,.elb}@1
 fleetctl stop skydns
 fleetctl stop registrator
 fleetctl stop logspout

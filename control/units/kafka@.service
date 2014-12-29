@@ -28,6 +28,8 @@ ExecStart=/usr/bin/docker run \
   --dns-search ${ENV}.cluster.local \
   --volumes-from kafka.volumes-%i \
   --publish 9092:9092 \
+  --env SERVICE_9092_NAME=kafka \
+  --env SERVICE_9092_ID=kafka-%i \
     nordstrom/kafka:${TAG}
 
 # wait until Kafka is responding on the API port before dependent units get started

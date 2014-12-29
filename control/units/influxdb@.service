@@ -24,9 +24,17 @@ ExecStart=/usr/bin/docker run \
   --dns-search ${ENV}.cluster.local \
   --env INFLUXDB_SERVER_NUMBER=%i \
   --publish 8086:8086 \
+  --env SERVICE_8086_NAME=influxdb \
+  --env SERVICE_8086_ID=influxdb-%i \
   --publish 8083:8083 \
+  --env SERVICE_8083_NAME=influxdb-www \
+  --env SERVICE_8083_ID=influxdb-www.%i \
   --publish 8090:8090 \
+  --env SERVICE_8090_NAME=influxdb-raft \
+  --env SERVICE_8090_ID=influxdb-raft.%i \
   --publish 8099:8099 \
+  --env SERVICE_8099_NAME=influxdb-replication \
+  --env SERVICE_8099_ID=influxdb-replication.%i \
   nordstrom/influxdb:${TAG}
 
 # ExecStartPost=/usr/bin/printf "Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping..."
