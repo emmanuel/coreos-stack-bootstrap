@@ -60,6 +60,10 @@ write_files:
     content: |
       [Service]
       Environment="DOCKER_OPTS=--insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16"
+  - path: /etc/systemd/journald.conf.d/make-storage-volatile.conf
+    content: |
+      [Journal]
+      Storage="volatile"
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'
