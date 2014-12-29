@@ -1,6 +1,6 @@
 [Unit]
 Description=InfluxDB Database Creation
-BindTo=influxdb@1.service
+Requires=influxdb@1.service
 After=influxdb@1.service
 
 [Service]
@@ -13,6 +13,10 @@ Environment="INFLUXDB_PASS=root"
 Environment="INFLUXDB_DB_NAME_CADVISOR=cadvisor"
 Environment="INFLUXDB_DB_NAME_SYSINFO=sysinfo"
 Environment="INFLUXDB_DB_NAME_GRAFANA=grafana"
+
+ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_CADVISOR}.${ENV}
+ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_SYSINFO}.${ENV}
+ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_GRAFANA}.${ENV}
 
 ExecStart=/usr/bin/printf "Creating InfluxDB databases"
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'"
