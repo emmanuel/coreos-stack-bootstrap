@@ -29,3 +29,6 @@ ExecStart=/usr/bin/docker run \
     -apiPort=8182 \
     -port=8181 \
     --etcd=http://172.17.42.1:4001
+
+[Install]
+WantedBy=multi-user.target
