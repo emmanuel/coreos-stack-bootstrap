@@ -10,38 +10,39 @@ RestartSec=30
 
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
+Environment="TTL=60"
 Environment="INFLUXDB_HTTP_API_PORT=8086"
 Environment="INFLUXDB_ADMIN_API_PORT=8083"
 Environment="INFLUXDB_RAFT_PORT=8090"
 Environment="INFLUXDB_REPLICATION_PORT=8099"
 
 # influxdb-1.blue.cluster.local
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb-%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb-%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/influxdb-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 
 # 1.influxdb.blue.cluster.local
 # influxdb.blue.cluster.local (round-robin)
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/influxdb/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/influxdb/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/influxdb/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 
 # _influxdb._tcp.blue.cluster.local 8086
 # _influxdb._tcp.blue.cluster.local (round-robin)
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/_tcp/_influxdb/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_HTTP_API_PORT}}"
 
 # _influxdb-admin._tcp.blue.cluster.local 8083
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/_tcp/_influxdb-admin/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_ADMIN_API_PORT}}"
 
 # _influxdb-raft._tcp.blue.cluster.local 8090
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_RAFT_PORT}}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_RAFT_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_RAFT_PORT}}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/_tcp/_influxdb-raft/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_RAFT_PORT}}"
 
 # _influxdb-replication._tcp.blue.cluster.local 8099
-ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
-ExecStartPre=/usr/bin/etcdctl set --ttl 60 /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
+# ExecStartPre=/usr/bin/printf "Announcing: /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i {\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
+ExecStartPre=/usr/bin/etcdctl set --ttl ${TTL} /skydns/local/cluster/${ENV}/_tcp/_influxdb-replication/%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\",\"port\":${INFLUXDB_REPLICATION_PORT}}"
 
-ExecStart=/usr/bin/printf "Announced"
+ExecStart=/usr/bin/printf "Presence announced"
 
 [X-Fleet]
 MachineMetadata="role=control"
