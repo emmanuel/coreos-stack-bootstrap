@@ -14,6 +14,7 @@ cd $SCRIPT_PATH
 
 echo "Stopping services"
 echo "================="
+fleetctl stop vulcand{,.elb,.presence}
 fleetctl stop logstash{,.presence}@{1..2}
 fleetctl stop elasticsearch{,.presence}@{1..2}
 fleetctl stop syslog_gollector

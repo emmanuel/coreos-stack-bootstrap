@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "control" {
-  name = "control (${var.environment} / ${var.aws_instance_type})"
+  name = "autoscaling_group-control-${var.environment}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 3
@@ -8,6 +8,7 @@ resource "aws_autoscaling_group" "control" {
   desired_capacity = 3
   force_delete = true
   launch_configuration = "${aws_launch_configuration.control.name}"
+  # load_balancers = [ "${aws_elb.etcd.name}" ]
 
   provisioner "local-exec" {
     command = <<COMMAND
@@ -27,13 +28,12 @@ output "control_auto_scaling_group" {
 }
 
 resource "aws_launch_configuration" "control" {
-  name = "control (${var.environment} / ${var.aws_instance_type})"
+  name = "launch_configuration-control-${var.environment}"
   image_id = "${lookup(var.amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
-                      "${aws_security_group.cluster_services_control.id}",
                       "${aws_security_group.cluster_services-elb_ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = <<USER_DATA
@@ -51,7 +51,7 @@ dynamic:
       AWS_REGION=${var.aws_region}
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
-      INFLUXDB_ELB_LOAD_BALANCER_NAME=${aws_elb.influxdb.name}
+      VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
 ${file("cloud-config.yaml")}
 USER_DATA
 }
@@ -70,80 +70,17 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     security_groups = [ "${aws_security_group.elb_etcd.id}" ]
   }
 
-  # InfluxDB api
+  # Vulcand
   ingress {
-    from_port = 8086
-    to_port =  8086
+    from_port = 8181
+    to_port =  8181
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
-  }
-
-}
-
-# services accessible cluster-wide, but (generally) internal-only
-resource "aws_security_group" "cluster_services_control" {
-  name = "Cluster-services private (${var.environment})"
-  description = "Allow all cluster_services instances to access these private cluster service ports."
-
-  # etcd raft
-  ingress {
-    from_port = 7001
-    to_port =  7001
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-
-  # influxdb web
-  ingress {
-    from_port = 8083
-    to_port =  8083
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-
-  # influxdb consensus
-  ingress {
-    from_port = 8090
-    to_port =  8090
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-
-  # influxdb replication
-  ingress {
-    from_port = 8099
-    to_port =  8099
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-
-  # zookeeper peer
-  ingress {
-    from_port = 2888
-    to_port =  2888
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-  
-  # zookeeper leader election
-  ingress {
-    from_port = 3888
-    to_port =  3888
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
-  }
-
-  # elasticsearch peer
-  ingress {
-    from_port = 9300
-    to_port =  9300
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster_services.id}" ]
+    security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
 }
 
 resource "aws_security_group" "elb_etcd" {
-  name = "Etcd internal ELB (${var.environment})"
+  name = "etcd-internal-elb-${var.environment}"
   description = "Etcd internal ELB (${var.environment})."
 
   # etcd api
@@ -179,27 +116,26 @@ resource "aws_elb" "etcd" {
   security_groups = [ "${aws_security_group.elb_etcd.id}" ]
 }
 
-resource "aws_security_group" "elb_influxdb" {
-  name = "InfluxDB ELB (${var.environment})"
-  description = "Allow public to access this InfluxDB port."
+resource "aws_security_group" "elb_vulcand" {
+  name = "Vulcand ELB (${var.environment})"
+  description = "Allow public access to Vulcand."
 
-  # influxdb api
   ingress {
-    from_port = 8086
-    to_port =  8086
+    from_port = 80
+    to_port =  80
     protocol = "tcp"
-    cidr_blocks = [ "${var.allow_ssh_from}" ]
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 }
 
-resource "aws_elb" "influxdb" {
-  name = "influxdb-public-${var.environment}"
+resource "aws_elb" "vulcand" {
+  name = "vulcand-public-${var.environment}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
-    lb_port = 8086
+    lb_port = 80
     lb_protocol = "http"
-    instance_port = 8086
+    instance_port = 8181
     instance_protocol = "http"
   }
 
@@ -207,39 +143,17 @@ resource "aws_elb" "influxdb" {
     healthy_threshold = 3
     unhealthy_threshold = 2
     timeout = 2
-    target = "HTTP:8086/ping"
+    target = "HTTP:8182/v2/status"
     interval = 10
   }
 
-  security_groups = [ "${aws_security_group.elb_influxdb.id}" ]
+  security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
 }
 
-resource "aws_route53_record" "influxdb" {
+resource "aws_route53_record" "vulcand" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "influxdb.${var.environment}.cloud.nlab.io"
+  name = "api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
-  records = [ "${aws_elb.influxdb.dns_name}" ]
+  records = [ "${aws_elb.vulcand.dns_name}" ]
 }
-
-resource "aws_s3_bucket" "grafana" {
-  bucket = "grafana-${var.environment}-nlab-cloud"
-  # TODO: tighten up the Grafana access control
-  acl = "public-read"
-
-  provisioner "local-exec" {
-    command = "aws s3 cp ../container-image-src/grafana/dist/grafana-1.9.0 s3://grafana-${var.environment}-nlab-cloud --recursive --acl public-read > /dev/null"
-    command = "aws s3 cp ../container-image-src/grafana/conf/config.js s3://grafana-${var.environment}-nlab-cloud --acl public-read"
-    command = "aws s3 website s3://grafana-${var.environment}-nlab-cloud --index-document index.html"
-  }
-}
-
-# Something like this should work once Route53 Alias records are supported by Terraform.
-#   In the meantime, CNAMEs don't work either, because S3 inspects the HTTP Host header.
-# resource "aws_route53_record" "grafana" {
-#   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-#   name = "grafana.${var.environment}.cloud.nlab.io"
-#   type = "A"
-#   ttl = "60"
-#   records = [ "ALIAS grafana-${var.environment}-nlab-cloud.s3-us-west-2.amazonaws.com" ]
-# }

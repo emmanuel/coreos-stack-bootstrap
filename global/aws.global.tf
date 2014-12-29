@@ -12,7 +12,7 @@ resource "aws_security_group" "cluster" {
     from_port = 65535
     to_port = 65535
     protocol = "tcp"
-    cidr_blocks = [ "${var.allow_ssh_from}" ]
+    cidr_blocks = [ "255.255.255.255/32" ]
   }
 }
 output "cluster_aws_security_group" {
@@ -35,53 +35,26 @@ output "public_ssh_aws_security_group" {
     value = "${aws_security_group.public_ssh.id}"
 }
 
-# services accessible cluster-wide, but (generally) internal-only
+# services accessible cluster-wide
 resource "aws_security_group" "cluster_services" {
-  name = "Cluster services (${var.environment})"
-  description = "Allow all cluster instances to access these cluster-services ports."
+  name = "Cluster-wide services (${var.environment})"
+  description = "Allow all cluster instances to access all ports."
 
-  # etcd client (http)
   ingress {
-    from_port = 4001
-    to_port =  4001
+    from_port = 0
+    to_port =  65535
     protocol = "tcp"
     security_groups = [ "${aws_security_group.cluster.id}" ]
   }
 
-  # influxdb api
   ingress {
-    from_port = 8086
-    to_port =  8086
-    protocol = "tcp"
+    from_port = 0
+    to_port =  65535
+    protocol = "udp"
     security_groups = [ "${aws_security_group.cluster.id}" ]
   }
-
-  # zookeeper client
-  ingress {
-    from_port = 2181
-    to_port =  2181
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # kafka client
-  ingress {
-    from_port = 9092
-    to_port =  9092
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
-  # elasticsearch client
-  ingress {
-    from_port = 9200
-    to_port =  9200
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-
 }
+
 output "cluster_services_aws_security_group" {
     value = "${aws_security_group.cluster_services.id}"
 }
-

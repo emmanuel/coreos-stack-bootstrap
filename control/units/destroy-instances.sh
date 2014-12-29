@@ -14,6 +14,7 @@ cd $SCRIPT_PATH
 
 echo "Destroying services"
 echo "==================="
+fleetctl destroy vulcand{,.elb,.presence}
 fleetctl destroy logstash{,.presence}@{1..2}
 fleetctl destroy elasticsearch{,.presence}@{1..2}
 fleetctl destroy syslog_gollector

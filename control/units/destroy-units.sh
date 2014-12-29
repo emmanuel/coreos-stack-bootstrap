@@ -14,6 +14,7 @@ cd $SCRIPT_PATH
 
 echo "Unregistering units"
 echo "==================="
+fleetctl destroy vulcand{,.elb,.presence}
 fleetctl destroy logstash{,.presence}@
 fleetctl destroy elasticsearch{,.presence}@
 fleetctl destroy syslog_gollector

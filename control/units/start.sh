@@ -17,7 +17,7 @@ echo "================="
 fleetctl start logspout
 fleetctl start registrator
 fleetctl start skydns
-fleetctl start influxdb{,.elb,.presence}@1
+fleetctl start influxdb{,.presence}@1
 fleetctl start influxdb.create_db
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
@@ -27,3 +27,5 @@ fleetctl start kafka.create_topics
 fleetctl start syslog_gollector
 fleetctl start elasticsearch{,.volumes,.presence}@{1..2}
 fleetctl start logstash@{1..2}
+
+fleetctl start vulcand{,.presence,.elb}
