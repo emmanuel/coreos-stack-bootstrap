@@ -8,6 +8,8 @@ ENV KAFKA_RELEASE $KAFKA_SCALA_VERSION-$KAFKA_VERSION
 ENV KAFKA_HOME /opt/kafka_$KAFKA_RELEASE
 
 ADD dist/kafka_$KAFKA_RELEASE.tgz /opt/
+RUN ln -s /opt/kafka_$KAFKA_RELEASE /opt/kafka
+
 ADD conf/server.properties $KAFKA_HOME/config/server.properties
 ADD bin/start-kafka.sh /bin/
 
