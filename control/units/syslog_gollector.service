@@ -13,7 +13,7 @@ Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
 Environment="ENV=blue"
-Environment="TAG=0.0.2"
+Environment="TAG=test"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill syslog_gollector
