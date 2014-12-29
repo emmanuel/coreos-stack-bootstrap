@@ -11,7 +11,7 @@ Restart=on-failure
 RestartSec=10
 
 Environment="ENV=blue"
-Environment="TAG=0.6.2"
+Environment="TAG=0.7.1"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
