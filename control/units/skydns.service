@@ -24,7 +24,7 @@ ExecStart=/usr/bin/docker run \
   --name skydns \
   --net host \
   nordstrom/skydns:${TAG} \
-    -verbose \
+    -logtostderr \
     -addr 172.17.42.1:53 \
     -machines 127.0.0.1:4001 \
     -nameservers 8.8.8.8:53,8.8.4.4:53 \
