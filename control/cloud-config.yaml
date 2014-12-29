@@ -11,10 +11,13 @@ coreos:
   units:
     - name: etcd.service
       command: start
+      enable: true
     - name: fleet.service
       command: start
+      enable: true
     - name: docker.service
       command: start
+      enable: true
       content: |
         .include /usr/lib/systemd/system/docker.service
         
@@ -23,6 +26,7 @@ coreos:
         ExecStart=/usr/bin/docker -d -s=btrfs -r=false -H fd:// --dns=172.17.42.1 --dns-search=cluster.local
     - name: extended-environment.install.service
       command: start
+      enable: true
       content: |
         [Unit]
         Description=AWS runtime environment installer
