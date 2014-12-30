@@ -1,0 +1,9 @@
+#!/bin/bash
+
+sed -e 's/{{LOGROTATE_MODE}}/'"$LOGROTATE_MODE"'/' \
+    -e 's/{{LOGROTATE_ROTATE}}/'"$LOGROTATE_ROTATE"'/' \
+    -e 's/{{LOGROTATE_SIZE}}/'"$LOGROTATE_SIZE"'/' \
+    /app/logrotate.tmpl > /root/logrotate.tmpl
+
+exec /usr/local/bin/go-cron "$GOCRON_SCHEDULER" /etc/cron.daily/logrotate
+

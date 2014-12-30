@@ -15,6 +15,7 @@ cd $SCRIPT_PATH
 echo "Starting services"
 echo "================="
 fleetctl start logspout
+fleetctl start logrotate
 fleetctl start registrator
 fleetctl start skydns
 fleetctl start influxdb@1

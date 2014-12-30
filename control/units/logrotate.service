@@ -1,0 +1,31 @@
+[Unit]
+Description=logrotate
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=60
+
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+Environment="TAG=latest"
+
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill logrotate
+ExecStartPre=-/usr/bin/docker rm logrotate
+ExecStartPre=/usr/bin/docker pull nordstrom/logrotate:${TAG}
+
+ExecStart=/usr/bin/docker run \
+  --name logrotate \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /var/lib/docker:/var/lib/docker \
+  nordstrom/logrotate:${TAG}
+
+[X-Fleet]
+Global=true
+MachineMetadata="role=control"
+
+[Install]
+WantedBy=multi-user.target

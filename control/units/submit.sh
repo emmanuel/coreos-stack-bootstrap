@@ -15,6 +15,7 @@ cd $SCRIPT_PATH
 echo "Submitting units"
 echo "================"
 fleetctl submit logspout
+fleetctl submit logrotate
 fleetctl submit registrator
 fleetctl submit skydns
 fleetctl submit influxdb@

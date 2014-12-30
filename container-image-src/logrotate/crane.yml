@@ -1,0 +1,25 @@
+containers:
+  - name: logrotate_it
+    image: michaloo/logrotate
+    dockerfile: .
+    run:
+      volume:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+        - "/var/lib/docker:/var/lib/docker"
+      interactive: true
+      tty: true
+      entrypoint: /bin/bash
+      cmd:
+        - -c
+        - "bash"
+      rm: true
+  - name: logrotate
+    image: michaloo/logrotate
+    dockerfile: .
+    run:
+      volume:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+        - "/var/lib/docker:/var/lib/docker"
+      detach: true
+      env:
+        - "GOCRON_SCHEDULER=0 * * * * *"
