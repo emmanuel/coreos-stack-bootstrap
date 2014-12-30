@@ -1,5 +1,6 @@
 s3/skydns
 dist
+build
 terraform/terraform.tfvars
 terraform/cluster_values.tfvars
 terraform/*.tfplan

@@ -2,10 +2,10 @@ resource "aws_autoscaling_group" "control" {
   name = "autoscaling_group-control-${var.environment}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
-  min_size = 3
+  min_size = 5
   health_check_grace_period = 300
   health_check_type = "ELB"
-  desired_capacity = 3
+  desired_capacity = 5
   force_delete = true
   launch_configuration = "${aws_launch_configuration.control.name}"
   # load_balancers = [ "${aws_elb.etcd.name}" ]

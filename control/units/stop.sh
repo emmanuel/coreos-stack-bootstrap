@@ -18,8 +18,8 @@ fleetctl stop vulcand{,.elb}
 fleetctl stop logstash@{1..2}
 fleetctl stop elasticsearch@{1..2}
 fleetctl stop syslog_gollector
-fleetctl stop kafka@{1..3}
-fleetctl stop zookeeper@{1..3}
+fleetctl stop kafka@{1..5}
+fleetctl stop zookeeper@{1..5}
 fleetctl stop sysinfo_influxdb
 fleetctl stop cadvisor
 fleetctl stop influxdb.create_db

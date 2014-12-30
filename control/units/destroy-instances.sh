@@ -18,8 +18,8 @@ fleetctl destroy vulcand{,.elb}
 fleetctl destroy logstash@{1..2}
 fleetctl destroy elasticsearch@{1..2}
 fleetctl destroy syslog_gollector
-fleetctl destroy kafka@{1..3}
-fleetctl destroy zookeeper@{1..3}
+fleetctl destroy kafka@{1..5}
+fleetctl destroy zookeeper@{1..5}
 fleetctl destroy sysinfo_influxdb
 fleetctl destroy cadvisor
 # fleetctl destroy influxdb.create_db
