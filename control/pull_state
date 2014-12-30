@@ -8,7 +8,7 @@ if [[ $DROPBOX_HOME && ${DROPBOX_HOME-_} ]]; then
 
   if [ -f "$state_file" ]; then
 
-    cp "$state_file" ./terraform.tfstate 
+    cp -f "$state_file" ./terraform.tfstate 
     echo "State pulled from $state_dir"
 
   else
