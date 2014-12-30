@@ -20,15 +20,15 @@ variable "allow_ssh_from" {
 # These are alpha channel, HVM virtualization
 variable "amis" {
   default = {
-    eu-central-1 = "ami-1a97a607"
-    ap-northeast-1 =  "ami-96e2ef97"
-    sa-east-1 = "ami-5d56e640"
-    ap-southeast-2 =  "ami-dd4a22e7"
-    ap-southeast-1 = "ami-9fd6facd"
-    us-east-1 =  "ami-1299fe7a"
-    us-west-2 = "ami-c71d4cf7"
-    us-west-1 =  "ami-37766472"
-    eu-west-1 = "ami-748b3403"
+    eu-central-1 =  "ami-d83e0ec5"
+    ap-northeast-1  = "ami-368d8537"
+    sa-east-1 = "ami-3f7ac922"
+    ap-southeast-2  =  "ami-315a310b"
+    ap-southeast-1 =  "ami-0f7f515d"
+    us-east-1  = "ami-489af520"
+    us-west-2 = "ami-f15d0ec1"
+    us-west-1  = "ami-e5fde0a0"
+    eu-west-1 = "ami-92c17ae5"
   }
 }
 variable "aws_ec2_keypair" {
