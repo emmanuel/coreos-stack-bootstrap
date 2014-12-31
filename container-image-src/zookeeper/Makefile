@@ -1,6 +1,6 @@
 container = zookeeper
 docker_account = nordstrom
-tag = latest
+tag = 3.4.6
 
 build/container: 
 	docker build --no-cache -t $(container) .
