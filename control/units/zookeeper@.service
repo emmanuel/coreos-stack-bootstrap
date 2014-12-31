@@ -28,7 +28,6 @@ ExecStartPre=-/usr/bin/docker run \
       /usr/bin/printf "Zookeeper data volumes container started"
 
 ExecStart=/usr/bin/docker run \
-  --rm \
   --name zookeeper-%i \
   --env ZK_SERVER_NUMBER=%i \
   --env ZK_VERSION=${TAG} \
