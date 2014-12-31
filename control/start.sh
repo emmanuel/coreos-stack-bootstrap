@@ -10,7 +10,7 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
 fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH
+cd $SCRIPT_PATH/units
 
 echo "Starting services"
 echo "================="
