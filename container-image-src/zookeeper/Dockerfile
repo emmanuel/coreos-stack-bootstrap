@@ -9,10 +9,9 @@ MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 ENV ZK_RELEASE 3.4.6
 ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/local/
-# RUN mv /opt/local/zookeeper-$ZK_RELEASE /opt/local/zookeeper
-ADD conf /opt/local/zookeeper-$ZK_RELEASE/conf/
-ADD ./bin/start-zookeeper.sh /usr/local/bin/start-zookeeper.sh
-RUN mkdir -p /var/lib/zookeeper
+RUN ln -s /opt/local/zookeeper-$ZK_RELEASE/ /opt/zookeeper/
+ADD conf /opt/zookeeper/conf/
+ADD bin/start-zookeeper.sh /bin/start-zookeeper.sh
 
 # Zookeeper client port
 EXPOSE 2181
@@ -21,4 +20,4 @@ EXPOSE 2888
 # Zookeeper leader (election) port
 EXPOSE 3888
 
-CMD ["/usr/local/bin/start-zookeeper.sh"]
+CMD ["/bin/start-zookeeper.sh"]
