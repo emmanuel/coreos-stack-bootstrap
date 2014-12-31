@@ -21,7 +21,7 @@ ExecStart=/usr/bin/docker run \
         --zookeeper zookeeper:2181 \
         --create \
         --topic logspout \
-        --partitions 20 \
+        --partitions 10 \
         --replication-factor 3
 
 [X-Fleet]
