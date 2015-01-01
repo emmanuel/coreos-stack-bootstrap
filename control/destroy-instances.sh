@@ -26,4 +26,5 @@ fleetctl destroy cadvisor
 fleetctl destroy influxdb@1
 fleetctl destroy skydns
 fleetctl destroy registrator
+fleetctl destroy logrotate
 fleetctl destroy logspout
