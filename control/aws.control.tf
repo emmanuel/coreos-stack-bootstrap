@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "control" {
     command = <<COMMAND
       aws autoscaling put-notification-configuration \
         --auto-scaling-group-name "${aws_autoscaling_group.control.name}" \
-        --topic-arn "${var.aws_sns_topic_contol_autoscaling_events_arn}" \
+        --topic-arn "${var.aws_sns_topic_autoscaling_events_arn}" \
         --notification-types \
           autoscaling:EC2_INSTANCE_LAUNCH \
           autoscaling:EC2_INSTANCE_LAUNCH_ERROR \
