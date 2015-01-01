@@ -44,8 +44,8 @@ dynamic:
     metadata: environment=${var.environment},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
-  # TODO: stop distributing long-lived AWS keys once Terraform supports
-  # IAM instance profiles: https://github.com/hashicorp/terraform/issues/28
+  # TODO: stop distributing long-lived AWS keys once Terraform supports IAM instance profiles
+  # on launch configurations: https://github.com/hashicorp/terraform/issues/28
   aws_environment: &STATIC_AWS_ENVIRONMENT
     content: |
       AWS_REGION=${var.aws_region}
@@ -56,11 +56,10 @@ ${file("cloud-config.yaml")}
 USER_DATA
 }
 
-# services accessible from outside the cluster via an ELB
 resource "aws_security_group" "cluster_services-elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
-  name = "Cluster services accessible via ELB (${var.environment})"
-  description = "Allow ELB instances to access these cluster service ports."
+  name = "cluster_services-elb_ingress-${var.environment}"
+  description = "Allow ELBs to make these cluster service ports accessible from outside the cluster (${var.environment})"
 
   # etcd api
   ingress {
