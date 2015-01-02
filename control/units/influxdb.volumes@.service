@@ -1,0 +1,33 @@
+[Unit]
+Description=InfluxDB volumes
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=30
+EnvironmentFile=/etc/environment
+Environment="ENV=blue"
+Environment="TAG=0.8.7"
+
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill influxdb-%i
+ExecStartPre=-/usr/bin/docker rm influxdb-%i
+ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${TAG}
+
+ExecStartPre=-/usr/bin/docker run \
+  --name influxdb.volumes-%i \
+  --net none \
+  --volume /influxdb/data \
+    nordstrom/influxdb:${TAG} \
+      /usr/bin/printf "InfluxDB data volumes container started"
+
+ExecStart=/usr/bin/printf "InfluxDB data volumes available"
+
+[X-Fleet]
+MachineMetadata="role=control"
+Conflicts=influxdb.volumes@*.service
+
+[Install]
+WantedBy=multi-user.target

@@ -18,15 +18,15 @@ fleetctl submit logspout
 fleetctl submit logrotate
 fleetctl submit registrator
 fleetctl submit skydns
-fleetctl submit influxdb@
+fleetctl submit influxdb{,.volumes}@
 fleetctl submit influxdb.create_db
 fleetctl submit cadvisor
 fleetctl submit sysinfo_influxdb
-fleetctl submit zookeeper@
-fleetctl submit kafka@
+fleetctl submit zookeeper{,.volumes}@
+fleetctl submit kafka{,.volumes}@
 fleetctl submit kafka.create_topics
 fleetctl submit syslog_gollector
-fleetctl submit elasticsearch@
+fleetctl submit elasticsearch{,.volumes}@
 fleetctl submit logstash@
 
 fleetctl submit vulcand{,.elb}

@@ -4,6 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
+Wants=influxdb.volumes@%i.service
+After=influxdb.volumes@%i.service
 
 [Service]
 Type=simple
@@ -22,6 +24,7 @@ ExecStart=/usr/bin/docker run \
   --name influxdb-%i \
   --hostname influxdb-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
+  --volumes-from influxdb.volumes-%i \
   --env INFLUXDB_SERVER_NUMBER=%i \
   --env SERVICE_ID=influxdb-%i \
   --publish 8086:8086 \
@@ -40,6 +43,7 @@ ExecStart=/usr/bin/docker run \
 
 [X-Fleet]
 MachineMetadata="role=control"
+MachineOf=influxdb.volumes@%i.service
 Conflicts=influxdb@*.service
 
 [Install]

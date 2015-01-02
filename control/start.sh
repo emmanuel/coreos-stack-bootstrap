@@ -18,15 +18,15 @@ fleetctl start logspout
 fleetctl start logrotate
 fleetctl start registrator
 fleetctl start skydns
-fleetctl start influxdb@1
+fleetctl start influxdb{,.volumes}@1
 fleetctl start influxdb.create_db
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
-fleetctl start zookeeper@{1..5}
-fleetctl start kafka@{1..5}
+fleetctl start zookeeper{,.volumes}@{1..5}
+fleetctl start kafka{,.volumes}@{1..5}
 fleetctl start kafka.create_topics
 fleetctl start syslog_gollector
-fleetctl start elasticsearch@{1..2}
+fleetctl start elasticsearch{,.volumes}@{1..2}
 fleetctl start logstash@{1..2}
 
 fleetctl start vulcand{,.elb}

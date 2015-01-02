@@ -16,14 +16,14 @@ echo "Unregistering units"
 echo "==================="
 fleetctl destroy vulcand{,.elb}
 fleetctl destroy logstash@
-fleetctl destroy elasticsearch@
+fleetctl destroy elasticsearch{,.volumes}@
 fleetctl destroy syslog_gollector
-fleetctl destroy kafka@
-fleetctl destroy zookeeper@
+fleetctl destroy kafka{,.volumes}@
+fleetctl destroy zookeeper{,.volumes}@
 fleetctl destroy sysinfo_influxdb
 fleetctl destroy cadvisor
 # fleetctl destroy influxdb.create_db
-fleetctl destroy influxdb@
+fleetctl destroy influxdb{,.volumes}@
 fleetctl destroy skydns
 fleetctl destroy registrator
 fleetctl destroy logrotate

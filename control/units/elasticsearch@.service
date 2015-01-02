@@ -4,6 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
+Wants=elasticsearch.volumes@%i.service
+After=elasticsearch.volumes@%i.service
 
 [Service]
 Type=simple
@@ -17,13 +19,6 @@ TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill elasticsearch-%i
 ExecStartPre=-/usr/bin/docker rm elasticsearch-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
-
-ExecStartPre=-/usr/bin/docker run \
-  --net none \
-  --name elasticsearch.volumes-%i \
-  --volume /var/lib/elasticsearch \
-    nordstrom/elasticsearch:${TAG} \
-      /usr/bin/printf "ElasticSearch data volumes container started"
 
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
@@ -48,6 +43,7 @@ ExecStop=/usr/bin/docker kill elasticsearch-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
+MachineOf=elasticsearch.volumes@%i.service
 Conflicts=elasticsearch@*.service
 
 [Install]

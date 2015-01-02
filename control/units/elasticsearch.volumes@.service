@@ -1,0 +1,32 @@
+[Unit]
+Description=ElasticSearch volumes
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/environment
+Environment="TAG=1.3.6"
+Environment="ENV=blue"
+
+TimeoutStartSec=5m
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/elasticsearch-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
+
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name elasticsearch.volumes-%i \
+  --volume /elasticsearch/data \
+  --volume /var/lib/elasticsearch \
+    nordstrom/elasticsearch:${TAG} \
+      /usr/bin/printf "ElasticSearch data volumes container started"
+
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/elasticsearch-%i
+
+[X-Fleet]
+MachineMetadata="role=control"
+Conflicts=elasticsearch.volumes@*.service
+
+[Install]
+WantedBy=multi-user.target

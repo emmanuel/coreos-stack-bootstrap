@@ -1,0 +1,36 @@
+[Unit]
+Description=zookeeper
+Requires=docker.service
+After=docker.service
+Wants=skydns.service
+After=skydns.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/environment
+Environment="TAG=3.4.6"
+Environment="ENV=blue"
+
+TimeoutStartSec=5m
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+
+ExecStartPre=-/usr/bin/docker rm zookeeper.volumes-%i
+
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name zookeeper.volumes-%i \
+  --volume /zookeeper/conf \
+  --volume /zookeeper/data \
+    nordstrom/zookeeper:${TAG} \
+      /usr/bin/printf "Zookeeper data volumes container started"
+
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/zookeeper-%i
+
+[X-Fleet]
+MachineMetadata="role=control"
+Conflicts=zookeeper.volumes@*.service
+
+[Install]
+WantedBy=multi-user.target
