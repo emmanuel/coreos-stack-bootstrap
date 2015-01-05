@@ -14,3 +14,4 @@ control/terraform.tfstate
 control/terraform.tfstate.backup
 control/destroy.tfplan
 cluster_outputs.tfvars
+terraform.global.tfvars
