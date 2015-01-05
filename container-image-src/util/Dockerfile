@@ -3,5 +3,7 @@ MAINTAINER Emmanuel Gomez <emmanuel.gomez@nordstrom.com>
 
 RUN apt-get update -qy \
  && apt-get install -qy --no-install-recommends --no-install-suggests \
-     curl dnsutils \
+     curl \
+     dnsutils \
+     jq \
  && apt-get clean -qy
