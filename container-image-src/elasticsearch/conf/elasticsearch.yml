@@ -117,11 +117,11 @@ network.publish_host: ${COREOS_PRIVATE_IPV4}
 
 # Set the number of shards (splits) of an index (5 by default):
 #
-#index.number_of_shards: 5
+index.number_of_shards: 10
 
 # Set the number of replicas (additional copies) of an index (1 by default):
 #
-#index.number_of_replicas: 1
+index.number_of_replicas: 2
 
 # Note, that for development on a local machine, with small indices, it usually
 # makes sense to "disable" the distributed features:
@@ -159,7 +159,7 @@ network.publish_host: ${COREOS_PRIVATE_IPV4}
 
 # Path to directory where to store index data allocated for this node.
 #
-#path.data: /elasticsearch/data
+# path.data: /elasticsearch/data/data-1,/elasticsearch/data/data-2,/elasticsearch/data/data-3
 #
 # Can optionally include more than one location, causing data to be striped across
 # the locations (a la RAID 0) on a file level, favouring locations with most free
@@ -265,18 +265,18 @@ network.publish_host: ${COREOS_PRIVATE_IPV4}
 
 # Allow recovery process after N nodes in a cluster are up:
 #
-#gateway.recover_after_nodes: 1
+gateway.recover_after_nodes: 2
 
 # Set the timeout to initiate the recovery process, once the N nodes
 # from previous setting are up (accepts time value):
 #
-#gateway.recover_after_time: 5m
+# gateway.recover_after_time: 5m
 
 # Set how many nodes are expected in this cluster. Once these N nodes
 # are up (and recover_after_nodes is met), begin recovery process immediately
 # (without waiting for recover_after_time to expire):
 #
-#gateway.expected_nodes: 2
+gateway.expected_nodes: 2
 
 
 ############################# Recovery Throttling #############################
@@ -364,30 +364,30 @@ network.publish_host: ${COREOS_PRIVATE_IPV4}
 
 # Shard level query and fetch threshold logging.
 
-#index.search.slowlog.threshold.query.warn: 10s
-#index.search.slowlog.threshold.query.info: 5s
-#index.search.slowlog.threshold.query.debug: 2s
-#index.search.slowlog.threshold.query.trace: 500ms
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.query.info: 5s
+index.search.slowlog.threshold.query.debug: 2s
+index.search.slowlog.threshold.query.trace: 500ms
 
-#index.search.slowlog.threshold.fetch.warn: 1s
-#index.search.slowlog.threshold.fetch.info: 800ms
-#index.search.slowlog.threshold.fetch.debug: 500ms
-#index.search.slowlog.threshold.fetch.trace: 200ms
+index.search.slowlog.threshold.fetch.warn: 1s
+index.search.slowlog.threshold.fetch.info: 800ms
+index.search.slowlog.threshold.fetch.debug: 500ms
+index.search.slowlog.threshold.fetch.trace: 200ms
 
-#index.indexing.slowlog.threshold.index.warn: 10s
-#index.indexing.slowlog.threshold.index.info: 5s
-#index.indexing.slowlog.threshold.index.debug: 2s
-#index.indexing.slowlog.threshold.index.trace: 500ms
+index.indexing.slowlog.threshold.index.warn: 10s
+index.indexing.slowlog.threshold.index.info: 5s
+index.indexing.slowlog.threshold.index.debug: 2s
+index.indexing.slowlog.threshold.index.trace: 500ms
 
 ################################## GC Logging ################################
 
-#monitor.jvm.gc.young.warn: 1000ms
-#monitor.jvm.gc.young.info: 700ms
-#monitor.jvm.gc.young.debug: 400ms
+monitor.jvm.gc.young.warn: 1000ms
+monitor.jvm.gc.young.info: 700ms
+monitor.jvm.gc.young.debug: 400ms
 
-#monitor.jvm.gc.old.warn: 10s
-#monitor.jvm.gc.old.info: 5s
-#monitor.jvm.gc.old.debug: 2s
+monitor.jvm.gc.old.warn: 10s
+monitor.jvm.gc.old.info: 5s
+monitor.jvm.gc.old.debug: 2s
 
 ################################## Security ################################
 
