@@ -15,15 +15,6 @@ coreos:
     - name: fleet.service
       command: start
       enable: true
-    - name: docker.service
-      command: start
-      enable: true
-      content: |
-        .include /usr/lib/systemd/system/docker.service
-        
-        [Service]
-        ExecStart=
-        ExecStart=/usr/bin/docker -d -s=btrfs -r=false -H fd:// --dns=172.17.42.1 --dns-search=cluster.local
     - name: extended-environment.install.service
       command: start
       enable: true
@@ -56,14 +47,9 @@ write_files:
   - path: /etc/aws_environment
     <<: *STATIC_AWS_ENVIRONMENT
   # Docker defaults to SSL for all registry interaction, but Deis doesn't yet support it
-  - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
+  - path: /run/docker_opts.env
     content: |
-      [Service]
-      Environment="DOCKER_OPTS=--insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16"
-  - path: /etc/systemd/journald.conf.d/make-storage-volatile.conf
-    content: |
-      [Journal]
-      Storage="volatile"
+      DOCKER_OPTS=--dns=172.17.42.1 --dns-search=cluster.local --insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'
