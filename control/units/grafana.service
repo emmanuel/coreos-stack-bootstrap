@@ -8,7 +8,6 @@ RestartSec=30
 PermissionsStartOnly=true
 # ReadOnlyDirectories=/etc
 EnvironmentFile=/etc/environment
-Environment="ENV=blue"
 
 ExecStartPre=-/usr/bin/docker kill grafana
 ExecStartPre=-/usr/bin/docker rm grafana
@@ -16,7 +15,6 @@ ExecStartPre=/usr/bin/docker pull nordstrom/grafana:latest
 
 ExecStart=/usr/bin/docker run \
   --name grafana \
-  --hostname grafana.${ENV}.cluster.local \
-  --dns-search ${ENV}.cluster.local \
+  --hostname grafana.cluster.local \
   --publish 80:19100 \
   nordstrom/grafana:latest

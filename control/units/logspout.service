@@ -9,7 +9,6 @@ Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment
-Environment="ENV=blue"
 Environment="TAG=latest"
 
 TimeoutStartSec=5m
@@ -20,7 +19,6 @@ ExecStartPre=/usr/bin/docker pull progrium/logspout:${TAG}
 ExecStart=/usr/bin/docker run \
   --name logspout \
   --hostname %m \
-  --dns-search ${ENV}.cluster.local \
   --env DEBUG=true \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --env SERVICE_IGNORE=true \

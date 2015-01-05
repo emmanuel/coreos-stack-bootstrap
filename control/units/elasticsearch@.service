@@ -13,7 +13,6 @@ Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
 Environment="TAG=1.4.2"
-Environment="ENV=blue"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill elasticsearch-%i
@@ -22,9 +21,8 @@ ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
-  --hostname elasticsearch-%i.${ENV}.cluster.local \
-  --dns-search ${ENV}.cluster.local \
-  --env ES_NODE_NAME=elasticsearch-${ENV}-%i \
+  --hostname elasticsearch-%i.cluster.local \
+  --env ES_NODE_NAME=elasticsearch-%i \
   --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
   --env SERVICE_ID=elasticsearch-%i \
   --publish 9200:9200 \

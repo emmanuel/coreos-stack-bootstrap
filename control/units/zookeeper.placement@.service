@@ -10,13 +10,12 @@ Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
 Environment="TAG=3.4.6"
-Environment="ENV=blue"
 
 TimeoutStartSec=5m
-ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 ExecStart=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
 
-ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/zookeeper-%i
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/zookeeper-%i
 
 [X-Fleet]
 MachineMetadata="role=control"

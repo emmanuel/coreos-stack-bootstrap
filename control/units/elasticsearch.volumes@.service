@@ -8,10 +8,9 @@ Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
 Environment="TAG=1.4.2"
-Environment="ENV=blue"
 
 TimeoutStartSec=5m
-ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/elasticsearch-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/elasticsearch-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
 
 ExecStartPre=-/usr/bin/docker run \
@@ -24,7 +23,7 @@ ExecStartPre=-/usr/bin/docker run \
       /usr/bin/printf "ElasticSearch data volumes container started"
 
 ExecStop=/usr/bin/docker rm elasticsearch.volumes-%i
-ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/elasticsearch-%i
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/elasticsearch-%i
 
 [X-Fleet]
 MachineMetadata="role=control"

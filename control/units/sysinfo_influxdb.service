@@ -10,7 +10,6 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 
-Environment="ENV=blue"
 Environment="TAG=latest"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
@@ -22,7 +21,6 @@ ExecStartPre=/usr/bin/docker pull nordstrom/sysinfo_influxdb:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name=sysinfo_influxdb \
-  --dns-search ${ENV}.cluster.local \
   nordstrom/sysinfo_influxdb:${TAG} \
     -h influxdb:8086 \
     -d sysinfo \

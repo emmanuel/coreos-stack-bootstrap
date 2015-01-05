@@ -10,10 +10,9 @@ Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
 Environment="TAG=0.8.1.1"
-Environment="ENV=blue"
 
 TimeoutStartSec=5m
-ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/kafka-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/kafka-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
 ExecStartPre=-/usr/bin/docker kill kafka-%i
 ExecStartPre=-/usr/bin/docker rm kafka-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${TAG}
@@ -26,7 +25,7 @@ ExecStartPre=-/usr/bin/docker run \
     nordstrom/kafka:${TAG} \
       /usr/bin/printf "Kafka data volumes container started"
 
-ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/kafka-%i
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/kafka-%i
 
 [X-Fleet]
 MachineMetadata="role=control"

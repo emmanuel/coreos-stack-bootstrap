@@ -6,7 +6,6 @@ After=kafka@1.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-Environment="ENV=blue"
 Environment="TAG=0.8.1.1"
 Environment="KAFKA_SCALA_VERSION=2.9.2"
 Environment="KAFKA_VERSION=0.8.1.1"
@@ -15,7 +14,6 @@ ExecStartPre=-/usr/bin/docker kill kafka.create_topics
 ExecStartPre=-/usr/bin/docker rm kafka.create_topics
 ExecStart=/usr/bin/docker run \
   --name kafka.create_topics \
-  --dns-search ${ENV}.cluster.local \
     nordstrom/kafka:${TAG} \
       /opt/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}/bin/kafka-topics.sh \
         --zookeeper zookeeper:2181 \

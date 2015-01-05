@@ -10,7 +10,6 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 
-Environment="ENV=blue"
 Environment="TAG=0.7.1"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
@@ -23,7 +22,6 @@ ExecStartPre=/usr/bin/docker pull google/cadvisor:${TAG}
 ExecStart=/usr/bin/docker run \
   --name cadvisor \
   --hostname %m \
-  --dns-search ${ENV}.cluster.local \
   --volume /var/run:/var/run:rw \
   --volume /sys:/sys:ro \
   --volume /var/lib/docker:/var/lib/docker:ro \

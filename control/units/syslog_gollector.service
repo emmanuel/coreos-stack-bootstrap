@@ -12,7 +12,6 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
-Environment="ENV=blue"
 Environment="TAG=test"
 
 TimeoutStartSec=5m
@@ -24,7 +23,6 @@ ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:${TAG}
 # we bind 0.0.0.0 to accept traffic from docker's --publish switch
 ExecStart=/usr/bin/docker run \
   --name syslog_gollector \
-  --dns-search ${ENV}.cluster.local \
   --env SERVICE_IGNORE=true \
   --publish 172.17.42.1:514:514 \
   --publish 172.17.42.1:514:514/udp \

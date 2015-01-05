@@ -10,7 +10,6 @@ Type=simple
 Restart=on-failure
 RestartSec=5
 EnvironmentFile=/etc/environment
-Environment="ENV=blue"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill vulcand
@@ -20,8 +19,7 @@ ExecStartPre=/usr/bin/docker pull mailgun/vulcand
 
 ExecStart=/usr/bin/docker run \
   --name vulcand \
-  --hostname vulcand.${ENV}.cluster.local \
-  --dns-search ${ENV}.cluster.local \
+  --hostname vulcand.cluster.local \
   --env SERVICE_ID=vulcand-%i \
   --publish 8181:8181 \
   --env SERVICE_8181_NAME=vulcand \

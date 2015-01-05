@@ -8,7 +8,6 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
-Environment="ENV=blue"
 Environment="TAG=0.8.7"
 
 TimeoutStartSec=5m
