@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=30
 EnvironmentFile=/etc/environment
-Environment="TAG=1.4.2"
+Environment="TAG=1.5.0.beta1"
 Environment="ENV=blue"
 
 TimeoutStartSec=5m
@@ -21,10 +21,6 @@ ExecStart=/usr/bin/docker run \
   --hostname logstash-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
     nordstrom/logstash:${TAG}
-
-# wait until Logstash is responding on the lumberjack port before dependent units get started
-# ExecStartPost=/bin/bash -c "echo \"Waiting for Logstash on tcp://${COREOS_PRIVATE_IPV4}:5000...\" \
-#   && until echo 'foo' | ncat ${COREOS_PRIVATE_IPV4} 5000 >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill logstash-%i
 
