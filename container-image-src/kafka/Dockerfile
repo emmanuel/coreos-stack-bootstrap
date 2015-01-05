@@ -1,5 +1,5 @@
-FROM nordstrom/java-7
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+FROM nordstrom/java-7:0.0.4
+MAINTAINER Emmanuel Gomez <emmanuel.gomez@nordstrom.com>
 
 ENV KAFKA_SCALA_VERSION 2.9.2
 ENV KAFKA_VERSION 0.8.1.1
