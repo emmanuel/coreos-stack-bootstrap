@@ -12,18 +12,18 @@ Type=simple
 Restart=on-failure
 RestartSec=5
 EnvironmentFile=/etc/environment
-Environment="TAG=2.0.1d"
+Environment="RELEASE=2.0.1d"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill skydns
 ExecStartPre=-/usr/bin/docker rm skydns
-ExecStartPre=/usr/bin/docker pull nordstrom/skydns:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/skydns:${RELEASE}
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/hosts/%m '{"host":"${COREOS_PRIVATE_IPV4}"}'
 
 ExecStart=/usr/bin/docker run \
   --name skydns \
   --net host \
-  nordstrom/skydns:${TAG} \
+  nordstrom/skydns:${RELEASE} \
     -logtostderr \
     -addr 172.17.42.1:53 \
     -machines 127.0.0.1:4001 \
@@ -35,7 +35,7 @@ ExecStart=/usr/bin/docker run \
 # ExecStart=/usr/bin/docker run \
 #   --name skydns \
 #   --publish 172.17.42.1:53:53/udp \
-#   nordstrom/skydns:${TAG} \
+#   nordstrom/skydns:${RELEASE} \
 #     -verbose \
 #     -addr 0.0.0.0:53/udp \
 #     -machines 172.17.42.1:4001 \

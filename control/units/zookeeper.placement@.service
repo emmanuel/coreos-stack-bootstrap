@@ -9,11 +9,11 @@ After=skydns.service
 Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
-Environment="TAG=3.4.6"
+Environment="RELEASE=3.4.6"
 
 TimeoutStartSec=5m
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
-ExecStart=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+ExecStart=/usr/bin/docker pull nordstrom/zookeeper:${RELEASE}
 
 ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/zookeeper-%i
 

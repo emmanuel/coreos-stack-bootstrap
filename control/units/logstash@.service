@@ -8,17 +8,17 @@ Type=simple
 Restart=always
 RestartSec=30
 EnvironmentFile=/etc/environment
-Environment="TAG=1.5.0.beta1"
+Environment="RELEASE=1.5.0.beta1"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill logstash-%i
 ExecStartPre=-/usr/bin/docker rm logstash-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/logstash:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/logstash:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name logstash-%i \
   --hostname logstash-%i.cluster.local \
-    nordstrom/logstash:${TAG}
+    nordstrom/logstash:${RELEASE}
 
 ExecStop=/usr/bin/docker kill logstash-%i
 

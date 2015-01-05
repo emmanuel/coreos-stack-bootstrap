@@ -9,12 +9,12 @@ Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment
-Environment="TAG=latest"
+Environment="RELEASE=latest"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill logspout
 ExecStartPre=-/usr/bin/docker rm logspout
-ExecStartPre=/usr/bin/docker pull progrium/logspout:${TAG}
+ExecStartPre=/usr/bin/docker pull progrium/logspout:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name logspout \
@@ -23,7 +23,7 @@ ExecStart=/usr/bin/docker run \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --env SERVICE_IGNORE=true \
   --publish 8000:8000 \
-  progrium/logspout:${TAG} \
+  progrium/logspout:${RELEASE} \
     syslog://172.17.42.1:514
 
 [X-Fleet]

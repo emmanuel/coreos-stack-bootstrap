@@ -12,12 +12,12 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
-Environment="TAG=1.4.2"
+Environment="RELEASE=1.4.2"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill elasticsearch-%i
 ExecStartPre=-/usr/bin/docker rm elasticsearch-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
@@ -30,7 +30,7 @@ ExecStart=/usr/bin/docker run \
   --publish 9300:9300 \
   --env SERVICE_9300_NAME=elasticsearch-peer \
   --volumes-from elasticsearch.volumes-%i \
-    nordstrom/elasticsearch:${TAG}
+    nordstrom/elasticsearch:${RELEASE}
 
 # wait until ElasticSearch is responding on the API port before dependent units get started
 ExecStartPost=/usr/bin/printf "Waiting for ElasticSearch on http://${COREOS_PRIVATE_IPV4}:9200/_cluster/health..."

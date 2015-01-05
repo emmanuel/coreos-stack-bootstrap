@@ -12,12 +12,12 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
-Environment="TAG=test"
+Environment="RELEASE=test"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill syslog_gollector
 ExecStartPre=-/usr/bin/docker rm syslog_gollector
-ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/syslog_gollector:${RELEASE}
 
 # logspout targets syslog://localhost:514
 # we bind 0.0.0.0 to accept traffic from docker's --publish switch
@@ -26,7 +26,7 @@ ExecStart=/usr/bin/docker run \
   --env SERVICE_IGNORE=true \
   --publish 172.17.42.1:514:514 \
   --publish 172.17.42.1:514:514/udp \
-  nordstrom/syslog_gollector:${TAG} \
+  nordstrom/syslog_gollector:${RELEASE} \
     -tcp 0.0.0.0:514 \
     -udp 0.0.0.0:514 \
     -admin localhost:8080 \

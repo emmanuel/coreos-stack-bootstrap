@@ -13,7 +13,7 @@ Restart=on-failure
 RestartSec=30
 
 EnvironmentFile=/etc/environment
-Environment="TAG=3.4.6"
+Environment="RELEASE=3.4.6"
 
 ExecStartPre=-/usr/bin/docker rm -f zookeeper.volumes-%i
 
@@ -23,12 +23,12 @@ ExecStartPre=-/usr/bin/docker run \
   --env ZK_SERVER_NUMBER=%i \
   --volume /zookeeper/conf \
   --volume /zookeeper/data \
-    nordstrom/zookeeper:${TAG} \
+    nordstrom/zookeeper:${RELEASE} \
       /bin/bash -c "echo $ZK_SERVER_NUMBER > /zookeeper/data/myid"
 
 ExecStartPre=-/usr/bin/docker kill zookeeper-%i
 ExecStartPre=-/usr/bin/docker rm zookeeper-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name zookeeper-%i \
@@ -42,7 +42,7 @@ ExecStart=/usr/bin/docker run \
   --env SERVICE_3888_NAME=zookeeper-leader \
   --env ZK_SERVER_NUMBER=%i \
   --env SERVICE_ID=zookeeper-%i \
-    nordstrom/zookeeper:${TAG} \
+    nordstrom/zookeeper:${RELEASE} \
       /opt/zookeeper/bin/zkServer.sh start-foreground
 
 ExecStartPost=/usr/bin/printf "Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181..."

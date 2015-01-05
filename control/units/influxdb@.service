@@ -12,12 +12,12 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
-Environment="TAG=0.8.7"
+Environment="RELEASE=0.8.7"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill influxdb-%i
 ExecStartPre=-/usr/bin/docker rm influxdb-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name influxdb-%i \
@@ -33,7 +33,7 @@ ExecStart=/usr/bin/docker run \
   --env SERVICE_8090_NAME=influxdb-raft \
   --publish 8099:8099 \
   --env SERVICE_8099_NAME=influxdb-replication \
-  nordstrom/influxdb:${TAG}
+  nordstrom/influxdb:${RELEASE}
 
 # ExecStartPost=/usr/bin/printf "Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping..."
 # ExecStartPost=/bin/bash -c \

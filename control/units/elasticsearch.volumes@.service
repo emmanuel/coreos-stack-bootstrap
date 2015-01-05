@@ -7,11 +7,11 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
-Environment="TAG=1.4.2"
+Environment="RELEASE=1.4.2"
 
 TimeoutStartSec=5m
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/elasticsearch-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
-ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${TAG}
+ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${RELEASE}
 
 ExecStartPre=-/usr/bin/docker run \
   --net none \
@@ -19,7 +19,7 @@ ExecStartPre=-/usr/bin/docker run \
   --volume /elasticsearch/log \
   --volume /elasticsearch/conf \
   --volume /elasticsearch/data \
-    nordstrom/elasticsearch:${TAG} \
+    nordstrom/elasticsearch:${RELEASE} \
       /usr/bin/printf "ElasticSearch data volumes container started"
 
 ExecStop=/usr/bin/docker rm elasticsearch.volumes-%i
