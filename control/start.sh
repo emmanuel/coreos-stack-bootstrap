@@ -26,7 +26,7 @@ fleetctl start zookeeper{,.placement}@{1..5}
 fleetctl start kafka{,.volumes}@{1..5}
 fleetctl start kafka.create_topics
 fleetctl start syslog_gollector
-fleetctl start elasticsearch{,.volumes}@{1..2}
-fleetctl start logstash@{1..2}
+fleetctl start elasticsearch{,.volumes}@{1..3}
+fleetctl start logstash@1
 
 fleetctl start vulcand{,.elb}
