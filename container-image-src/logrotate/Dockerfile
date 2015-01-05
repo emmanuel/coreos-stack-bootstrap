@@ -2,10 +2,12 @@ FROM nordstrom/baseimage-ubuntu:14.04
 MAINTAINER Paul Payne "paul@payne.io"
 
 # install curl & syslog
-RUN apt-get update \
-    && apt-get install -y curl \
-    && addgroup syslog \
-    && apt-get install -y logrotate 
+RUN addgroup syslog \
+ && apt-get update -qy \
+ && apt-get install -qy --no-install-suggests --no-install-recommends \
+   curl \
+   logrotate \
+ && apt-get clean
 
 # install docker-gen
 RUN curl -sL https://github.com/jwilder/docker-gen/releases/download/0.3.2/docker-gen-linux-amd64-0.3.2.tar.gz \
