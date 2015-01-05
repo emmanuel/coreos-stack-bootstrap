@@ -16,5 +16,5 @@ echo "Destroying volumes"
 echo "==================="
 fleetctl destroy elasticsearch.volumes@{1..2}
 fleetctl destroy kafka.volumes@{1..5}
-fleetctl destroy zookeeper.volumes@{1..5}
+fleetctl destroy zookeeper.placement@{1..5}
 fleetctl destroy influxdb.volumes@1

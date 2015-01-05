@@ -22,7 +22,7 @@ fleetctl submit influxdb{,.volumes}@
 fleetctl submit influxdb.create_db
 fleetctl submit cadvisor
 fleetctl submit sysinfo_influxdb
-fleetctl submit zookeeper{,.volumes}@
+fleetctl submit zookeeper{,.placement}@
 fleetctl submit kafka{,.volumes}@
 fleetctl submit kafka.create_topics
 fleetctl submit syslog_gollector

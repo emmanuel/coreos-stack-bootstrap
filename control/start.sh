@@ -22,7 +22,7 @@ fleetctl start influxdb{,.volumes}@1
 fleetctl start influxdb.create_db
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
-fleetctl start zookeeper{,.volumes}@{1..5}
+fleetctl start zookeeper{,.placement}@{1..5}
 fleetctl start kafka{,.volumes}@{1..5}
 fleetctl start kafka.create_topics
 fleetctl start syslog_gollector

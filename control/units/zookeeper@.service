@@ -4,8 +4,8 @@ Requires=docker.service
 After=docker.service
 Wants=skydns.service
 After=skydns.service
-Wants=zookeeper.volumes@%i.service
-After=zookeeper.volumes@%i.service
+Wants=zookeeper.placement@%i.service
+After=zookeeper.placement@%i.service
 
 [Service]
 Type=simple
@@ -16,33 +16,46 @@ EnvironmentFile=/etc/environment
 Environment="TAG=3.4.6"
 Environment="ENV=blue"
 
+ExecStartPre=-/usr/bin/docker rm -f zookeeper.volumes-%i
+
+ExecStartPre=-/usr/bin/docker run \
+  --net none \
+  --name zookeeper.volumes-%i \
+  --env ZK_SERVER_NUMBER=%i \
+  --volume /zookeeper/conf \
+  --volume /zookeeper/data \
+    nordstrom/zookeeper:${TAG} \
+      /bin/bash -c "echo $ZK_SERVER_NUMBER > /zookeeper/data/myid"
+
 ExecStartPre=-/usr/bin/docker kill zookeeper-%i
 ExecStartPre=-/usr/bin/docker rm zookeeper-%i
+ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name zookeeper-%i \
-  --env ZK_SERVER_NUMBER=%i \
-  --env ZK_VERSION=${TAG} \
-  --env SERVICE_ID=zookeeper-%i \
   --hostname zookeeper-%i.${ENV}.cluster.local \
   --dns-search ${ENV}.cluster.local \
+  --volumes-from zookeeper.volumes-%i \
   --publish 2181:2181 \
   --env SERVICE_2181_NAME=zookeeper \
   --publish 2888:2888 \
   --env SERVICE_2888_NAME=zookeeper-peer \
   --publish 3888:3888 \
   --env SERVICE_3888_NAME=zookeeper-leader \
-    nordstrom/zookeeper:${TAG}
+  --env ZK_SERVER_NUMBER=%i \
+  --env SERVICE_ID=zookeeper-%i \
+    nordstrom/zookeeper:${TAG} \
+      /opt/zookeeper/bin/zkServer.sh start-foreground
 
-# ExecStartPost=/usr/bin/printf "Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181..."
-# ExecStartPost=/bin/bash -c \
-#   "until echo 'dummy-value' | ncat ${COREOS_PRIVATE_IPV4} 2181 >/dev/null 2>&1; do sleep 1; done"
+ExecStartPost=/usr/bin/printf "Waiting for Zookeeper on tcp://${COREOS_PRIVATE_IPV4}:2181..."
+ExecStartPost=/bin/bash -c \
+  "until echo 'ruok' | ncat ${COREOS_PRIVATE_IPV4} 2181 >/dev/null 2>&1; do sleep 1; done"
 
 ExecStop=/usr/bin/docker kill zookeeper-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-MachineOf=zookeeper.volumes@%i.service
+MachineOf=zookeeper.placement@%i.service
 Conflicts=zookeeper@*.service
 
 [Install]

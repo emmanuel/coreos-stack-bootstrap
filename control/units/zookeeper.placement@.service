@@ -1,5 +1,5 @@
 [Unit]
-Description=zookeeper
+Description=Zookeeper scheduling pinner
 Requires=docker.service
 After=docker.service
 Wants=skydns.service
@@ -14,23 +14,13 @@ Environment="ENV=blue"
 
 TimeoutStartSec=5m
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/${ENV}/zookeeper-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"
-ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
-
-ExecStartPre=-/usr/bin/docker rm zookeeper.volumes-%i
-
-ExecStartPre=-/usr/bin/docker run \
-  --net none \
-  --name zookeeper.volumes-%i \
-  --volume /zookeeper/conf \
-  --volume /zookeeper/data \
-    nordstrom/zookeeper:${TAG} \
-      /usr/bin/printf "Zookeeper data volumes container started"
+ExecStart=/usr/bin/docker pull nordstrom/zookeeper:${TAG}
 
 ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/${ENV}/zookeeper-%i
 
 [X-Fleet]
 MachineMetadata="role=control"
-Conflicts=zookeeper.volumes@*.service
+Conflicts=zookeeper.placement@*.service
 
 [Install]
 WantedBy=multi-user.target
