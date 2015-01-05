@@ -21,13 +21,12 @@ ExecStartPre=/usr/bin/docker pull progrium/registrator:${TAG}
 
 ExecStart=/usr/bin/docker run \
   --name registrator \
-  --env DEBUG=true \
   --volume /var/run/docker.sock:/tmp/docker.sock \
   --hostname ${COREOS_PRIVATE_IPV4} \
-  progrium/registrator:${TAG} \
-    -ttl 30 \
-    -ttl-refresh 20 \
-    skydns2://172.17.42.1:4001/${ENV}.cluster.local
+    progrium/registrator:${TAG} \
+      -ttl 30 \
+      -ttl-refresh 20 \
+      skydns2://172.17.42.1:4001/${ENV}.cluster.local
 
 
 [X-Fleet]
