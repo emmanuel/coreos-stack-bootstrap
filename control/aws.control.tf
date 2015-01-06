@@ -69,10 +69,10 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     security_groups = [ "${aws_security_group.elb_etcd.id}" ]
   }
 
-  # Vulcand
+  # vulcand traffic (8181) and API (8182)
   ingress {
     from_port = 8181
-    to_port =  8181
+    to_port =  8182
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
@@ -116,7 +116,7 @@ resource "aws_elb" "etcd" {
 }
 
 resource "aws_security_group" "elb_vulcand" {
-  name = "Vulcand ELB (${var.environment})"
+  name = "vulcand-public-${var.environment}"
   description = "Allow public access to Vulcand."
 
   ingress {
