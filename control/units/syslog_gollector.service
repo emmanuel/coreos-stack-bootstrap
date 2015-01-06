@@ -1,5 +1,6 @@
 [Unit]
-Description=syslog-gollector
+Description=Syslog-to-Kafka log shipper
+Documentation=https://github.com/emmanuel/syslog-gollector
 Requires=docker.service
 After=docker.service
 Wants=skydns.service

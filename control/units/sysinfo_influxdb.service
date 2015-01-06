@@ -1,5 +1,6 @@
 [Unit]
 Description=sysinfo_influxdb
+Documentation=https://github.com/novaquark/sysinfo_influxdb
 Requires=docker.service
 After=docker.service
 Wants=skydns.service

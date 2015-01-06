@@ -1,5 +1,6 @@
 [Unit]
 Description=zookeeper
+Documentation=http://zookeeper.apache.org
 Requires=docker.service
 After=docker.service
 Wants=skydns.service

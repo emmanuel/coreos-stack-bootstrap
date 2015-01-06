@@ -1,5 +1,6 @@
 [Unit]
 Description=logrotate
+Documentation=http://manpages.ubuntu.com/manpages/trusty/man8/logrotate.8.html
 Requires=docker.service
 After=docker.service
 

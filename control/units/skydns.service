@@ -1,5 +1,6 @@
 [Unit]
 Description=SkyDNS
+Documentation=https://github.com/skynetservices/skydns
 Requires=etcd.service
 After=etcd.service
 Requires=docker.service

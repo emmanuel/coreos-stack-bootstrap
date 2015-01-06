@@ -1,5 +1,6 @@
 [Unit]
 Description=ElasticSearch
+Documentation=http://www.elasticsearch.org
 Requires=docker.service
 After=docker.service
 Wants=skydns.service

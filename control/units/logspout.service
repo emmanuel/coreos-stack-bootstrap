@@ -1,5 +1,6 @@
 [Unit]
 Description=logspout
+Documentation=https://github.com/progrium/logspout
 Requires=docker.service
 After=docker.service
 

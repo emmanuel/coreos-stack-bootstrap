@@ -1,5 +1,6 @@
 [Unit]
 Description=InfluxDB daemon
+Documentation=http://influxdb.com
 Requires=docker.service
 After=docker.service
 Wants=skydns.service

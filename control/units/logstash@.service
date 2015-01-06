@@ -1,5 +1,6 @@
 [Unit]
 Description=Logstash
+Documentation=http://www.elasticsearch.org/overview/logstash
 Requires=docker.service
 After=docker.service
 

@@ -1,5 +1,6 @@
 [Unit]
 Description=Automated container registration to etcd (for SkyDNS)
+Documentation=https://github.com/progrium/registrator
 Requires=docker.service
 After=docker.service
 Wants=logspout.service

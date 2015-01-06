@@ -1,5 +1,6 @@
 [Unit]
 Description=Vulcand API gateway
+Documentation=http://www.vulcanproxy.com
 Requires=etcd.service
 After=etcd.service
 Requires=docker.service

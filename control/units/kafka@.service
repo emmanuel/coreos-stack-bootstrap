@@ -1,5 +1,6 @@
 [Unit]
 Description=Kafka
+Documentation=http://kafka.apache.org
 Requires=docker.service
 After=docker.service
 Wants=skydns.service
