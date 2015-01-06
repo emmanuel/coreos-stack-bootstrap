@@ -6,4 +6,5 @@ RUN apt-get update -qy \
      curl \
      dnsutils \
      jq \
+     nmap \
  && apt-get clean -qy
