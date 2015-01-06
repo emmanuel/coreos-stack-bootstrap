@@ -19,6 +19,7 @@ fleetctl start logrotate
 fleetctl start registrator
 fleetctl start skydns
 fleetctl start influxdb{,.volumes}@1
+fleetctl start vulcand{,.elb}@1
 fleetctl start influxdb.create_db
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
@@ -29,4 +30,3 @@ fleetctl start syslog_gollector
 fleetctl start elasticsearch{,.volumes}@{1..3}
 fleetctl start logstash@1
 
-fleetctl start vulcand{,.elb}

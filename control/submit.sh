@@ -29,4 +29,4 @@ fleetctl submit syslog_gollector
 fleetctl submit elasticsearch{,.volumes}@
 fleetctl submit logstash@
 
-fleetctl submit vulcand{,.elb}
+fleetctl submit vulcand{,.elb}@
