@@ -1,0 +1,47 @@
+[Unit]
+Description=Docker registry
+Documentation=https://github.com/docker/docker-registry
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/aws_environment
+
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill docker-registry-%i
+ExecStartPre=-/usr/bin/docker rm docker-registry-%i
+ExecStartPre=/usr/bin/docker pull registry
+
+ExecStart=/usr/bin/docker run \
+  --name docker-registry-%i \
+  --hostname docker-registry-%i.cluster.local \
+  --env STANDALONE=true \
+  --env SETTINGS_FLAVOR=s3 \
+  --env AWS_REGION=us-west-2 \
+  --env AWS_BUCKET=internal-docker-registry \
+  --env STORAGE_PATH=/shared \
+  --env AWS_KEY="${AWS_ACCESS_KEY}" \
+  --env AWS_SECRET="${AWS_SECRET_KEY}" \
+  --env SEARCH_BACKEND=sqlalchemy \
+  --env GUNICORN_OPTS=[--preload] \
+  --env CACHE_REDIS_HOST=redis \
+  --env CACHE_REDIS_PORT=6379 \
+  --env CACHE_REDIS_DB=0 \
+  --env CACHE_LRU_REDIS_HOST=redis-lru \
+  --env CACHE_LRU_REDIS_PORT=6379 \
+  --env CACHE_LRU_REDIS_DB=0 \
+  --env SERVICE_ID=docker-registry-%i \
+  --publish 5000:5000 \
+  --env SERVICE_5000_NAME=docker-registry \
+    registry
+
+[X-Fleet]
+MachineMetadata="role=control"
+Conflicts=docker-registry@*.service
+
+[Install]
+WantedBy=multi-user.target
