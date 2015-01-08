@@ -40,7 +40,7 @@ coreos:
         RemainAfterExit=true
         TimeoutStartSec=5m
         ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04
-        ExecStart=/usr/bin/docker pull nordstrom/util-ubuntu:14.04
+        ExecStart=/usr/bin/docker pull nordstrom/util
         ExecStart=/usr/bin/docker pull nordstrom/awscli
 
 write_files:
