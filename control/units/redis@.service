@@ -16,7 +16,6 @@ Environment="RELEASE=2.8.19"
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill redis-%i
 ExecStartPre=-/usr/bin/docker rm redis-%i
-ExecStartPre=-/usr/bin/docker rm redis.check-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/redis:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
@@ -30,9 +29,13 @@ ExecStart=/usr/bin/docker run \
     nordstrom/redis:${RELEASE}
 
 ExecStartPost=/bin/bash -c \
-  "until /usr/bin/docker exec redis-%i redis-cli ping >/dev/null 2>&1; do sleep 1; done"
+  "until docker exec redis-%i redis-cli ping >/dev/null 2>&1; do sleep 1; done"
+ExecStartPost=/usr/bin/printf "CONFIG SET maxmemory 500000000"
+ExecStartPost=/usr/bin/docker exec redis-%i redis-cli CONFIG SET maxmemory 500000000
+ExecStartPost=/usr/bin/printf "CONFIG SET maxmemory-policy noeviction"
+ExecStartPost=/usr/bin/docker exec redis-%i redis-cli CONFIG SET maxmemory-policy noeviction
 
-ExecStop=/usr/bin/docker exec redis-%i /usr/bin/redis-cli shutdown
+ExecStop=/usr/bin/docker exec redis-%i redis-cli shutdown
 
 [X-Fleet]
 MachineMetadata="role=control"
