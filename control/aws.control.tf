@@ -76,6 +76,49 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     protocol = "tcp"
     security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
+
+  # GTIN service traffic (19111)
+  ingress {
+    from_port = 19111
+    to_port =  19111
+    protocol = "tcp"
+    security_groups = [ "${aws_security_group.elb_gtin.id}" ]
+  }
+}
+
+resource "aws_security_group" "elb_gtin" {
+  name = "gtin-external-elb-${var.environment}"
+  description = "GTIN service external ELB (${var.environment})."
+
+  # GTIN service
+  ingress {
+    from_port = 80
+    to_port =  80
+    protocol = "tcp"
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
+}
+
+resource "aws_elb" "gtin" {
+  name = "gtin-external-${var.environment}"
+  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
+
+  listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = 19111
+    instance_protocol = "http"
+  }
+
+  health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 10
+    timeout = 3
+    target = "HTTP:19111/stores/3/gtins/1"
+    interval = 5
+  }
+
+  security_groups = [ "${aws_security_group.elb_gtin.id}" ]
 }
 
 resource "aws_security_group" "elb_etcd" {
