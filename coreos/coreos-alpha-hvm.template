@@ -5,39 +5,39 @@
       "RegionMap" : {
 
           "eu-central-1" : {
-              "AMI" : "ami-ace3d3b1"
+              "AMI" : "ami-3c3d0e21"
           },
 
           "ap-northeast-1" : {
-              "AMI" : "ami-9a0f1b9b"
+              "AMI" : "ami-be5649bf"
           },
 
           "sa-east-1" : {
-              "AMI" : "ami-ebb406f6"
+              "AMI" : "ami-35f14d28"
           },
 
           "ap-southeast-2" : {
-              "AMI" : "ami-a3325899"
+              "AMI" : "ami-a9d0a593"
           },
 
           "ap-southeast-1" : {
-              "AMI" : "ami-2f644d7d"
+              "AMI" : "ami-8e301bdc"
           },
 
           "us-east-1" : {
-              "AMI" : "ami-4205702a"
+              "AMI" : "ami-e6a8d38e"
           },
 
           "us-west-2" : {
-              "AMI" : "ami-3fdc8e0f"
+              "AMI" : "ami-db1940eb"
           },
 
           "us-west-1" : {
-              "AMI" : "ami-cfc5d98a"
+              "AMI" : "ami-b60b12f3"
           },
 
           "eu-west-1" : {
-              "AMI" : "ami-a41590d3"
+              "AMI" : "ami-ef63e198"
           }
 
       }
@@ -47,7 +47,6 @@
       "Description" : "EC2 HVM instance type (m3.medium, etc).",
       "Type" : "String",
       "Default" : "m3.medium",
-      "AllowedValues" : [ "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge", "c3.large","c3.xlarge", "c3.2xlarge", "c3.4xlarge","c3.8xlarge", "cc2.8xlarge","cr1.8xlarge","hi1.4xlarge", "hs1.8xlarge", "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge", "r3.large", "r3.xlarge", "r3.2xlarge","r3.4xlarge", "r3.8xlarge", "t2.micro", "t2.small", "t2.medium" ],
       "ConstraintDescription" : "Must be a valid EC2 HVM instance type."
     },
     "ClusterSize": {
