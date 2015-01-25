@@ -50,7 +50,7 @@ coreos:
         [Service]
         Type=oneshot
         RemainAfterExit=true
-        TimeoutStartSec=5m
+        TimeoutStartSec=10m
         ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04
         ExecStart=/usr/bin/docker pull nordstrom/util
         ExecStart=/usr/bin/docker pull nordstrom/awscli
@@ -58,7 +58,7 @@ coreos:
 write_files:
   - path: /etc/aws_environment
     <<: *STATIC_AWS_ENVIRONMENT
-  # Docker defaults to SSL for all registry interaction, but Deis doesn't yet support it
+  # Docker requires SSL for all registry interaction by default, but Deis doesn't yet support it
   - path: /run/docker_opts.env
     content: |
       DOCKER_OPTS=--dns=172.17.42.1 --dns-search=cluster.local --insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16
