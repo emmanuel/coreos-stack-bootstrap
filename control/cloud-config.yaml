@@ -26,6 +26,18 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
+    - name: extended-fleet-metadata.install.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=Fleet per-instance metadata installer
+        Before=fleet.service
+        
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        ExecStart=/bin/bash -c 'sed -i s/METADATA=/METADATA=ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
     - name: preload-container-images.install.service
       command: start
       enable: true
