@@ -23,8 +23,9 @@ resource "aws_autoscaling_group" "control" {
 COMMAND
   }
 }
+
 output "control_auto_scaling_group" {
-    value = "${aws_autoscaling_group.control.id}"
+  value = "${aws_autoscaling_group.control.id}"
 }
 
 resource "aws_launch_configuration" "control" {
