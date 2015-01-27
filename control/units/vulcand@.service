@@ -31,6 +31,8 @@ ExecStart=/usr/bin/docker run \
       -port=8181 \
       -apiInterface=0.0.0.0 \
       -apiPort=8182 \
+      -log=console \
+      -logSeverity=INFO \
       -etcd=http://172.17.42.1:4001
 
 [X-Fleet]
