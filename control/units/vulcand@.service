@@ -11,7 +11,7 @@ Type=simple
 Restart=on-failure
 RestartSec=5
 EnvironmentFile=/etc/environment
-Environment="RELEASE=0.8.0-alpha3"
+Environment="RELEASE=0.8.0-beta2"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill vulcand
