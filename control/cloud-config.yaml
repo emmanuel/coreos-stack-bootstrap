@@ -60,6 +60,7 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         ExecStart=/bin/bash -c 'sed -i s/METADATA=/METADATA=ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
+        ExecStartPost=/usr/bin/systemctl daemon-reload
     - name: preload-container-images.install.service
       command: start
       enable: true
@@ -76,7 +77,6 @@ coreos:
         ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04
         ExecStart=/usr/bin/docker pull nordstrom/util
         ExecStart=/usr/bin/docker pull nordstrom/awscli
-
 write_files:
   - path: /etc/aws_environment
     <<: *STATIC_AWS_ENVIRONMENT
