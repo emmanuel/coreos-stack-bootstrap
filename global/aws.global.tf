@@ -15,8 +15,9 @@ resource "aws_security_group" "cluster" {
     cidr_blocks = [ "255.255.255.255/32" ]
   }
 }
+
 output "cluster_aws_security_group" {
-    value = "${aws_security_group.cluster.id}"
+  value = "${aws_security_group.cluster.id}"
 }
 
 resource "aws_security_group" "public_ssh" {
@@ -31,8 +32,9 @@ resource "aws_security_group" "public_ssh" {
     cidr_blocks = [ "${var.allow_ssh_from}" ]
   }
 }
+
 output "public_ssh_aws_security_group" {
-    value = "${aws_security_group.public_ssh.id}"
+  value = "${aws_security_group.public_ssh.id}"
 }
 
 # services accessible cluster-wide
