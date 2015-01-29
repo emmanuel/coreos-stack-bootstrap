@@ -138,7 +138,7 @@ resource "aws_security_group" "elb_etcd" {
 resource "aws_elb" "etcd" {
   name = "etcd-internal-${var.environment}"
   # internal = true
-  # vpc_zone_identifier = "${var.vpc_zone_identifier}"
+  # vpc_zone_identifier = "${var.aws_vpc_zone_identifier}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {

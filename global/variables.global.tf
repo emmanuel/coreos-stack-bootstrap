@@ -37,7 +37,7 @@ variable "aws_ec2_keypair" {
 variable "aws_route53_zone_id_cloud_nlab_io" {
   default = "Z23E6ZIBKPSZQE"
 }
-variable "vpc_zone_identifier" {
+variable "aws_vpc_zone_identifier" {
   default = "vpc-9111f3f4"
 }
 variable "aws_sns_topic_autoscaling_events_arn" {
