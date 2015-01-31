@@ -5,7 +5,8 @@ cd $SCRIPT_PATH/.
 
 # from: https://gist.github.com/earthgecko/3089509#comment-1250540
 ENVIRONMENT_NAME=$(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5)
-echo "environment = \"${ENVIRONMENT_NAME}\"" > cluster_values.tfvars
-
 DISCOVERY_URL=$(curl -s https://discovery.etcd.io/new)
-echo "etcd_discovery_url = \"${DISCOVERY_URL}\"" >> cluster_values.tfvars
+
+rm cluster_id.tfvars
+echo "environment = \"${ENVIRONMENT_NAME}\"" >> cluster_id.tfvars
+echo "etcd_discovery_url = \"${DISCOVERY_URL}\"" >> cluster_id.tfvars

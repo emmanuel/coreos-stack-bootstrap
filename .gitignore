@@ -9,9 +9,9 @@ terraform/etcd_discovery_url.tfvars
 vendor/
 .vagrant/
 .DS_Store
-cluster_values.tfvars
 control/terraform.tfstate
 control/terraform.tfstate.backup
 control/destroy.tfplan
+keys.tfvars
+cluster_id.tfvars
 cluster_outputs.tfvars
-terraform.global.tfvars
