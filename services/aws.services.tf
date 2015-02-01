@@ -12,7 +12,7 @@ resource "aws_autoscaling_group" "service" {
 
 resource "aws_launch_configuration" "service" {
   name = "service (${var.environment} / ${var.aws_instance_type})"
-  image_id = "${lookup(var.amis, var.aws_region)}"
+  image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",

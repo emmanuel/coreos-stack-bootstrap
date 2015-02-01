@@ -16,9 +16,9 @@ variable "allow_ssh_from" {
   default = "0.0.0.0/0"
 }
 
-# get updates at https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template
-# These are alpha channel, HVM virtualization
-variable "amis" {
+# CoreOS AMIs. These are alpha channel, HVM virtualization
+# from: https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template
+variable "coreos_amis" {
   default = {
     eu-central-1 = "ami-da0132c7"
     ap-northeast-1 = "ami-fa849afb"

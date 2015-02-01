@@ -30,7 +30,7 @@ output "control_auto_scaling_group" {
 
 resource "aws_launch_configuration" "control" {
   name = "launch_configuration-control-${var.environment}"
-  image_id = "${lookup(var.amis, var.aws_region)}"
+  image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",

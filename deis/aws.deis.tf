@@ -13,7 +13,7 @@ resource "aws_autoscaling_group" "deis" {
 
 resource "aws_launch_configuration" "deis" {
   name = "deis (${var.environment} / ${var.aws_instance_type_deis})"
-  image_id = "${lookup(var.amis, var.aws_region)}"
+  image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type_deis}"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
