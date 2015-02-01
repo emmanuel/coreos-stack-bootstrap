@@ -11,7 +11,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 
-Environment="RELEASE=0.7.1"
+Environment="RELEASE=0.8.0"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
