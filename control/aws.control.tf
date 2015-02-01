@@ -12,6 +12,14 @@ resource "aws_autoscaling_group" "control" {
 
   provisioner "local-exec" {
     command = <<COMMAND
+      aws autoscaling create-or-update-tags --tags \
+        "Key=Team,Value=InnovationLab,PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group" \
+        "Key=CostCenter,Value=45219,PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group"
+COMMAND
+  }
+
+  provisioner "local-exec" {
+    command = <<COMMAND
       aws autoscaling put-notification-configuration \
         --auto-scaling-group-name "${aws_autoscaling_group.control.name}" \
         --topic-arn "${var.aws_sns_topic_autoscaling_events_arn}" \
