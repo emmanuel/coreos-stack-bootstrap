@@ -27,8 +27,8 @@ fleetctl start sysinfo_influxdb
 fleetctl start zookeeper{,.placement}@{1..5}
 sleep 60
 fleetctl start kafka{,.volumes}@{1..5}
-fleetctl start syslog_gollector
 fleetctl start elasticsearch{,.volumes}@{1..3}
 sleep 60
 fleetctl start kafka.create_topics
 fleetctl start logstash@1
+fleetctl start syslog_gollector
