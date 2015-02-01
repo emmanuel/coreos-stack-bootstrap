@@ -1,9 +1,3 @@
-provider "aws" {
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
-  region = "${var.aws_region}"
-}
-
 resource "aws_security_group" "cluster" {
   name = "Cluster instances (${var.environment})"
   description = "All instances that communicate from within the cluster."
@@ -58,5 +52,5 @@ resource "aws_security_group" "cluster_services" {
 }
 
 output "cluster_services_aws_security_group" {
-    value = "${aws_security_group.cluster_services.id}"
+  value = "${aws_security_group.cluster_services.id}"
 }

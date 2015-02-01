@@ -96,8 +96,8 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
 }
 
 resource "aws_security_group" "elb_gtin" {
-  name = "gtin-external-elb-${var.environment}"
-  description = "GTIN service external ELB (${var.environment})."
+  name = "${var.environment}-gtin-external-elb"
+  description = "ENV(${var.environment}) GTIN service external ELB."
 
   # GTIN service
   ingress {
@@ -109,7 +109,7 @@ resource "aws_security_group" "elb_gtin" {
 }
 
 resource "aws_elb" "gtin" {
-  name = "gtin-external-${var.environment}"
+  name = "${var.environment}-gtin-external"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
@@ -131,8 +131,8 @@ resource "aws_elb" "gtin" {
 }
 
 resource "aws_security_group" "elb_etcd" {
-  name = "etcd-internal-elb-${var.environment}"
-  description = "Etcd internal ELB (${var.environment})."
+  name = "${var.environment}-etcd-internal-elb"
+  description = "ENV(${var.environment}) etcd internal ELB."
 
   # etcd api
   ingress {
@@ -144,7 +144,7 @@ resource "aws_security_group" "elb_etcd" {
 }
 
 resource "aws_elb" "etcd" {
-  name = "etcd-internal-${var.environment}"
+  name = "${var.environment}-etcd-internal"
   # internal = true
   # vpc_zone_identifier = "${var.aws_vpc_zone_identifier}"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
@@ -168,8 +168,8 @@ resource "aws_elb" "etcd" {
 }
 
 resource "aws_security_group" "elb_vulcand" {
-  name = "vulcand-public-${var.environment}"
-  description = "Allow public access to Vulcand."
+  name = "${var.environment}-vulcand-public"
+  description = "ENV(${var.environment}) Allow public access to Vulcand."
 
   ingress {
     from_port = 80
@@ -180,7 +180,7 @@ resource "aws_security_group" "elb_vulcand" {
 }
 
 resource "aws_elb" "vulcand" {
-  name = "vulcand-public-${var.environment}"
+  name = "${var.environment}-vulcand-public"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
