@@ -73,6 +73,8 @@ coreos:
 write_files:
   - path: /etc/aws_environment
     <<: *STATIC_AWS_ENVIRONMENT
+  - path: /etc/cluster_environment
+    <<: *STATIC_CLUSTER_ENVIRONMENT
   # Docker requires SSL for all registry interaction by default, but Deis doesn't yet support it
   - path: /run/docker_opts.env
     content: |

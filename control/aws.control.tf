@@ -61,6 +61,10 @@ dynamic:
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
       VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
+  cluster_environment: &STATIC_CLUSTER_ENVIRONMENT
+    content: |
+      CLUSTER_ENVIRONMENT=${var.environment}
+      CLUSTER_ROLE=control
 ${file("cloud-config.yaml")}
 USER_DATA
 }
