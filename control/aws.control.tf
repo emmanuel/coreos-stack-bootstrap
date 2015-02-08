@@ -70,22 +70,6 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
   name = "${var.environment}-cluster_services-elb_ingress"
   description = "ENV(${var.environment}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
 
-  # etcd clients
-  ingress {
-    from_port = 4001
-    to_port =  4001
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_etcd.id}" ]
-  }
-
-  # (VISIBLE) etcd clients (4001)
-  # ingress {
-  #   from_port = 4001
-  #   to_port =  4001
-  #   protocol = "tcp"
-  #   security_groups = [ "${var.aws_security_group_elb_etcd_visible_id}" ]
-  # }
-
   # vulcand traffic (8181) and API (8182)
   ingress {
     from_port = 8181
@@ -101,42 +85,6 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     protocol = "tcp"
     security_groups = [ "${var.aws_security_group_elb_vulcand_visible_id}" ]
   }
-
-resource "aws_security_group" "elb_etcd" {
-  name = "${var.environment}-etcd-internal-elb"
-  description = "ENV(${var.environment}) etcd internal ELB."
-
-  # etcd api
-  ingress {
-    from_port = 4001
-    to_port =  4001
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.cluster.id}" ]
-  }
-}
-
-resource "aws_elb" "etcd" {
-  name = "${var.environment}-etcd-internal"
-  # internal = true
-  # vpc_zone_identifier = "${var.aws_vpc_zone_identifier}"
-  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-
-  listener {
-    lb_port = 4001
-    lb_protocol = "http"
-    instance_port = 4001
-    instance_protocol = "http"
-  }
-
-  health_check {
-    healthy_threshold = 10
-    unhealthy_threshold = 2
-    timeout = 3
-    target = "HTTP:4001/version"
-    interval = 30
-  }
-
-  security_groups = [ "${aws_security_group.elb_etcd.id}" ]
 }
 
 resource "aws_security_group" "elb_vulcand" {
