@@ -37,30 +37,23 @@ coreos:
         What=/dev/xvdb
         Where=/var/lib/docker
         Type=ext4
-    - name: extended-environment.install.service
+    - name: aws-runtime-environment.install.service
       command: start
       enable: true
       content: |
         [Unit]
         Description=AWS runtime environment installer
+        Before=etcd.service
         
         [Service]
         Type=oneshot
         RemainAfterExit=true
-        ExecStart=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
-    - name: extended-fleet-metadata.install.service
-      command: start
-      enable: true
-      content: |
-        [Unit]
-        Description=Fleet per-instance metadata installer
-        Before=fleet.service
-        
-        [Service]
-        Type=oneshot
-        RemainAfterExit=true
-        ExecStart=/bin/bash -c 'sed -i s/METADATA=/METADATA=ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
+        ExecStartPre=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
+        ExecStartPre=/bin/bash -c 'sed -i s/METADATA=env/METADATA=ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),env/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
+        ExecStart=/usr/bin/echo "Finished installing AWS runtime environment"
         ExecStartPost=/usr/bin/systemctl daemon-reload
+        ExecStartPost=/usr/bin/systemctl stop fleet
+        ExecStartPost=/usr/bin/systemctl start fleet
     - name: preload-container-images.install.service
       command: start
       enable: true
