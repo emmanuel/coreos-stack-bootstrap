@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "control" {
-  name = "autoscaling_group-control-${var.environment}"
+  name = "${var.environment}-autoscaling_group-control"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 5
@@ -37,7 +37,7 @@ output "control_auto_scaling_group" {
 }
 
 resource "aws_launch_configuration" "control" {
-  name = "launch_configuration-control-${var.environment}"
+  name = "${var.environment}-launch_configuration-control"
   image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   security_groups = [ "${aws_security_group.cluster.id}",
@@ -67,8 +67,8 @@ USER_DATA
 
 resource "aws_security_group" "cluster_services-elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
-  name = "cluster_services-elb_ingress-${var.environment}"
-  description = "Allow ELBs to make these cluster service ports accessible from outside the cluster (${var.environment})"
+  name = "${var.environment}-cluster_services-elb_ingress"
+  description = "ENV(${var.environment}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
 
   # etcd clients
   ingress {
