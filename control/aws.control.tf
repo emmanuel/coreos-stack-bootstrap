@@ -102,58 +102,6 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
     security_groups = [ "${var.aws_security_group_elb_vulcand_visible_id}" ]
   }
 
-  # GTIN service traffic (19111)
-  ingress {
-    from_port = 19111
-    to_port =  19111
-    protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_gtin.id}" ]
-  }
-
-  # (VISIBLE) GTIN service traffic (19111)
-  ingress {
-    from_port = 19111
-    to_port =  19111
-    protocol = "tcp"
-    security_groups = [ "${var.aws_security_group_elb_gtin_visible_id}" ]
-  }
-}
-
-resource "aws_security_group" "elb_gtin" {
-  name = "${var.environment}-gtin-external-elb"
-  description = "ENV(${var.environment}) GTIN service external ELB."
-
-  # GTIN service
-  ingress {
-    from_port = 80
-    to_port =  80
-    protocol = "tcp"
-    cidr_blocks = [ "0.0.0.0/0" ]
-  }
-}
-
-resource "aws_elb" "gtin" {
-  name = "${var.environment}-gtin-external"
-  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
-
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 19111
-    instance_protocol = "http"
-  }
-
-  health_check {
-    healthy_threshold = 2
-    unhealthy_threshold = 10
-    timeout = 3
-    target = "HTTP:19111/stores/health/gtins/check"
-    interval = 5
-  }
-
-  security_groups = [ "${aws_security_group.elb_gtin.id}" ]
-}
-
 resource "aws_security_group" "elb_etcd" {
   name = "${var.environment}-etcd-internal-elb"
   description = "ENV(${var.environment}) etcd internal ELB."
@@ -228,6 +176,14 @@ resource "aws_elb" "vulcand" {
 resource "aws_route53_record" "vulcand" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "api.${var.environment}.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "60"
+  records = [ "${aws_elb.vulcand.dns_name}" ]
+}
+
+resource "aws_route53_record" "vulcand_wildcard" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "*.api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
   records = [ "${aws_elb.vulcand.dns_name}" ]
