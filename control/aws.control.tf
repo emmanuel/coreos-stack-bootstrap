@@ -13,8 +13,8 @@ resource "aws_autoscaling_group" "control" {
   provisioner "local-exec" {
     command = <<COMMAND
       aws autoscaling create-or-update-tags --tags \
-        "Key=Team,Value=InnovationLab,PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group" \
-        "Key=CostCenter,Value=45219,PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group"
+        "Key=Team,Value=${var.aws_tag_value_team},PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group" \
+        "Key=CostCenter,Value=${var.aws_tag_value_cost_center},PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group"
 COMMAND
   }
 
