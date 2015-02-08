@@ -1,13 +1,7 @@
-FROM nordstrom/java-7:0.0.4
-MAINTAINER Emmanuel Gomez <emmanuel.gomez@nordstrom.com>
+FROM nordstrom/java-7:0.0.5
+MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
-# RUN true \
-#  && apt-get update -qy \
-#  && apt-get install -qy --no-install-recommends --no-install-suggests \
-#      zookeeper \
-#  && apt-get clean -qy
-
-ENV ZK_RELEASE 3.4.6
+ENV ZK_RELEASE 3.5.0-alpha
 ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/
 RUN ln -s /opt/zookeeper-$ZK_RELEASE /opt/zookeeper
 ADD ./conf /opt/zookeeper/conf/
