@@ -40,6 +40,7 @@ resource "aws_launch_configuration" "control" {
   name = "${var.environment}-launch_configuration-control"
   image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
+  iam_instance_profile = "cluster_instance_profile"
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
@@ -53,13 +54,10 @@ dynamic:
     metadata: environment=${var.environment},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
-  # TODO: stop distributing long-lived AWS keys once Terraform supports IAM instance profiles
-  # on launch configurations: https://github.com/hashicorp/terraform/issues/28
   aws_environment: &STATIC_AWS_ENVIRONMENT
     content: |
       AWS_REGION=${var.aws_region}
-      AWS_ACCESS_KEY=${var.instance_aws_access_key}
-      AWS_SECRET_KEY=${var.instance_aws_secret_key}
+      AWS_EC2_INSTANCE_TYPE=${var.aws_instance_type}
       VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
   cluster_environment: &STATIC_CLUSTER_ENVIRONMENT
     content: |
