@@ -1,4 +1,4 @@
-FROM nordstrom/java-7:0.0.4
+FROM nordstrom/java-7:0.0.5
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 ADD dist/GPG-KEY-elasticsearch /tmp/
