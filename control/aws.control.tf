@@ -58,7 +58,6 @@ dynamic:
     content: |
       AWS_REGION=${var.aws_region}
       AWS_EC2_INSTANCE_TYPE=${var.aws_instance_type}
-      VULCAND_ELB_LOAD_BALANCER_NAME=${aws_elb.vulcand.name}
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
   cluster_environment: &STATIC_CLUSTER_ENVIRONMENT

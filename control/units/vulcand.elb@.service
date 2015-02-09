@@ -6,6 +6,7 @@ After=vulcand@%i.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
+EnvironmentFile=/etc/cluster_environment
 EnvironmentFile=/etc/aws_environment
 EnvironmentFile=/etc/aws_credentials
 
@@ -22,7 +23,7 @@ ExecStart=/usr/bin/docker run \
   --env "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" \
     nordstrom/awscli \
       aws elb register-instances-with-load-balancer \
-        --load-balancer-name ${VULCAND_ELB_LOAD_BALANCER_NAME} \
+        --load-balancer-name ${CLUSTER_ENVIRONMENT}-vulcand-external \
         --region ${AWS_REGION} \
         --instances ${EC2_INSTANCE_ID}
 
