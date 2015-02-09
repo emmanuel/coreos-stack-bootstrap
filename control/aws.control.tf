@@ -129,7 +129,7 @@ resource "aws_route53_record" "vulcand" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
-  ttl = "60"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
@@ -137,7 +137,7 @@ resource "aws_route53_record" "vulcand_wildcard" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "*.api.${var.environment}.cloud.nlab.io"
   type = "CNAME"
-  ttl = "60"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
@@ -145,6 +145,14 @@ resource "aws_route53_record" "influxdb" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "influxdb.${var.environment}.cloud.nlab.io"
   type = "CNAME"
-  ttl = "60"
+  ttl = "300"
+  records = [ "${aws_elb.vulcand.dns_name}" ]
+}
+
+resource "aws_route53_record" "docker_registry" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "docker-registry.${var.environment}.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
