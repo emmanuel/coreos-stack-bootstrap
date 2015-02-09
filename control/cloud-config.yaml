@@ -49,7 +49,7 @@ coreos:
       content: |
         [Unit]
         Description=AWS runtime environment installer
-        Before=etcd.service
+        After=fleet.service
         
         [Service]
         Type=oneshot
