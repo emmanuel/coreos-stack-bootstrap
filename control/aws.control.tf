@@ -90,8 +90,8 @@ resource "aws_security_group" "cluster_services-elb_ingress" {
 }
 
 resource "aws_security_group" "elb_vulcand" {
-  name = "${var.environment}-vulcand-public"
-  description = "ENV(${var.environment}) Allow public access to Vulcand."
+  name = "${var.environment}-vulcand-external"
+  description = "ENV(${var.environment}) Allow external public access to Vulcand."
 
   ingress {
     from_port = 80
@@ -102,7 +102,7 @@ resource "aws_security_group" "elb_vulcand" {
 }
 
 resource "aws_elb" "vulcand" {
-  name = "${var.environment}-vulcand-public"
+  name = "${var.environment}-vulcand-external"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
@@ -134,6 +134,14 @@ resource "aws_route53_record" "vulcand" {
 resource "aws_route53_record" "vulcand_wildcard" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "*.api.${var.environment}.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "60"
+  records = [ "${aws_elb.vulcand.dns_name}" ]
+}
+
+resource "aws_route53_record" "influxdb" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "influxdb.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "60"
   records = [ "${aws_elb.vulcand.dns_name}" ]
