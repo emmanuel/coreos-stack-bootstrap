@@ -1,8 +1,8 @@
 FROM nordstrom/baseimage-ubuntu:14.04
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
-# http://s3.amazonaws.com/influxdb/influxdb-0.8.3.amd64.tar.gz
-# http://s3.amazonaws.com/influxdb/influxdb_0.8.6_amd64.deb
+# http://s3.amazonaws.com/influxdb/influxdb_0.8.8_amd64.deb
+# http://s3.amazonaws.com/influxdb/influxdb_0.9.0-rc1_amd64.deb
 ENV INFLUXDB_RELEASE 0.8.8
 ADD dist/influxdb_${INFLUXDB_RELEASE}_amd64.deb /
 # RUN mv /opt/influxdb-0.8.6.amd64 /opt/influxdb
