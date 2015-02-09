@@ -26,6 +26,17 @@ ExecStart=/usr/bin/docker run \
         --load-balancer-name ${CLUSTER_ENVIRONMENT}-vulcand-external \
         --region ${AWS_REGION} \
         --instances ${EC2_INSTANCE_ID}
+ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${VULCAND_ELB_LOAD_BALANCER_NAME}) in region (${AWS_REGION})"
+ExecStart=/usr/bin/docker run \
+  --name vulcand.elb-%i \
+  --env "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
+  --env "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
+  --env "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" \
+    nordstrom/awscli \
+      aws elb register-instances-with-load-balancer \
+        --load-balancer-name visible-vulcand-external \
+        --region ${AWS_REGION} \
+        --instances ${EC2_INSTANCE_ID}
 
 [X-Fleet]
 MachineOf=vulcand@%i.service
