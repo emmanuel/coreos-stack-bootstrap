@@ -9,6 +9,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
+# TODO: get this working with IAM instance profiles/roles
 EnvironmentFile=/etc/aws_environment
 Environment="RELEASE=0.9.1"
 
