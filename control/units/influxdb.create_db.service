@@ -6,7 +6,6 @@ After=influxdb@1.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-Environment="UTIL_RELEASE=14.04"
 Environment="INFLUXDB_USER=root"
 Environment="INFLUXDB_PASS=root"
 Environment="INFLUXDB_DB_NAME_CADVISOR=cadvisor"
@@ -21,18 +20,18 @@ ExecStart=/usr/bin/printf "Creating InfluxDB databases"
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'"
 ExecStart=/usr/bin/docker run \
   --name influxdb.create_db.${INFLUXDB_DB_NAME_CADVISOR} \
-  nordstrom/util-ubuntu:${UTIL_RELEASE} \
-    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
+    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+      -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_SYSINFO}'"
 ExecStart=/usr/bin/docker run \
   --name influxdb.create_db.${INFLUXDB_DB_NAME_SYSINFO} \
-  nordstrom/util-ubuntu:${UTIL_RELEASE} \
-    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
+    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+      -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_GRAFANA}'"
 ExecStart=/usr/bin/docker run \
   --name influxdb.create_db.${INFLUXDB_DB_NAME_GRAFANA} \
-  nordstrom/util-ubuntu:${UTIL_RELEASE} \
-    curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
+    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+      -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
 
 [X-Fleet]
 MachineMetadata="role=control"
