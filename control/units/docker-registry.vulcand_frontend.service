@@ -1,0 +1,35 @@
+[Unit]
+Description=Docker registry vulcand frontend registration
+Requires=etcd.service
+After=etcd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/cluster_environment
+
+ExecStartPre=/usr/bin/printf "Registering Docker registry with vulcand (frontend)"
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry/backend \
+  '{"Type":"http"}'
+
+# Giving an unbalanced quote to Vulcan causes problems:
+# '"{
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-docker_registry/frontend \
+  '{"BackendId":"${CLUSTER_ENVIRONMENT}-docker_registry", \
+    "Route":"Host(`docker.${CLUSTER_ENVIRONMENT}.cloud.nlab.io`)", \
+    "Type":"http"}'
+
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/backend \
+  '{"Type":"http"}'
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-docker_registry/frontend \
+  '{"BackendId":"visible-docker_registry", \
+    "Route":"Host(`docker.cloud.nlab.io`)", \
+    "Type":"http"}'
+
+ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${CLUSTER_ENVIRONMENT}-docker_registry
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/visible-docker_registry
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/visible-docker_registry
+
+[Install]
+WantedBy=multi-user.target

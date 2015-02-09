@@ -1,0 +1,23 @@
+[Unit]
+Description=Docker registry vulcand instance registration
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
+
+ExecStartPre=/usr/bin/printf "Registering Docker registry with vulcand (instance)"
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry/servers/%i \
+  '{"URL":"http://${COREOS_PRIVATE_IPV4}:5000"}'
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/servers/%i \
+  '{"URL":"http://${COREOS_PRIVATE_IPV4}:5000"}'
+
+ExecStop=/usr/bin/etcdctl rm /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry/servers/%i
+ExecStopPost=/usr/bin/etcdctl rm /vulcand/backends/visible-docker_registry/servers/%i
+
+[X-Fleet]
+MachineOf=docker-registry@%i.service
+
+[Install]
+WantedBy=multi-user.target

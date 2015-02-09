@@ -150,7 +150,7 @@ resource "aws_route53_record" "influxdb" {
 
 resource "aws_route53_record" "docker_registry" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "docker-registry.${var.environment}.cloud.nlab.io"
+  name = "docker.${var.environment}.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
