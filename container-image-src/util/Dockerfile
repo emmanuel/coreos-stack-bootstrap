@@ -1,5 +1,5 @@
 FROM nordstrom/baseimage-ubuntu:14.04
-MAINTAINER Emmanuel Gomez <emmanuel.gomez@nordstrom.com>
+MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 RUN apt-get update -qy \
  && apt-get install -qy --no-install-recommends --no-install-suggests \
@@ -7,4 +7,5 @@ RUN apt-get update -qy \
      dnsutils \
      jq \
      nmap \
- && apt-get clean -qy
+ && apt-get clean -qy \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
