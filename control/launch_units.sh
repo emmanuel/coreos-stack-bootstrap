@@ -10,7 +10,26 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
 fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH
+cd $SCRIPT_PATH/units
 
-./submit.sh
-./start.sh
+echo "Starting services"
+echo "================="
+fleetctl start aws_credentials
+fleetctl start logspout
+fleetctl start logrotate
+fleetctl start registrator
+fleetctl start skydns
+fleetctl start influxdb{.volumes,}@1
+fleetctl start vulcand{,.elb}@1
+sleep 30
+fleetctl start influxdb.{create_db,vulcand_frontend}
+fleetctl start cadvisor
+fleetctl start sysinfo_influxdb
+fleetctl start zookeeper{.placement,}@{1..5}
+sleep 60
+fleetctl start kafka{.volumes,}@{1..5}
+fleetctl start elasticsearch{.volumes,}@{1..3}
+sleep 60
+fleetctl start kafka.create_topics
+fleetctl start logstash@1
+fleetctl start syslog_gollector
