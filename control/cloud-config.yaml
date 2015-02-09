@@ -9,12 +9,6 @@ coreos:
     addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   units:
-    - name: etcd.service
-      command: start
-      enable: true
-    - name: fleet.service
-      command: start
-      enable: true
     - name: format-ephemeral.service
       command: start
       content: |
@@ -37,6 +31,18 @@ coreos:
         What=/dev/xvdb
         Where=/var/lib/docker
         Type=ext4
+    - name: etcd.service
+      command: start
+      enable: true
+    - name: fleet.service
+      command: start
+      enable: true
+    - name: docker.service
+      drop-ins:
+        - name: 50-dns-search.conf
+          content: |
+            [Service]
+            Environment='DOCKER_OPTS=--dns=172.17.42.1 --dns-search=cluster.local --insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16'
     - name: aws-runtime-environment.install.service
       command: start
       enable: true
@@ -75,10 +81,6 @@ write_files:
     <<: *STATIC_AWS_ENVIRONMENT
   - path: /etc/cluster_environment
     <<: *STATIC_CLUSTER_ENVIRONMENT
-  # Docker requires SSL for all registry interaction by default, but Deis doesn't yet support it
-  - path: /run/docker_opts.env
-    content: |
-      DOCKER_OPTS=--dns=172.17.42.1 --dns-search=cluster.local --insecure-registry 10.0.0.0/8 --insecure-registry 172.16.0.0/12 --insecure-registry 192.168.0.0/16
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'
