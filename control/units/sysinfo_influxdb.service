@@ -11,7 +11,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 
-Environment="RELEASE=latest"
+Environment="RELEASE=0.5.3"
 Environment="INFLUXDB_DATABASE_USER=root"
 Environment="INFLUXDB_DATABASE_PASS=root"
 
@@ -22,13 +22,13 @@ ExecStartPre=/usr/bin/docker pull nordstrom/sysinfo_influxdb:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name=sysinfo_influxdb \
-  nordstrom/sysinfo_influxdb:${RELEASE} \
-    -h influxdb:8086 \
-    -d sysinfo \
-    -u ${INFLUXDB_DATABASE_USER} \
-    -p ${INFLUXDB_DATABASE_PASS} \
-    -P "%m" \
-    -i 10s
+    nordstrom/sysinfo_influxdb:${RELEASE} \
+      -h influxdb:8086 \
+      -d sysinfo \
+      -u ${INFLUXDB_DATABASE_USER} \
+      -p ${INFLUXDB_DATABASE_PASS} \
+      -P "%m" \
+      -i 10s
 
 [X-Fleet]
 Global=true
