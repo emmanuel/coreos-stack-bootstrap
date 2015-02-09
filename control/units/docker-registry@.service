@@ -10,11 +10,12 @@ Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
 EnvironmentFile=/etc/aws_environment
+Environment="RELEASE=0.9.1"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill docker-registry-%i
 ExecStartPre=-/usr/bin/docker rm docker-registry-%i
-ExecStartPre=/usr/bin/docker pull registry
+ExecStartPre=/usr/bin/docker pull nordstrom/docker-registry:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name docker-registry-%i \
@@ -37,7 +38,7 @@ ExecStart=/usr/bin/docker run \
   --env SERVICE_ID=docker-registry-%i \
   --publish 5000:5000 \
   --env SERVICE_5000_NAME=docker-registry \
-    registry
+    nordstrom/docker-registry:${RELEASE}
 
 [X-Fleet]
 MachineMetadata="role=control"

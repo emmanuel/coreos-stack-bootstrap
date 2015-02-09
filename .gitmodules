@@ -1,0 +1,3 @@
+[submodule "container-image-src/docker-registry/dist/docker-registry"]
+	path = container-image-src/docker-registry/dist/docker-registry
+	url = https://github.com/docker/docker-registry.git
