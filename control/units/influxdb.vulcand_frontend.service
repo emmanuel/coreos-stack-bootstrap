@@ -1,0 +1,23 @@
+[Unit]
+Description=InfluxDB vulcand frontend registration
+Requires=etcd.service
+After=etcd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+EnvironmentFile=/etc/cluster_environment
+
+ExecStartPre=/usr/bin/printf "Registering InfluxDB with vulcand (frontend)"
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-influxdb/backend \
+  '{"Type":"http"}'
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-influxdb/frontend \
+  '{"Type":"http","BackendId":"${CLUSTER_ENVIRONMENT}-influxdb","Route":"Host(`influxdb.${CLUSTER_ENVIRONMENT}.cloud.nlab.io`)"}'
+
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-influxdb/backend \
+  '{"Type":"http"}'
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-influxdb/frontend \
+  '{"Type":"http","BackendId":"visible-influxdb","Route":"Host(`influxdb.cloud.nlab.io`)"}'
+
+[Install]
+WantedBy=multi-user.target
