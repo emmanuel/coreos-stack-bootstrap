@@ -9,7 +9,7 @@ After=skydns.service
 Type=oneshot
 RemainAfterExit=true
 EnvironmentFile=/etc/environment
-Environment="RELEASE=0.8.1.1"
+Environment="RELEASE=0.8.2-beta"
 
 TimeoutStartSec=5m
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/kafka-%i "{\"host\":\"${COREOS_PRIVATE_IPV4}\"}"

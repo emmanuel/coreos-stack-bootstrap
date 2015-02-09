@@ -1,21 +1,21 @@
 [Unit]
-Description=Kafka Topic Creation
+Description=Kafka topic creation
 Requires=kafka@1.service
 After=kafka@1.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=true
-Environment="RELEASE=0.8.1.1"
-Environment="KAFKA_SCALA_VERSION=2.9.2"
-Environment="KAFKA_VERSION=0.8.1.1"
+Environment="RELEASE=0.8.2-beta"
 
 ExecStartPre=-/usr/bin/docker kill kafka.create_topics
 ExecStartPre=-/usr/bin/docker rm kafka.create_topics
-ExecStart=/usr/bin/docker run \
+ExecStartPre=-/usr/bin/docker kill kafka.configure_topics
+ExecStartPre=-/usr/bin/docker rm kafka.configure_topics
+ExecStartPre=-/usr/bin/docker run \
   --name kafka.create_topics \
     nordstrom/kafka:${RELEASE} \
-      /opt/kafka_${KAFKA_SCALA_VERSION}-${KAFKA_VERSION}/bin/kafka-topics.sh \
+      /opt/kafka/bin/kafka-topics.sh \
         --zookeeper zookeeper:2181 \
         --create \
         --topic logspout \
