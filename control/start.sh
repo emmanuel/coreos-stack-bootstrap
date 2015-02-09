@@ -14,6 +14,7 @@ cd $SCRIPT_PATH/units
 
 echo "Starting services"
 echo "================="
+fleetctl start aws_credentials
 fleetctl start logspout
 fleetctl start logrotate
 fleetctl start registrator
