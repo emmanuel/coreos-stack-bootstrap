@@ -19,13 +19,13 @@ fleetctl start logspout
 fleetctl start logrotate
 fleetctl start registrator
 fleetctl start skydns
-fleetctl start influxdb{.volumes,.vulcand,}@1
-fleetctl start vulcand{,.elb}@1
-fleetctl start redis{,.volumes}@1
-fleetctl start redis-lru{,.volumes}@1
-fleetctl start docker-registry{,.vulcand}@1
-fleetctl start docker-registry.vulcand_frontend
+fleetctl start influxdb{.volumes,,.vulcand}@1
+fleetctl start vulcand{,.elb}@{1..2}
+fleetctl start redis{.volumes,}@1
+fleetctl start redis-lru{.volumes,}@1
+fleetctl start docker-registry{,.vulcand}@{1..2}
 sleep 30
+fleetctl start docker-registry.vulcand_frontend
 fleetctl start influxdb.{create_db,vulcand_frontend}
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
