@@ -10,8 +10,25 @@ if [ -z "$FLEETCTL_TUNNEL" ]; then
 fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-cd $SCRIPT_PATH
+cd $SCRIPT_PATH/units
 
-./stop.sh
-./destroy-instances.sh
-./destroy-templates.sh
+echo "Destroying services"
+echo "==================="
+fleetctl destroy docker-registry.vulcand_frontend
+fleetctl destroy docker-registry{,.vulcand}@{1..2}
+fleetctl destroy logstash@1
+fleetctl destroy elasticsearch@{1..3}
+fleetctl destroy syslog_gollector
+fleetctl destroy kafka@{1..5}
+fleetctl destroy zookeeper@{1..5}
+fleetctl destroy sysinfo_influxdb
+fleetctl destroy cadvisor
+fleetctl destroy influxdb.{vulcand_frontend,create_db}
+fleetctl destroy influxdb{.vulcand,}@1
+fleetctl destroy vulcand{,.elb}@{1..2}
+fleetctl destroy redis@1
+fleetctl destroy redis-lru@1
+fleetctl destroy skydns
+fleetctl destroy registrator
+fleetctl destroy logrotate
+fleetctl destroy logspout
