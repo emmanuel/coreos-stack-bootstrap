@@ -11,13 +11,15 @@ EnvironmentFile=/etc/aws_environment
 EnvironmentFile=/etc/aws_credentials
 
 TimeoutStartSec=5m
-ExecStartPre=-/usr/bin/docker kill vulcand.elb-%i
-ExecStartPre=-/usr/bin/docker rm vulcand.elb-%i
+ExecStartPre=-/usr/bin/docker kill vulcand.elb-${CLUSTER_ENVIRONMENT}-%i
+ExecStartPre=-/usr/bin/docker rm vulcand.elb-${CLUSTER_ENVIRONMENT}-%i
+ExecStartPre=-/usr/bin/docker kill vulcand.elb-visible-%i
+ExecStartPre=-/usr/bin/docker rm vulcand.elb-visible-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/awscli
 
-ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${VULCAND_ELB_LOAD_BALANCER_NAME}) in region (${AWS_REGION})"
+ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${CLUSTER_ENVIRONMENT}-vulcand-external)"
 ExecStart=/usr/bin/docker run \
-  --name vulcand.elb-%i \
+  --name vulcand.elb-${CLUSTER_ENVIRONMENT}-%i \
   --env "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
   --env "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
   --env "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" \
@@ -26,9 +28,9 @@ ExecStart=/usr/bin/docker run \
         --load-balancer-name ${CLUSTER_ENVIRONMENT}-vulcand-external \
         --region ${AWS_REGION} \
         --instances ${EC2_INSTANCE_ID}
-ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${VULCAND_ELB_LOAD_BALANCER_NAME}) in region (${AWS_REGION})"
+ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (visible-vulcand-external)"
 ExecStart=/usr/bin/docker run \
-  --name vulcand.elb-%i \
+  --name vulcand.elb-visible-%i \
   --env "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
   --env "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
   --env "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" \
