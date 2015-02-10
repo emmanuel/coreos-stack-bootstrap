@@ -1,5 +1,7 @@
 [Unit]
 Description=Docker registry vulcand instance registration
+Requires=docker-registry@%i.service
+After=docker-registry@%i.service
 
 [Service]
 Type=oneshot
