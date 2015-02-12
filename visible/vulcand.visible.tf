@@ -32,10 +32,26 @@ resource "aws_elb" "vulcand_visible" {
   security_groups = [ "${aws_security_group.elb_vulcand_visible.id}" ]
 }
 
-resource "aws_route53_record" "vulcand_visible" {
+resource "aws_route53_record" "vulcand_visible_api" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "api.cloud.nlab.io"
-  type = "CNAME"
-  ttl = "60"
+  type = "ALIAS"
+  ttl = "900"
+  records = [ "${aws_elb.vulcand_visible.dns_name}" ]
+}
+
+resource "aws_route53_record" "vulcand_visible_docker-registry" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "docker.cloud.nlab.io"
+  type = "ALIAS"
+  ttl = "900"
+  records = [ "${aws_elb.vulcand_visible.dns_name}" ]
+}
+
+resource "aws_route53_record" "vulcand_visible_influxdb" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "influxdb.cloud.nlab.io"
+  type = "ALIAS"
+  ttl = "900"
   records = [ "${aws_elb.vulcand_visible.dns_name}" ]
 }
