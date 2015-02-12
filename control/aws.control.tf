@@ -124,34 +124,26 @@ resource "aws_elb" "vulcand" {
   security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
 }
 
-resource "aws_route53_record" "vulcand" {
+resource "aws_route53_record" "vulcand_private" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "api.${var.environment}.cloud.nlab.io"
+  name = "${var.environment}-api.cloud.nlab.io"
   type = "CNAME"
-  ttl = "300"
+  ttl = "900"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
-resource "aws_route53_record" "vulcand_wildcard" {
+resource "aws_route53_record" "influxdb_private" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "*.api.${var.environment}.cloud.nlab.io"
+  name = "${var.environment}-influxdb.cloud.nlab.io"
   type = "CNAME"
-  ttl = "300"
+  ttl = "900"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
-resource "aws_route53_record" "influxdb" {
+resource "aws_route53_record" "docker_registry_private" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "influxdb.${var.environment}.cloud.nlab.io"
+  name = "${var.environment}-docker.cloud.nlab.io"
   type = "CNAME"
-  ttl = "300"
-  records = [ "${aws_elb.vulcand.dns_name}" ]
-}
-
-resource "aws_route53_record" "docker_registry" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "docker.${var.environment}.cloud.nlab.io"
-  type = "CNAME"
-  ttl = "300"
+  ttl = "900"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
