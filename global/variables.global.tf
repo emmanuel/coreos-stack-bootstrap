@@ -41,6 +41,9 @@ variable "aws_route53_zone_id_cloud_nlab_io" {
 variable "aws_vpc_zone_identifier" {
   default = "vpc-9111f3f4"
 }
+variable "aws_iam_server_certificate_arn" {
+  default = "arn:aws:iam::731703850786:server-certificate/tls/STAR.cloud.nlab.io"
+}
 variable "aws_sns_topic_autoscaling_events_arn" {
   default = "arn:aws:sns:us-west-2:731703850786:autoscaling-events"
 }

@@ -8,6 +8,24 @@ resource "aws_security_group" "elb_vulcand_visible" {
     protocol = "tcp"
     cidr_blocks = [ "0.0.0.0/0" ]
   }
+
+  ingress {
+    from_port = 443
+    to_port =  443
+    protocol = "tcp"
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws iam upload-server-certificate \
+  --path "/tls/" \
+  --server-certificate-name "STAR.cloud.nlab.io" \
+  --certificate-body file://$PWD/certificates/STAR_cloud_nlab_io.crt \
+  --certificate-chain file://$PWD/certificates/STAR_cloud_nlab_io_chain.crt \
+  --private-key file://$PWD/certificates/STAR_cloud_nlab_io.key
+COMMAND
+  }
 }
 
 resource "aws_elb" "vulcand_visible" {
@@ -19,6 +37,14 @@ resource "aws_elb" "vulcand_visible" {
     lb_protocol = "http"
     instance_port = 8181
     instance_protocol = "http"
+  }
+
+  listener {
+    lb_port = 443
+    lb_protocol = "https"
+    instance_port = 8181
+    instance_protocol = "http"
+    ssl_certificate_id = "${var.aws_iam_server_certificate_arn}"
   }
 
   health_check {

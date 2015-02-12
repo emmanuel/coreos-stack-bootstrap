@@ -42,7 +42,7 @@ coreos:
         - name: 50-dns-search.conf
           content: |
             [Service]
-            Environment='DOCKER_OPTS=--dns 172.17.42.1 --dns-search cluster.local --insecure-registry docker.cloud.nlab.io'
+            Environment='DOCKER_OPTS=--dns 172.17.42.1 --dns-search cluster.local'
     - name: aws-runtime-environment.install.service
       command: start
       enable: true
