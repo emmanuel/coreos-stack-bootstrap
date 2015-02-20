@@ -44,7 +44,7 @@ resource "aws_launch_configuration" "control" {
   security_groups = [ "${aws_security_group.cluster.id}",
                       "${aws_security_group.public_ssh.id}",
                       "${aws_security_group.cluster_services.id}",
-                      "${aws_security_group.cluster_services-elb_ingress.id}" ]
+                      "${aws_security_group.cluster_services_elb_ingress.id}" ]
   key_name = "${var.aws_ec2_keypair}"
   user_data = <<USER_DATA
 #cloud-config
@@ -68,9 +68,9 @@ ${file("cloud-config.yaml")}
 USER_DATA
 }
 
-resource "aws_security_group" "cluster_services-elb_ingress" {
+resource "aws_security_group" "cluster_services_elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
-  name = "${var.environment}-cluster_services-elb_ingress"
+  name = "${var.environment}-cluster_services_elb_ingress"
   description = "ENV(${var.environment}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
 
   # vulcand traffic (8181) and API (8182)
@@ -124,7 +124,7 @@ resource "aws_elb" "vulcand" {
   security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
 }
 
-resource "aws_route53_record" "vulcand_private" {
+resource "aws_route53_record" "private_api" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-api.cloud.nlab.io"
   type = "CNAME"
@@ -132,7 +132,7 @@ resource "aws_route53_record" "vulcand_private" {
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
-resource "aws_route53_record" "influxdb_private" {
+resource "aws_route53_record" "private_influxdb" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-influxdb.cloud.nlab.io"
   type = "CNAME"
@@ -140,7 +140,7 @@ resource "aws_route53_record" "influxdb_private" {
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
-resource "aws_route53_record" "docker_registry_private" {
+resource "aws_route53_record" "private_docker_registry" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-docker.cloud.nlab.io"
   type = "CNAME"
