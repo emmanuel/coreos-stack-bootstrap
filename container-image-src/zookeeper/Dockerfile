@@ -1,7 +1,7 @@
 FROM nordstrom/java-7:u75
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
-ENV ZK_RELEASE 3.5.0-alpha
+ENV ZK_RELEASE 3.4.6
 ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/
 RUN ln -s /opt/zookeeper-$ZK_RELEASE /opt/zookeeper
 ADD ./conf /opt/zookeeper/conf/
