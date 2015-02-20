@@ -1,4 +1,4 @@
-FROM nordstrom/java-7:0.0.5
+FROM nordstrom/java-7:u75
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 ENV LOGSTASH_RELEASE 1.5.0.beta1
