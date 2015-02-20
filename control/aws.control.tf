@@ -100,6 +100,13 @@ resource "aws_security_group" "elb_vulcand" {
     protocol = "tcp"
     cidr_blocks = [ "0.0.0.0/0" ]
   }
+
+  ingress {
+    from_port = 443
+    to_port =  443
+    protocol = "tcp"
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
 }
 
 resource "aws_elb" "vulcand" {
@@ -111,6 +118,14 @@ resource "aws_elb" "vulcand" {
     lb_protocol = "http"
     instance_port = 8181
     instance_protocol = "http"
+  }
+
+  listener {
+    lb_port = 443
+    lb_protocol = "https"
+    instance_port = 8181
+    instance_protocol = "http"
+    ssl_certificate_id = "${var.aws_iam_server_certificate_arn}"
   }
 
   health_check {
