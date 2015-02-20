@@ -26,6 +26,17 @@ aws iam upload-server-certificate \
   --private-key file://$PWD/certificates/STAR_cloud_nlab_io.key
 COMMAND
   }
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws ec2 create-tags \
+  --resources \
+    "${aws_security_group.elb_vulcand_visible.id}" \
+  --tags \
+    "Key=Team,Value=${var.aws_tag_value_team}" \
+    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
+COMMAND
+  }
 }
 
 resource "aws_elb" "vulcand_visible" {
@@ -56,6 +67,17 @@ resource "aws_elb" "vulcand_visible" {
   }
 
   security_groups = [ "${aws_security_group.elb_vulcand_visible.id}" ]
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws elb add-tags \
+  --load-balancer-names \
+    "${aws_elb.vulcand_visible.name}" \
+  --tags \
+    "Key=Team,Value=${var.aws_tag_value_team}" \
+    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
+COMMAND
+  }
 }
 
 resource "aws_route53_record" "vulcand_visible_api" {

@@ -66,6 +66,20 @@ dynamic:
       CLUSTER_ROLE=control
 ${file("cloud-config.yaml")}
 USER_DATA
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws ec2 create-tags \
+  --resources \
+    "${aws_security_group.cluster.id}" \
+    "${aws_security_group.public_ssh.id}" \
+    "${aws_security_group.cluster_services.id}" \
+    "${aws_security_group.cluster_services_elb_ingress.id}" \
+  --tags \
+    "Key=Team,Value=${var.aws_tag_value_team}" \
+    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
+COMMAND
+  }
 }
 
 resource "aws_security_group" "cluster_services_elb_ingress" {
@@ -137,13 +151,24 @@ resource "aws_elb" "vulcand" {
   }
 
   security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws elb add-tags \
+  --load-balancer-names \
+    "${aws_elb.vulcand.name}" \
+  --tags \
+    "Key=Team,Value=${var.aws_tag_value_team}" \
+    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
+COMMAND
+  }
 }
 
 resource "aws_route53_record" "private_api" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-api.cloud.nlab.io"
   type = "CNAME"
-  ttl = "900"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
