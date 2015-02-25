@@ -23,6 +23,7 @@ ExecStart=/usr/bin/docker run \
   --hostname docker-registry-%i.cluster.local \
   --env STANDALONE=true \
   --env SETTINGS_FLAVOR=s3 \
+  --env STORAGE_REDIRECT=true \
   --env AWS_REGION=us-west-2 \
   --env AWS_BUCKET=internal-docker-registry \
   --env STORAGE_PATH=/shared \
