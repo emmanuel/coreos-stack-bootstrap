@@ -22,7 +22,6 @@ ExecStart=/usr/bin/docker run \
   --name redis-%i \
   --hostname redis-%i.cluster.local \
   --volumes-from redis.volumes-%i \
-  --env INFLUXDB_SERVER_NUMBER=%i \
   --env SERVICE_ID=redis-%i \
   --publish 6379:6379 \
   --env SERVICE_6379_NAME=redis \
