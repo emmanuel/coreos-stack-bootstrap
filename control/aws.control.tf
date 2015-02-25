@@ -176,7 +176,7 @@ resource "aws_route53_record" "private_influxdb" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-influxdb.cloud.nlab.io"
   type = "CNAME"
-  ttl = "900"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
 
@@ -184,6 +184,6 @@ resource "aws_route53_record" "private_docker_registry" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
   name = "${var.environment}-docker.cloud.nlab.io"
   type = "CNAME"
-  ttl = "900"
+  ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
 }
