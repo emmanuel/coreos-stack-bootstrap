@@ -1,6 +1,6 @@
 [Unit]
-Description=logspout
-Documentation=https://github.com/progrium/logspout
+Description=Docker container log shipping agent
+Documentation=https://github.com/gliderlabs/logspout
 Requires=docker.service
 After=docker.service
 
@@ -15,21 +15,18 @@ Environment="RELEASE=latest"
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill logspout
 ExecStartPre=-/usr/bin/docker rm logspout
-ExecStartPre=/usr/bin/docker pull progrium/logspout:${RELEASE}
+ExecStartPre=/usr/bin/docker pull gliderlabs/logspout:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name logspout \
   --hostname %m \
-  --env DEBUG=true \
   --volume /var/run/docker.sock:/tmp/docker.sock \
-  --env SERVICE_IGNORE=true \
-  --publish 8000:8000 \
-  progrium/logspout:${RELEASE} \
-    syslog://172.17.42.1:514
+    gliderlabs/logspout:${RELEASE} \
+      syslog://172.17.42.1:514
 
 [X-Fleet]
-Global=true
 MachineMetadata="role=control"
+Global=true
 
 [Install]
 WantedBy=multi-user.target
