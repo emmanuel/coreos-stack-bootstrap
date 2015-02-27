@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "control" {
-  name = "${var.environment}-autoscaling_group-control"
+  name = "${var.stack_name}-autoscaling_group-control"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   max_size = 12
   min_size = 5
@@ -37,7 +37,7 @@ output "control_auto_scaling_group" {
 }
 
 resource "aws_launch_configuration" "control" {
-  name = "${var.environment}-launch_configuration-control"
+  name = "${var.stack_name}-launch_configuration-control"
   image_id = "${lookup(var.coreos_amis, var.aws_region)}"
   instance_type = "${var.aws_instance_type}"
   iam_instance_profile = "cluster_instance_profile"
@@ -51,7 +51,7 @@ resource "aws_launch_configuration" "control" {
 
 dynamic:
   fleet_metadata: &FLEET_METADATA
-    metadata: environment=${var.environment},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
+    metadata: stack_name=${var.stack_name},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
   discovery_url: &ETCD_DISCOVERY_URL
     discovery: ${var.etcd_discovery_url}
   aws_environment: &STATIC_AWS_ENVIRONMENT
@@ -62,7 +62,7 @@ dynamic:
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
   cluster_environment: &STATIC_CLUSTER_ENVIRONMENT
     content: |
-      CLUSTER_ENVIRONMENT=${var.environment}
+      CLUSTER_ENVIRONMENT=${var.stack_name}
       CLUSTER_ROLE=control
 ${file("cloud-config.yaml")}
 USER_DATA
@@ -84,8 +84,8 @@ COMMAND
 
 resource "aws_security_group" "cluster_services_elb_ingress" {
   # vpc_id = "${aws_vpc.a_vpc_name.id}"
-  name = "${var.environment}-cluster_services_elb_ingress"
-  description = "ENV(${var.environment}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
+  name = "${var.stack_name}-cluster_services_elb_ingress"
+  description = "ENV(${var.stack_name}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
 
   # vulcand traffic (8181) and API (8182)
   ingress {
@@ -105,8 +105,8 @@ resource "aws_security_group" "cluster_services_elb_ingress" {
 }
 
 resource "aws_security_group" "elb_vulcand" {
-  name = "${var.environment}-vulcand-external"
-  description = "ENV(${var.environment}) Allow external public access to Vulcand."
+  name = "${var.stack_name}-vulcand-external"
+  description = "ENV(${var.stack_name}) Allow external public access to Vulcand."
 
   ingress {
     from_port = 80
@@ -124,7 +124,7 @@ resource "aws_security_group" "elb_vulcand" {
 }
 
 resource "aws_elb" "vulcand" {
-  name = "${var.environment}-vulcand-external"
+  name = "${var.stack_name}-vulcand-external"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
 
   listener {
@@ -166,7 +166,7 @@ COMMAND
 
 resource "aws_route53_record" "private_api" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "${var.environment}-api.cloud.nlab.io"
+  name = "${var.stack_name}-api.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
@@ -174,7 +174,7 @@ resource "aws_route53_record" "private_api" {
 
 resource "aws_route53_record" "private_influxdb" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "${var.environment}-influxdb.cloud.nlab.io"
+  name = "${var.stack_name}-influxdb.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]
@@ -182,7 +182,15 @@ resource "aws_route53_record" "private_influxdb" {
 
 resource "aws_route53_record" "private_docker_registry" {
   zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
-  name = "${var.environment}-docker.cloud.nlab.io"
+  name = "${var.stack_name}-docker.cloud.nlab.io"
+  type = "CNAME"
+  ttl = "300"
+  records = [ "${aws_elb.vulcand.dns_name}" ]
+}
+
+resource "aws_route53_record" "private_elasticsearch" {
+  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  name = "${var.stack_name}-elasticsearch.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
   records = [ "${aws_elb.vulcand.dns_name}" ]

@@ -1,6 +1,6 @@
 resource "aws_security_group" "cluster" {
-  name = "${var.environment}-cluster_instances"
-  description = "ENV(${var.environment}) All instances that communicate from within the cluster."
+  name = "${var.stack_name}-cluster_instances"
+  description = "ENV(${var.stack_name}) All instances that communicate from within the cluster."
 
   ingress {
     from_port = 65535
@@ -15,8 +15,8 @@ output "cluster_aws_security_group" {
 }
 
 resource "aws_security_group" "public_ssh" {
-  name = "${var.environment}-ssh_from_anywhere"
-  description = "ENV(${var.environment}) Allow SSH from anywhere."
+  name = "${var.stack_name}-ssh_from_anywhere"
+  description = "ENV(${var.stack_name}) Allow SSH from anywhere."
 
   # public ssh
   ingress {
@@ -33,8 +33,8 @@ output "public_ssh_aws_security_group" {
 
 # services accessible cluster-wide
 resource "aws_security_group" "cluster_services" {
-  name = "${var.environment}-cluster_services"
-  description = "ENV(${var.environment}) Allow all cluster instances to access all ports."
+  name = "${var.stack_name}-cluster_services"
+  description = "ENV(${var.stack_name}) Allow all cluster instances to access all ports."
 
   ingress {
     from_port = 0
