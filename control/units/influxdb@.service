@@ -36,9 +36,9 @@ ExecStart=/usr/bin/docker run \
   --env SERVICE_8099_NAME=influxdb-replication \
     nordstrom/influxdb:${RELEASE}
 
-# ExecStartPost=/usr/bin/printf "Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping..."
-# ExecStartPost=/bin/bash -c \
-#   "until curl http://${COREOS_PRIVATE_IPV4}:8086/ping >/dev/null 2>&1; do sleep 1; done"
+ExecStartPost=/usr/bin/printf "Waiting for InfluxDB on http://${COREOS_PRIVATE_IPV4}:8086/ping..."
+ExecStartPost=/bin/bash -c \
+  "until curl http://${COREOS_PRIVATE_IPV4}:8086/ping >/dev/null 2>&1; do sleep 1; done"
 
 [X-Fleet]
 MachineMetadata="role=control"

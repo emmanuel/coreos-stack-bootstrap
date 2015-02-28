@@ -40,7 +40,7 @@ ExecStart=/usr/bin/docker run \
   --publish 2888:2888 \
   --env SERVICE_2888_NAME=zookeeper-peer \
   --publish 3888:3888 \
-  --env SERVICE_3888_NAME=zookeeper-leader \
+  --env SERVICE_3888_NAME=zookeeper-control \
   --env ZK_SERVER_NUMBER=%i \
   --env SERVICE_ID=zookeeper-%i \
     nordstrom/zookeeper:${RELEASE} \

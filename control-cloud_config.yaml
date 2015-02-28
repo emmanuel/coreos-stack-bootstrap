@@ -42,7 +42,7 @@ coreos:
         - name: 50-dns-search.conf
           content: |
             [Service]
-            Environment='DOCKER_OPTS=--dns 172.17.42.1 --dns-search cluster.local'
+            Environment='DOCKER_OPTS=--dns 172.17.42.1 --dns-search consul'
     - name: aws-runtime-environment.install.service
       command: start
       enable: true
@@ -55,7 +55,8 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         ExecStartPre=/bin/bash -c 'echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" | sudo tee -a /etc/aws_environment'
-        ExecStartPre=/bin/bash -c 'sed -i s/METADATA=env/METADATA=ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),env/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
+        ExecStartPre=/bin/bash -c 'echo "AWS_AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)" | sudo tee -a /etc/aws_environment'
+        ExecStartPre=/bin/bash -c 'sed -i s/METADATA=/METADATA=aws_az=$(curl -s 169.254.169.254/latest/meta-data/placement/availability-zone),ec2_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id),/ /run/systemd/system/fleet.service.d/20-cloudinit.conf'
         ExecStart=/usr/bin/echo "Finished installing AWS runtime environment"
         ExecStartPost=/usr/bin/systemctl daemon-reload
         ExecStartPost=/usr/bin/systemctl stop fleet
@@ -73,9 +74,11 @@ coreos:
         Type=oneshot
         RemainAfterExit=true
         TimeoutStartSec=10m
-        ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04
-        ExecStart=/usr/bin/docker pull nordstrom/util
-        ExecStart=/usr/bin/docker pull nordstrom/awscli
+        ExecStart=/usr/bin/docker pull nordstrom/util:2015-02-27
+        ExecStart=/usr/bin/docker tag nordstrom/util:2015-02-27 util
+        ExecStart=/usr/bin/docker pull nordstrom/awscli:1.7.12
+        ExecStart=/usr/bin/docker tag nordstrom/awscli:1.7.12 awscli
+        ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04.1
 write_files:
   - path: /etc/aws_environment
     <<: *STATIC_AWS_ENVIRONMENT

@@ -15,6 +15,8 @@ ExecStartPre=-/usr/bin/docker kill influxdb.volumes-%i
 ExecStartPre=-/usr/bin/docker rm influxdb.volumes-%i
 ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${RELEASE}
 
+ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/influxdb-%i '{"host":"${COREOS_PRIVATE_IPV4}"}'
+
 ExecStartPre=-/usr/bin/docker run \
   --name influxdb.volumes-%i \
   --net none \
@@ -23,6 +25,8 @@ ExecStartPre=-/usr/bin/docker run \
     nordstrom/influxdb:${RELEASE}
 
 ExecStart=/usr/bin/printf "InfluxDB data volumes available"
+
+ExecStop=/usr/bin/etcdctl rm /skydns/local/cluster/influxdb-%i
 
 [X-Fleet]
 MachineMetadata="role=control"

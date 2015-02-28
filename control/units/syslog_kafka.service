@@ -1,0 +1,43 @@
+[Unit]
+Description=Container syslog-to-Kafka log shipper
+Documentation=https://github.com/stealthly/go_kafka_client/tree/master/syslog
+Requires=docker.service
+After=docker.service
+Wants=consul.service
+After=consul.service
+Wants=skydns.service
+After=skydns.service
+Wants=logspout.service
+After=logspout.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+EnvironmentFile=/etc/environment
+Environment="RELEASE=latest"
+
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill syslog_kafka
+ExecStartPre=-/usr/bin/docker rm syslog_kafka
+ExecStartPre=/usr/bin/docker pull stealthly/syslog:${RELEASE}
+
+# logspout targets syslog://172.17.42.1:514
+# we bind 0.0.0.0 to accept traffic from docker's --publish switch
+ExecStart=/usr/bin/docker run \
+  --name syslog_kafka \
+  --env SERVICE_IGNORE=true \
+  --publish 172.17.42.1:514:514 \
+  --publish 172.17.42.1:514:514/udp \
+    stealthly/syslog:${RELEASE} \
+      --broker.list kafka:9092 \
+      --tcp.port 514 \
+      --udp.port 514 \
+      --topic syslog
+
+[X-Fleet]
+Global=true
+MachineMetadata="role=control"
+
+[Install]
+WantedBy=multi-user.target

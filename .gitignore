@@ -5,7 +5,12 @@ dist
 
 terraform.tfstate
 terraform.tfstate.backup
-destroy.tfplan
+plan
+destroyplan
+
+stack_name
+etcd_discovery_url
+coreos_ami
 
 keys.tfvars
 cluster_id.tfvars

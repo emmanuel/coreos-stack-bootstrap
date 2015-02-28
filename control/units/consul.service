@@ -1,0 +1,46 @@
+[Unit]
+Description=Consul Server Agent
+After=docker.service
+After=etcd.service
+After=fleet.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=20
+EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/aws_environment
+Environment="RELEASE=latest"
+
+ExecStartPre=-/usr/bin/docker kill consul
+ExecStartPre=-/usr/bin/docker rm consul
+ExecStartPre=/usr/bin/docker pull progrium/consul
+ExecStart=/usr/bin/docker run \
+  --name consul \
+  --hostname %m.consul \
+  --env SERVICE_IGNORE=true \
+  --publish ${COREOS_PRIVATE_IPV4}:8300:8300 \
+  --publish ${COREOS_PRIVATE_IPV4}:8301:8301 \
+  --publish ${COREOS_PRIVATE_IPV4}:8301:8301/udp \
+  --publish ${COREOS_PRIVATE_IPV4}:8302:8302 \
+  --publish ${COREOS_PRIVATE_IPV4}:8302:8302/udp \
+  --publish ${COREOS_PRIVATE_IPV4}:8400:8400 \
+  --publish ${COREOS_PRIVATE_IPV4}:8500:8500 \
+  --publish 172.17.42.1:53:53/udp \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+    progrium/consul \
+      -server \
+      -node %m \
+      -advertise ${COREOS_PRIVATE_IPV4} \
+      -dc ${AWS_REGION} \
+      -recursors 8.8.8.8:53,8.8.4.4:53 \
+      -bootstrap-expect 5
+
+ExecStop=/usr/bin/docker stop consul
+
+[X-Fleet]
+MachineMetadata="role=control"
+Global=true
+
+[Install]
+WantedBy=multi-user.target

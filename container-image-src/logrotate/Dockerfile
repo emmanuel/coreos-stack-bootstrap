@@ -1,4 +1,4 @@
-FROM nordstrom/baseimage-ubuntu:14.04
+FROM nordstrom/baseimage-ubuntu:14.04.1
 MAINTAINER Paul Payne "paul@payne.io"
 
 # install curl & syslog

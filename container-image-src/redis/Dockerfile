@@ -1,4 +1,4 @@
-FROM nordstrom/baseimage-ubuntu:14.04
+FROM nordstrom/baseimage-ubuntu:14.04.1
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
 RUN echo "deb http://ppa.launchpad.net/chris-lea/redis-server/ubuntu trusty main" \

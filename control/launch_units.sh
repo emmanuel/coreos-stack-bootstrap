@@ -16,11 +16,12 @@ echo "Starting services"
 echo "================="
 fleetctl start aws_credentials
 fleetctl start logspout
+fleetctl start consul{,-announce,-registrator}
 fleetctl start logrotate
 fleetctl start registrator
 fleetctl start skydns
 fleetctl start influxdb{.volumes,,.vulcand}@1
-fleetctl start vulcand{,.elb}@{1..2}
+fleetctl start vulcand
 fleetctl start redis{.volumes,}@1
 fleetctl start redis-lru{.volumes,}@1
 fleetctl start docker-registry{,.vulcand}@{1..2}
@@ -36,4 +37,4 @@ fleetctl start elasticsearch{.volumes,}@{1..3}
 sleep 60
 fleetctl start kafka.create_topics
 fleetctl start logstash@1
-fleetctl start syslog_gollector
+fleetctl start syslog_kafka

@@ -1,0 +1,28 @@
+[Unit]
+Description=Registrator
+PartOf=consul.service
+After=consul.service
+
+[Service]
+Restart=on-failure
+EnvironmentFile=/etc/environment
+Environment="RELEASE=latest"
+
+ExecStartPre=-/usr/bin/docker kill registrator
+ExecStartPre=-/usr/bin/docker rm registrator
+ExecStartPre=/usr/bin/docker pull progrium/registrator:${RELEASE}
+ExecStart=/usr/bin/docker run \
+  --name registrator \
+  --hostname registrator \
+  --volume /var/run/docker.sock:/tmp/docker.sock \
+    progrium/registrator:${RELEASE} \
+      consul://${COREOS_PRIVATE_IPV4}:8500
+
+ExecStop=/usr/bin/docker stop registrator
+
+[X-Fleet]
+MachineMetadata="role=control"
+Global=true
+
+[Install]
+WantedBy=multi-user.target
