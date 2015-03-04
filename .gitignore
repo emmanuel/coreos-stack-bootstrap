@@ -1,6 +1,7 @@
 .DS_Store
 .vagrant/
 vendor/
+**/build/container
 dist
 
 terraform.tfstate
