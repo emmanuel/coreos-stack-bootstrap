@@ -1,19 +1,18 @@
 FROM nordstrom/java-7:u75
 MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
 
-ADD conf/GPG-KEY-elasticsearch /tmp/
-# TODO: figure out the HTTPS URL for the S3 bucket that backs packages.elasticsearch.org
-RUN /usr/bin/apt-key add /tmp/GPG-KEY-elasticsearch \
- && /bin/echo "deb https://packages.elasticsearch.org/elasticsearch/1.4/debian stable main" | \
-    /usr/bin/tee -a /etc/apt/sources.list.d/elasticsearch.list
+ADD conf/elasticsearch.apt-key /tmp/
+RUN apt-key add /tmp/elasticsearch.apt-key \
+ && echo "deb https://packages.elasticsearch.org/elasticsearch/1.4/debian stable main" | \
+      tee -a /etc/apt/sources.list.d/elasticsearch.list
 
-RUN /usr/bin/apt-get update -qy \
- && /usr/bin/apt-get install -qy --no-install-suggests --no-install-recommends \
-     elasticsearch \
+RUN apt-get update -qy \
+ && apt-get install -qy --no-install-suggests --no-install-recommends \
+     elasticsearch=1.4.2 \
  && /usr/share/elasticsearch/bin/plugin --verbose \
       --install zookeeper \
       --url https://github.com/grmblfrz/elasticsearch-zookeeper/releases/download/v1.4.2/elasticsearch-zookeeper-1.4.2.zip \
- && /usr/bin/apt-get clean \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
@@ -46,4 +45,4 @@ RUN mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" \
 
 # USER elasticsearch:elasticsearch
 
-CMD ["/bin/start-elasticsearch.sh"]
+CMD ["start-elasticsearch.sh"]

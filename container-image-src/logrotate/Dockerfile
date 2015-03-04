@@ -1,22 +1,14 @@
 FROM nordstrom/baseimage-ubuntu:14.04.1
 MAINTAINER Paul Payne "paul@payne.io"
 
-# install curl & syslog
-RUN addgroup syslog \
- && apt-get update -qy \
+RUN addgroup syslog
+RUN apt-get update -qy \
  && apt-get install -qy --no-install-suggests --no-install-recommends \
-   curl \
-   logrotate \
+     logrotate \
  && apt-get clean
 
-# install docker-gen
-RUN curl -sL https://github.com/jwilder/docker-gen/releases/download/0.3.2/docker-gen-linux-amd64-0.3.2.tar.gz \
-    | tar -xz -C /usr/local/bin
-
-# install go-cron
-RUN curl -sL https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz \
-    | tar -x -C /usr/local/bin
-
+ADD dist/docker-gen.tar.gz /usr/local/bin
+ADD dist/go-cron.tar.gz /usr/local/bin
 
 # copy project files
 ADD . /app
