@@ -1,6 +1,10 @@
 resource "aws_security_group" "elb_vulcand_visible" {
   name = "visible-vulcand-external-elb"
   description = "VISIBLE vulcand external public ELB."
+  tags {
+    Team = "${var.aws_tag_value_team}"
+    CostCenter = "${var.aws_tag_value_cost_center}"
+  }
 
   ingress {
     from_port = 80
@@ -24,17 +28,6 @@ aws iam upload-server-certificate \
   --certificate-body file://$PWD/certificates/STAR_cloud_nlab_io.crt \
   --certificate-chain file://$PWD/certificates/STAR_cloud_nlab_io_chain.crt \
   --private-key file://$PWD/certificates/STAR_cloud_nlab_io.key
-COMMAND
-  }
-
-  provisioner "local-exec" {
-    command = <<COMMAND
-aws ec2 create-tags \
-  --resources \
-    "${aws_security_group.elb_vulcand_visible.id}" \
-  --tags \
-    "Key=Team,Value=${var.aws_tag_value_team}" \
-    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
 COMMAND
   }
 }
