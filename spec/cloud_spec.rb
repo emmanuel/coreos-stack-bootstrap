@@ -7,11 +7,11 @@ require_relative 'cloud_status'
 status = CloudStatus.new(ENV['FLEETCTL_TUNNEL'], 'cluster_values.tfvars', 'cloud.nlab.io')
 
 RSpec.describe CloudStatus do
-  it "has an environment name set in terraform/cluster_values.tfvars" do
+  it "has a stack_name name set in terraform/cluster_values.tfvars" do
     expect(status.cluster_values_pathname).to exist,
       "#{status.cluster_values_pathname} does not exist. Please run new_cluster_values from the terraform directory."
-    expect(status.environment_name).to_not be_nil
-    expect(status.environment_name).to match(/[a-z]{5}/)
+    expect(status.stack_name).to_not be_nil
+    expect(status.stack_name).to match(/[a-z]{5}/)
   end
 
   it "has a FLEETCTL_TUNNEL environment variable set for local tests" do

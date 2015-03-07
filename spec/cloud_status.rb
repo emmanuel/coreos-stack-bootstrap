@@ -13,7 +13,7 @@ class CloudStatus
   end
 
   def influxdb
-    @influxdb ||= InfluxDB.new(environment_name, cloud_domain, 8086, "root", "root")
+    @influxdb ||= InfluxDB.new(stack_name, cloud_domain, 8086, "root", "root")
   end
 
   def has_cluster_values_file?
@@ -25,8 +25,8 @@ class CloudStatus
       Hash[*@cluster_values_pathname.readlines.map { |l| l.chomp.gsub('"', '').split(" = ") }.flatten]
   end
 
-  def environment_name
-    cluster_values["environment"]
+  def stack_name
+    cluster_values["stack_name"]
   end
 
   def machines
@@ -64,9 +64,9 @@ class CloudStatus
 
   FleetUnit = Struct.new(:unit_name, :machine_id, :active_state, :sub_state)
 
-  InfluxDB = Struct.new(:environment_name, :cloud_domain, :port, :username, :password) do
+  InfluxDB = Struct.new(:stack_name, :cloud_domain, :port, :username, :password) do
     def hostname 
-      "influxdb.#{environment_name}.#{cloud_domain}"
+      "influxdb.#{stack_name}.#{cloud_domain}"
     end
 
     def healthcheck_url
