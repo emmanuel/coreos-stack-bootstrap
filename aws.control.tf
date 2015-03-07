@@ -60,6 +60,7 @@ dynamic:
     content: |
       CLUSTER_ENVIRONMENT=${var.stack_name}
       CLUSTER_ROLE=control
+      CLUSTER_DNS_SUFFIX=cluster.local
 ${file("control-cloud_config.yaml")}
 USER_DATA
 }
