@@ -22,45 +22,13 @@ For the control cluster, fleet is then used to deploy:
 * elasticsearch: distributed, lucene-based search, used for log aggregation
 * logstash: log processing worker. reads from kafka & indexes into elasticsearch
 
-# Local Setup
-
-* install aws client
-* aws client needs to be configured with our lab account params (or better yet, with a delegated user account):
-
-```bash
-aws configure
-```
-* Get AWS ssh private key for the 'coreos-beta' keypair from Paul or Emmanuel, and then `ssh-add` it. Alternatively, generate your own key pair and upload it to our AWS account (you'll need to refer to this key in the create_stack command below).
-
 # Initializing and configuring the control cluster
 
 ```bash
-source aliases.sh
-# add your keys to cloud-config.yaml & terraform.tfvars
-new_cluster_values
-cd control
-tfplan
-tfapply
+make deploy
+$(terraform output fleet_env)
+./control/launch_units.sh
 ```
-
-Wait a few minutes, then get a public hostname or ip from one of your new instances from the AWS console. Then set:
-
-```bash
-export FLEETCTL_TUNNEL={resolvable address of one of your cloud instances}
-control/launch_units.sh
-```
-
-# Initializing "sub" clusters
-
-Similar to the control cluster above, you can bootstrap "sub" clusters _services_ and _deis_. For example:
-
-```bash
-cd services
-tfplan
-tfapply
-./launch_units.sh
-```
-
 
 # Tests
 
@@ -85,5 +53,5 @@ You can test some changes to your cloud without needing to destroy and re-create
 sudo /usr/bin/coreos-cloudinit --from-file /tmp/user-data.yml
 ```
 
-We keep our docker images here:
+Most of our docker images are here:
 https://hub.docker.com/account/organizations/nordstrom/
