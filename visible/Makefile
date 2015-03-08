@@ -75,21 +75,21 @@ operator_aws_secret_key: aws/credentials
 	cat ~/.aws/credentials | grep -v '^#' | grep 'aws_secret_access_key' | head -1 | cut -d'=' -f2 | sed -E -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$$//' > operator_aws_secret_key
 
 instance_aws_access_key: visible_stacks jq
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformIAMUserControlFauxInstanceProfileAccessKey").OutputValue' > instance_aws_access_key
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMUserControlFauxInstanceProfileAccessKey").OutputValue' > instance_aws_access_key
 
 instance_aws_secret_key: visible_stacks jq
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformIAMUserControlFauxInstanceProfileSecretKey").OutputValue' > instance_aws_secret_key
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMUserControlFauxInstanceProfileSecretKey").OutputValue' > instance_aws_secret_key
 
 visible_stacks: visible_iam_stack_id visible_dns_stack_id
 	aws cloudformation describe-stacks > visible_stacks
 
 visible_iam_stack_id: 
-	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-IAM").StackId' > visible_iam_stack_id
-	# make launch/iam_stack
+	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "InnovationPlatform-Visible-IAM").StackId' > visible_iam_stack_id
 
 visible_dns_stack_id: 
-	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-DNS-ELB-S3").StackId' > visible_dns_stack_id
-	# make launch/dns_stack
+	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "InnovationPlatform-Visible-DNS-ELB-S3").StackId' > visible_dns_stack_id
+
+launch/visible_stacks: launch/iam_stack launch/dns_stack
 
 launch/iam_stack: 
 	./launch_iam_stack.sh | jq -r '.StackId' > visible_iam_stack_id
@@ -101,22 +101,22 @@ launch/gtin_stack:
 	./launch_gtin_stack.sh | jq -r '.StackId' > visible_gtin_stack_id
 
 aws_ec2_key_name: visible_stacks
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformStackKeyName").OutputValue' > aws_ec2_key_name
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "StackKeyName").OutputValue' > aws_ec2_key_name
 
 aws_route53_zone_id_cloud_nlab_io: visible_stacks
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformZoneID").OutputValue' > aws_route53_zone_id_cloud_nlab_io
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "ZoneID").OutputValue' > aws_route53_zone_id_cloud_nlab_io
 
 aws_security_group_elb_visible_id: visible_stacks
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformVisibleELBSecurityGroupID").OutputValue' > aws_security_group_elb_visible_id
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBSecurityGroupID").OutputValue' > aws_security_group_elb_visible_id
 
 aws_iam_server_certificate_arn: visible_stacks
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformSSLCertificateARN").OutputValue' > aws_iam_server_certificate_arn
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "SSLCertificateARN").OutputValue' > aws_iam_server_certificate_arn
 
 visible_elb_hosted_zone_name: 
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformVisibleELBHostedZoneName").OutputValue' > visible_elb_hosted_zone_name
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBHostedZoneName").OutputValue' > visible_elb_hosted_zone_name
 
 visible_elb_hosted_zone_name_id: 
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformVisibleELBHostedZoneNameID").OutputValue' > visible_elb_hosted_zone_name_id
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBHostedZoneNameID").OutputValue' > visible_elb_hosted_zone_name_id
 
 aws/credentials: ~/.aws/credentials
 

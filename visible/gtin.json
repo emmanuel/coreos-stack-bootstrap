@@ -19,7 +19,7 @@
   },
 
   "Resources": {
-    "InnovationPlatformZoneGTINRecord": {
+    "ZoneGTINRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
         "HostedZoneName": {"Fn::Join": [".", [{"Ref": "zoneDNSRoot"}, ""]]},

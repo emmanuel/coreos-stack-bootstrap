@@ -26,37 +26,37 @@
   },
 
   "Outputs": {
-    "InnovationPlatformStackKeyName": {
+    "StackKeyName": {
       "Description": "Name of the SSH key for this stack",
       "Value": { "Ref": "keyName" }
     },
-    "InnovationPlatformZoneID": {
+    "ZoneID": {
       "Description": "ID of the Hosted Zone",
-      "Value": { "Ref": "InnovationPlatformZone" }
+      "Value": { "Ref": "Zone" }
     },
-    "InnovationPlatformSSLCertificateARN": {
+    "SSLCertificateARN": {
       "Description": "ARN of the SSL Certificate",
       "Value": {"Fn::Join": [":", [
         "arn:aws:iam:", {"Ref": "AWS::AccountId"},
         {"Fn::Join": ["", ["server-certificate", {"Ref": "sslCertificateIAMPath"}]]}
       ] ] }
     },
-    "InnovationPlatformVisibleELBSecurityGroupID": {
+    "VisibleELBSecurityGroupID": {
       "Description": "ID of the Visible ELB's security group",
-      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELBSecurityGroup", "GroupId"] }
+      "Value": { "Fn::GetAtt": ["VisibleELBSecurityGroup", "GroupId"] }
     },
-    "InnovationPlatformVisibleELBHostedZoneNameID": {
+    "VisibleELBHostedZoneNameID": {
       "Description": "ID of the Visible ELB's Hosted Zone",
-      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] }
+      "Value": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] }
     },
-    "InnovationPlatformVisibleELBHostedZoneName": {
+    "VisibleELBHostedZoneName": {
       "Description": "Name of the Visible ELB's Hosted Zone",
-      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+      "Value": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
     }
   },
 
   "Resources": {
-    "InnovationPlatformZone": {
+    "Zone": {
       "Type": "AWS::Route53::HostedZone",
       "Properties": {
         "HostedZoneConfig": {
@@ -66,7 +66,7 @@
       }
     },
 
-    "InnovationPlatformApexWebsiteS3Bucket" : {
+    "ApexWebsiteS3Bucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
         "BucketName" : {"Ref": "zoneDNSRoot"},
@@ -79,10 +79,10 @@
       "DeletionPolicy" : "Delete"
     },
 
-    "InnovationPlatformZoneApexRecord": {
+    "ZoneApexRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
-        "HostedZoneId": {"Ref": "InnovationPlatformZone"},
+        "HostedZoneId": {"Ref": "Zone"},
         "Name": {"Fn::Join": ["", [{"Ref": "zoneDNSRoot"}, "."]]},
         "Type": "A",
         "AliasTarget": {
@@ -92,7 +92,7 @@
       }
     },
 
-    "InnovationPlatformVisibleELB": {
+    "VisibleELB": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
         "AvailabilityZones": { "Fn::GetAZs" : "" },
@@ -117,12 +117,12 @@
           "Timeout": "2"
         },
         "SecurityGroups": [
-          { "Fn::GetAtt": ["InnovationPlatformVisibleELBSecurityGroup", "GroupId"] }
+          { "Fn::GetAtt": ["VisibleELBSecurityGroup", "GroupId"] }
         ]
       }
     },
 
-    "InnovationPlatformVisibleELBSecurityGroup": {
+    "VisibleELBSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "VISIBLE vulcand external public ELB.",
@@ -140,7 +140,7 @@
       }
     },
 
-    "InnovationPlatformVisibleELBAliasesRecordGroup": {
+    "VisibleELBAliasesRecordGroup": {
       "Type": "AWS::Route53::RecordSetGroup",
       "Properties": {
         "HostedZoneName": {"Fn::Join": [".", [{"Ref": "zoneDNSRoot"}, ""]]},
@@ -149,36 +149,36 @@
           "Name": {"Fn::Join": [".", ["api", {"Ref": "zoneDNSRoot"}, ""]]},
           "Type": "A",
           "AliasTarget": {
-            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
-            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+            "HostedZoneId": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
           }
         }, {
           "Name": {"Fn::Join": [".", ["docker", {"Ref": "zoneDNSRoot"}, ""]]},
           "Type": "A",
           "AliasTarget": {
-            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
-            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+            "HostedZoneId": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
           }
         }, {
           "Name": {"Fn::Join": [".", ["influxdb", {"Ref": "zoneDNSRoot"}, ""]]},
           "Type": "A",
           "AliasTarget": {
-            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
-            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+            "HostedZoneId": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
           }
         }, {
           "Name": {"Fn::Join": [".", ["elasticsearch", {"Ref": "zoneDNSRoot"}, ""]]},
           "Type": "A",
           "AliasTarget": {
-            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
-            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+            "HostedZoneId": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
           }
         }, {
           "Name": {"Fn::Join": [".", ["consul", {"Ref": "zoneDNSRoot"}, ""]]},
           "Type": "A",
           "AliasTarget": {
-            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
-            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+            "HostedZoneId": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
           }
         } ]
       }
