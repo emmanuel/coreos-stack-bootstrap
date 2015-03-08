@@ -1,3 +1,9 @@
+provider "aws" {
+  access_key = "${var.aws_access_key}"
+  secret_key = "${var.aws_secret_key}"
+  region = "${var.aws_region}"
+}
+
 resource "aws_autoscaling_group" "control" {
   name = "${var.stack_name}-control-autoscale"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
@@ -55,7 +61,7 @@ USER_DATA
 
 resource "aws_security_group" "cluster_instances" {
   name = "${var.stack_name}-cluster_instances"
-  description = "ENV(${var.stack_name}) All instances that communicate from within the cluster."
+  description = "STACK(${var.stack_name}) All instances that communicate from within the cluster."
 
   tags {
     Team = "${var.aws_tag_value_team}"
@@ -72,7 +78,7 @@ resource "aws_security_group" "cluster_instances" {
 
 resource "aws_security_group" "cluster_services" {
   name = "${var.stack_name}-cluster_services"
-  description = "ENV(${var.stack_name}) Allow all cluster instances to access all ports."
+  description = "STACK(${var.stack_name}) Allow all cluster instances to access all ports."
 
   ingress {
     from_port = 0
@@ -96,7 +102,7 @@ resource "aws_security_group" "cluster_services" {
 
 resource "aws_security_group" "cluster_services_elb_ingress" {
   name = "${var.stack_name}-cluster_services_elb_ingress"
-  description = "ENV(${var.stack_name}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
+  description = "STACK(${var.stack_name}) Allow ELBs to make these cluster service ports accessible from outside the cluster."
   vpc_id = "${var.aws_vpc_zone_identifier}"
   tags {
     Team = "${var.aws_tag_value_team}"
@@ -185,7 +191,7 @@ COMMAND
 
 resource "aws_security_group" "elb_control" {
   name = "${var.stack_name}-control-external"
-  description = "ENV(${var.stack_name}) Allow external access to services."
+  description = "STACK(${var.stack_name}) Allow external access to services."
 
   tags {
     Team = "${var.aws_tag_value_team}"
