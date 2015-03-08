@@ -225,7 +225,7 @@ resource "aws_route53_record" "private_stack" {
   name = "${var.stack_name}.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_api" {
@@ -233,7 +233,7 @@ resource "aws_route53_record" "private_api" {
   name = "${var.stack_name}-api.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_consul" {
@@ -241,7 +241,7 @@ resource "aws_route53_record" "private_consul" {
   name = "${var.stack_name}-consul.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_influxdb" {
@@ -249,7 +249,7 @@ resource "aws_route53_record" "private_influxdb" {
   name = "${var.stack_name}-influxdb.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_docker_registry" {
@@ -257,7 +257,7 @@ resource "aws_route53_record" "private_docker_registry" {
   name = "${var.stack_name}-docker.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_elasticsearch" {
@@ -265,5 +265,5 @@ resource "aws_route53_record" "private_elasticsearch" {
   name = "${var.stack_name}-elasticsearch.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}" ]
+  records = [ "${aws_elb.control.dns_name}." ]
 }
