@@ -82,11 +82,11 @@ visible_stacks: visible_iam_stack_id visible_dns_stack_id
 	aws cloudformation describe-stacks > visible_stacks
 
 visible_iam_stack_id: 
-	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-IAM-Stack").StackId' > visible_iam_stack_id
+	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-IAM").StackId' > visible_iam_stack_id
 	# make launch/iam_stack
 
 visible_dns_stack_id: 
-	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-DNS-ELB-S3-Stack").StackId' > visible_dns_stack_id
+	aws cloudformation describe-stacks | jq -r '.Stacks[] | select(.StackName == "Innovation-Platform-Visible-DNS-ELB-S3").StackId' > visible_dns_stack_id
 	# make launch/dns_stack
 
 launch/iam_stack: 

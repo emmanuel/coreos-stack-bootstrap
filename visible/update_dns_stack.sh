@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-STACK_NAME="Innovation-Platform-Visible-DNS-ELB-S3-Stack"
+STACK_NAME="Innovation-Platform-Visible-DNS-ELB-S3"
 
 aws cloudformation update-stack \
   --stack-name $STACK_NAME \

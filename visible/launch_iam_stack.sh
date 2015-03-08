@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
-STACK_NAME="Innovation-Platform-Visible-IAM-Stack"
+STACK_NAME="Innovation-Platform-Visible-IAM"
 
 aws cloudformation create-stack \
   --stack-name $STACK_NAME \
