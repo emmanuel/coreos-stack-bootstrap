@@ -12,6 +12,6 @@ aws cloudformation create-stack \
     Key=Team,Value=InnovationPlatform \
     Key=CostCenter,Value=45219 \
   --parameters \
-    "ParameterKey=zoneDNSRoot,ParameterValue=foo.nlab.io,UsePreviousValue=false" \
+    "ParameterKey=zoneDNSRoot,ParameterValue=cloud.nlab.io,UsePreviousValue=false" \
     "ParameterKey=visibleELBHostedZoneName,ParameterValue=${VISIBLE_ELB_HOSTED_ZONE_NAME},UsePreviousValue=false" \
     "ParameterKey=visibleELBHostedZoneNameID,ParameterValue=${VISIBLE_ELB_HOSTED_ZONE_NAME_ID},UsePreviousValue=false"

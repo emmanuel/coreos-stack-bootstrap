@@ -31,8 +31,8 @@ the s3 bucket as the zone apex alias.
 ``` bash
 cd visible
 make clean clean-outputs
-make launch/dns_stack launch/iam_stack
-sleep 120
+make launch/visible_stacks
+sleep 300
 make outputs
 make launch/gtin_stack
 cd ..

@@ -10,7 +10,7 @@ aws cloudformation create-stack \
     Key=Team,Value=InnovationPlatform \
     Key=CostCenter,Value=45219 \
   --parameters \
-    "ParameterKey=zoneDNSRoot,ParameterValue=foo.nlab.io,UsePreviousValue=false" \
+    "ParameterKey=zoneDNSRoot,ParameterValue=cloud.nlab.io,UsePreviousValue=false" \
     "ParameterKey=keyName,ParameterValue=coreos-beta,UsePreviousValue=false" \
     "ParameterKey=sslCertificateIAMPath,ParameterValue=/tls/STAR.cloud.nlab.io,UsePreviousValue=false" \
     "ParameterKey=dockerRegistryBucketName,ParameterValue=docker-registry,UsePreviousValue=false"
