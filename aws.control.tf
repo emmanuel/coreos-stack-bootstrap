@@ -47,7 +47,7 @@ resource "aws_launch_configuration" "control" {
 
 dynamic:
   fleet_metadata: &FLEET_METADATA
-    metadata: stack_name=${var.stack_name},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
+    metadata: instance_type=${var.aws_instance_type},public_ip=$public_ipv4,role=control
   etcd_discovery: &ETCD_DISCOVERY
     discovery: ${var.etcd_discovery_url}
   aws_environment_content: &AWS_ENVIRONMENT_CONTENT
