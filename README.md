@@ -22,11 +22,28 @@ For the control cluster, fleet is then used to deploy:
 * elasticsearch: distributed, lucene-based search, used for log aggregation
 * logstash: log processing worker. reads from kafka & indexes into elasticsearch
 
+# One-time initialization
+
+This will create IAM role, user, s3 bucket, elb listening on 80/443, a route53
+zone, various route53 records as aliases to the elb, route53 record registering
+the s3 bucket as the zone apex alias.
+
+``` bash
+cd visible
+make clean clean-outputs
+make launch/dns_stack launch/iam_stack
+sleep 120
+make outputs
+make launch/gtin_stack
+cd ..
+```
+
 # Initializing and configuring the control cluster
 
-```bash
+``` bash
 make deploy
 $(terraform output fleet_env)
+sleep 120
 ./control/launch_units.sh
 ```
 
