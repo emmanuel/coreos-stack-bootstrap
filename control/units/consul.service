@@ -26,14 +26,13 @@ ExecStart=/usr/bin/docker run \
   --publish ${COREOS_PRIVATE_IPV4}:8302:8302/udp \
   --publish ${COREOS_PRIVATE_IPV4}:8400:8400 \
   --publish ${COREOS_PRIVATE_IPV4}:8500:8500 \
-  --publish 172.17.42.1:53:53/udp \
+  --publish ${COREOS_PRIVATE_IPV4}:8600:53/udp \
   --volume /var/run/docker.sock:/var/run/docker.sock \
     progrium/consul \
       -server \
       -node %m \
       -advertise ${COREOS_PRIVATE_IPV4} \
       -dc ${AWS_REGION} \
-      -recursors 8.8.8.8:53,8.8.4.4:53 \
       -bootstrap-expect 5
 
 ExecStop=/usr/bin/docker stop consul
