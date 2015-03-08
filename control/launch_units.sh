@@ -16,10 +16,9 @@ echo "Starting services"
 echo "================="
 fleetctl start aws_credentials
 fleetctl start logspout
+fleetctl start skydns{,-registrator}
 fleetctl start consul{,-announce,-registrator}
 fleetctl start logrotate
-fleetctl start registrator
-fleetctl start skydns
 fleetctl start influxdb{.volumes,,.vulcand}@1
 fleetctl start vulcand
 fleetctl start redis{.volumes,}@1

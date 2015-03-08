@@ -3,6 +3,8 @@ Description=Docker container registration agent for etcd/SkyDNS
 Documentation=https://github.com/gliderlabs/registrator
 Requires=docker.service
 After=docker.service
+Requires=etcd.service
+After=etcd.service
 Wants=logspout.service
 After=logspout.service
 
@@ -12,6 +14,7 @@ Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=v5"
 
 TimeoutStartSec=5m
@@ -20,14 +23,13 @@ ExecStartPre=-/usr/bin/docker rm registrator
 ExecStartPre=/usr/bin/docker pull gliderlabs/registrator:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
-  --name registrator \
+  --name skydns-registrator \
+  --hostname skydns-registrator.${CLUSTER_DNS_SUFFIX} \
   --volume /var/run/docker.sock:/tmp/docker.sock \
-  --hostname ${COREOS_PRIVATE_IPV4} \
     gliderlabs/registrator:${RELEASE} \
       -ttl 30 \
       -ttl-refresh 20 \
       skydns2://172.17.42.1:4001/cluster.local
-
 
 [X-Fleet]
 Global=true

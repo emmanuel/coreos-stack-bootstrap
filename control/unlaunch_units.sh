@@ -28,8 +28,7 @@ fleetctl destroy influxdb{.vulcand,}@1
 fleetctl destroy vulcand
 fleetctl destroy redis@1
 fleetctl destroy redis-lru@1
-fleetctl destroy skydns
-fleetctl destroy registrator
+fleetctl destroy skydns{,-registrator}
 fleetctl destroy logrotate
 fleetctl destroy consul{,-announce,-registrator}
 fleetctl destroy logspout
