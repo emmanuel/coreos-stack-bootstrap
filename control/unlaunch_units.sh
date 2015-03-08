@@ -32,3 +32,4 @@ fleetctl destroy skydns{,-registrator}
 fleetctl destroy logrotate
 fleetctl destroy consul{,-announce,-registrator}
 fleetctl destroy logspout
+fleetctl destroy aws_credentials
