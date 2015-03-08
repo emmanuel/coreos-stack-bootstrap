@@ -5,7 +5,7 @@ coreos:
     <<: *FLEET_METADATA
     public-ip: $private_ipv4
   etcd:
-    <<: *ETCD_DISCOVERY_URL
+    <<: *ETCD_DISCOVERY
     addr: $private_ipv4:4001
     peer-addr: $private_ipv4:7001
   units:
@@ -81,9 +81,9 @@ coreos:
         ExecStart=/usr/bin/docker pull nordstrom/baseimage-ubuntu:14.04.1
 write_files:
   - path: /etc/aws_environment
-    <<: *STATIC_AWS_ENVIRONMENT
+    <<: *AWS_ENVIRONMENT_CONTENT
   - path: /etc/cluster_environment
-    <<: *STATIC_CLUSTER_ENVIRONMENT
+    <<: *CLUSTER_ENVIRONMENT_CONTENT
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'

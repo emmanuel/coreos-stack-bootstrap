@@ -48,15 +48,16 @@ resource "aws_launch_configuration" "control" {
 dynamic:
   fleet_metadata: &FLEET_METADATA
     metadata: stack_name=${var.stack_name},instance_type=${var.aws_instance_type},public_ip=$public_ipv4,region=${var.aws_region},role=control
-  discovery_url: &ETCD_DISCOVERY_URL
+  etcd_discovery: &ETCD_DISCOVERY
     discovery: ${var.etcd_discovery_url}
-  aws_environment: &STATIC_AWS_ENVIRONMENT
+  aws_environment_content: &AWS_ENVIRONMENT_CONTENT
     content: |
-      AWS_REGION=${var.aws_region}
-      AWS_EC2_INSTANCE_TYPE=${var.aws_instance_type}
       AWS_ACCESS_KEY=${var.instance_aws_access_key}
       AWS_SECRET_KEY=${var.instance_aws_secret_key}
-  cluster_environment: &STATIC_CLUSTER_ENVIRONMENT
+      AWS_REGION=${var.aws_region}
+      AWS_EC2_INSTANCE_TYPE=${var.aws_instance_type}
+      AWS_IAM_INSTANCE_PROFILE=cluster_instance_profile
+  cluster_environment_content: &CLUSTER_ENVIRONMENT_CONTENT
     content: |
       CLUSTER_ENVIRONMENT=${var.stack_name}
       CLUSTER_ROLE=control
