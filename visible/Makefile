@@ -47,7 +47,7 @@ clean-outputs:
 	rm -f ../keys.tfvars
 	rm -f ../visible.tfvars
 
-visible.tfvars: ../visible.tfvars
+visible.tfvars: ../visible.tfvars visible_elb_hosted_zone_name visible_elb_hosted_zone_name_id
 
 keys.tfvars: ../keys.tfvars
 
@@ -95,6 +95,9 @@ launch/iam_stack:
 launch/dns_stack: 
 	./launch_dns_stack.sh | jq -r '.StackId' > visible_dns_stack_id
 
+launch/gtin_stack: 
+	./launch_gtin_stack.sh | jq -r '.StackId' > visible_gtin_stack_id
+
 aws_ec2_key_name: visible_stacks
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformStackKeyName").OutputValue' > aws_ec2_key_name
 
@@ -106,6 +109,12 @@ aws_security_group_elb_visible_id: visible_stacks
 
 aws_iam_server_certificate_arn: visible_stacks
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformSSLCertificateARN").OutputValue' > aws_iam_server_certificate_arn
+
+visible_elb_hosted_zone_name: 
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformVisibleELBHostedZoneName").OutputValue' > visible_elb_hosted_zone_name
+
+visible_elb_hosted_zone_name_id: 
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "InnovationPlatformVisibleELBHostedZoneNameID").OutputValue' > visible_elb_hosted_zone_name_id
 
 aws/credentials: ~/.aws/credentials
 

@@ -1,0 +1,35 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Innovation Platform Route53 recordset for gtin.api.",
+
+  "Parameters": {
+    "zoneDNSRoot": {
+      "Description": "The domain name of the hosted zone",
+      "Type": "String",
+      "Default": "cloud.nlab.io"
+    },
+    "visibleELBHostedZoneName": {
+      "Description": "The domain name of the hosted zone",
+      "Type": "String"
+    },
+    "visibleELBHostedZoneNameID": {
+      "Description": "The domain name of the hosted zone",
+      "Type": "String"
+    }
+  },
+
+  "Resources": {
+    "InnovationPlatformZoneGTINRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName": {"Fn::Join": [".", [{"Ref": "zoneDNSRoot"}, ""]]},
+        "Name": {"Fn::Join": [".", ["gtin.api", {"Ref": "zoneDNSRoot"}, ""]]},
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": { "Ref": "visibleELBHostedZoneNameID" },
+          "DNSName": { "Ref": "visibleELBHostedZoneName" }
+        }
+      }
+    }
+  }
+}

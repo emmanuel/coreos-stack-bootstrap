@@ -44,6 +44,14 @@
     "InnovationPlatformVisibleELBSecurityGroupID": {
       "Description": "ID of the Visible ELB's security group",
       "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELBSecurityGroup", "GroupId"] }
+    },
+    "InnovationPlatformVisibleELBHostedZoneNameID": {
+      "Description": "ID of the Visible ELB's Hosted Zone",
+      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] }
+    },
+    "InnovationPlatformVisibleELBHostedZoneName": {
+      "Description": "Name of the Visible ELB's Hosted Zone",
+      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
     }
   },
 
