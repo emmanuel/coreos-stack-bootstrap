@@ -41,6 +41,8 @@ clean:
 	rm -f operator_aws_secret_key
 	rm -f instance_aws_access_key
 	rm -f instance_aws_secret_key
+	rm -f visible_elb_hosted_zone_name
+	rm -f visible_elb_hosted_zone_name_id
 
 .PHONY: clean-outputs
 clean-outputs: 
