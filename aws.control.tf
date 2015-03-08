@@ -178,8 +178,8 @@ resource "aws_elb" "control" {
 
   health_check {
     target              = "HTTP:4001/version"
-    healthy_threshold   = 4
-    unhealthy_threshold = 10
+    healthy_threshold   = 2
+    unhealthy_threshold = 5
     timeout             = 5
     interval            = 30
   }
