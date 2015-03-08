@@ -1,0 +1,193 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Innovation Platform IAM Profile, Role, and Policies",
+
+  "Parameters": {
+    "dockerRegistryS3BucketName": {
+      "Description": "The ARN of the S3 bucket backing the Docker registry",
+      "Type": "String"
+    },
+
+    "registerableLoadBalancersPath": {
+      "Description": "The ARN of any load balancer that instances should be allowed to register with",
+      "Type": "String"
+    },
+
+    "readableDynamoDBTablesPath": {
+      "Description": "The ARN of any DynamoDB table that instances should be allowed to read",
+      "Type": "String"
+    },
+
+    "readableS3BucketsGlob": {
+      "Description": "The ARN of any S3 buckets that instances should be allowed to read",
+      "Type": "String"
+    }
+  },
+
+  "Outputs": {
+    "InnovationPlatformIAMUserControlFauxInstanceProfileARN": {
+      "Description": "ARN of the faux instance profile user",
+      "Value": { "Fn::GetAtt": ["InnovationPlatformIAMUserControlFauxInstanceProfile", "Arn"] }
+    },
+
+    "InnovationPlatformIAMUserControlFauxInstanceProfileAccessKey": {
+      "Description": "Access key of the faux instance profile user",
+      "Value": { "Ref": "InnovationPlatformIAMUserControlFauxInstanceProfileAccessKey" }
+    },
+
+    "InnovationPlatformIAMUserControlFauxInstanceProfileSecretKey": {
+      "Description": "Secret access key of the faux instance profile user",
+      "Value": { "Fn::GetAtt": ["InnovationPlatformIAMUserControlFauxInstanceProfileAccessKey", "SecretAccessKey"] }
+    }
+  },
+
+  "Resources": {
+    "InnovationPlatformIAMUserControlFauxInstanceProfile": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Path": "/innovation_platform/control/"
+      }
+    },
+
+    "InnovationPlatformIAMUserControlFauxInstanceProfileAccessKey": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "Serial": 0,
+        "Status": "Active",
+        "UserName": {"Ref": "InnovationPlatformIAMUserControlFauxInstanceProfile"}
+      }
+    },
+
+    "InnovationPlatformIAMInstanceProfileControl": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/innovation_platform/control/",
+        "Roles": [ {"Ref":"InnovationPlatformIAMRoleControl"} ]
+      }
+    },
+
+    "InnovationPlatformIAMRoleControl": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+             "Effect": "Allow",
+             "Principal": {
+                "Service": [ "ec2.amazonaws.com" ]
+             },
+             "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/innovation_platform/control/"
+      }
+    },
+
+    "InnovationPlatformAllowReadAnyS3BucketPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_read_any_s3_bucket",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetBucketAcl",
+              "s3:GetObject",
+              "s3:GetObjectAcl",
+              "s3:GetObjectTorrent",
+              "s3:GetObjectVersion",
+              "s3:GetObjectVersionAcl",
+              "s3:ListBucket",
+              "s3:ListBucketMultipartUploads",
+              "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [ {"Fn::Join": [":", [
+              "arn:aws:s3", "", "", {"Ref": "readableS3BucketsGlob"}
+            ] ] } ]
+          } ]
+        },
+        "Roles": [ { "Ref": "InnovationPlatformIAMRoleControl" } ],
+        "Users": [ { "Ref": "InnovationPlatformIAMUserControlFauxInstanceProfile" } ]
+      }
+    },
+
+    "InnovationPlatformAllowAccessInternalDockerRegistryS3BucketPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_access_internal_docker_registry_s3_bucket",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Action": [
+              "s3:DeleteObject",
+              "s3:DeleteObjectVersion",
+              "s3:GetBucketAcl",
+              "s3:GetObject",
+              "s3:GetObjectAcl",
+              "s3:GetObjectVersion",
+              "s3:GetObjectVersionAcl",
+              "s3:ListBucket",
+              "s3:ListBucketVersions",
+              "s3:PutObject",
+              "s3:PutObjectAcl",
+              "s3:PutObjectVersionAcl"
+            ],
+            "Resource": [ {"Fn::Join": [":", [
+              "arn:aws:s3", "", "",
+              {"Fn::Join": ["/", [{"Ref": "dockerRegistryS3BucketName"}, "*"]]}
+            ] ] } ]
+          } ]
+        },
+        "Roles": [ { "Ref": "InnovationPlatformIAMRoleControl" } ],
+        "Users": [ { "Ref": "InnovationPlatformIAMUserControlFauxInstanceProfile" } ]
+      }
+    },
+
+    "InnovationPlatformAllowReadAnyDynamoDBTablePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_read_any_dynamodb_table",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:BatchGetItem",
+              "dynamodb:GetItem"
+            ],
+            "Resource": [ {"Fn::Join": [":", [
+              "arn:aws:dynamodb", {"Ref": "AWS::Region"}, {"Ref": "AWS::AccountId"},
+              {"Ref": "readableDynamoDBTablesPath"}
+            ] ] } ]
+          } ]
+        },
+        "Roles": [ { "Ref": "InnovationPlatformIAMRoleControl" } ],
+        "Users": [ { "Ref": "InnovationPlatformIAMUserControlFauxInstanceProfile" } ]
+      }
+    },
+
+    "InnovationPlatformAllowRegisterInstancesWithAnyLoadBalancerPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_register_instances_with_any_load_balancer",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Action": [
+              "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
+            ],
+            "Resource": [ {"Fn::Join": [":", [
+              "arn:aws:elasticloadbalancing", {"Ref": "AWS::Region"}, {"Ref": "AWS::AccountId"},
+              {"Ref": "registerableLoadBalancersPath"}
+            ] ] } ]
+          } ]
+        },
+        "Roles": [ { "Ref": "InnovationPlatformIAMRoleControl" } ],
+        "Users": [ { "Ref": "InnovationPlatformIAMUserControlFauxInstanceProfile" } ]
+      }
+    }
+  }
+}

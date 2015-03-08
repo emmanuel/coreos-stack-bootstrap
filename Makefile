@@ -5,16 +5,20 @@ default: packages
 # 	$$(terraform output fleet_env)
 # 	./control/launch_units.sh
 
-deploy: plan terraform
-	terraform apply -input=false --var-file cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars < plan
+deploy: plan keys visible terraform
+	terraform apply -input=false --var-file=cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars < plan
 
-plan: cluster_id terraform
-	terraform plan -input=false -out plan --var-file cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars
+plan: cluster_id keys visible terraform
+	terraform plan -input=false -out plan --var-file=cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars
+
+destroy: keys visible terraform
+	terraform destroy -input=false --var-file=cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars
 
 cluster_id: cluster_id.tfvars
 
-destroy: terraform
-	terraform destroy -input=false --var-file cluster_id.tfvars --var-file=keys.tfvars --var-file=visible.tfvars
+keys: keys.tfvars
+
+visible: visible.tfvars
 
 clean:
 	rm -f plan
@@ -32,6 +36,12 @@ cluster_id.tfvars: etcd_discovery_url stack_name coreos_ami
 	echo "etcd_discovery_url = \"$$(cat etcd_discovery_url)\"" >> cluster_id.tfvars
 	echo "coreos_ami = \"$$(cat coreos_ami)\"" >> cluster_id.tfvars
 
+keys.tfvars: 
+	cd visible; make outputs
+
+visible.tfvars: 
+	cd visible; make outputs
+
 stack_name:
 	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > stack_name
 
@@ -42,7 +52,7 @@ etcd_discovery_url:
 coreos_ami: jq
 	curl -s https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template | jq -r '.Mappings.RegionMap["us-west-2"].AMI' > coreos_ami
 
-packages: /usr/local/bin/fleetctl /usr/local/bin/terraform /usr/local/bin/jq
+packages: /usr/local/bin/terraform /usr/local/bin/fleetctl /usr/local/bin/jq
 
 fleetctl: /usr/local/bin/fleetctl
 

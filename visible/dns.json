@@ -1,0 +1,179 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Innovation Platform Route53 zone, S3 bucket, and ELB",
+
+  "Parameters": {
+    "zoneDNSRoot": {
+      "Description": "The domain name of the hosted zone",
+      "Type": "String",
+      "Default": "cloud.nlab.io"
+    },
+
+    "dockerRegistryBucketName": {
+      "Description": "The name of the bucket for the Docker registry",
+      "Type": "String"
+    },
+
+    "sslCertificateIAMPath": {
+      "Description": "The path of the SSL certificate in IAM",
+      "Type": "String"
+    },
+
+    "keyName": {
+      "Description": "The name of the SSH key to deploy to instances",
+      "Type": "AWS::EC2::KeyPair::KeyName"
+    }
+  },
+
+  "Outputs": {
+    "InnovationPlatformStackKeyName": {
+      "Description": "Name of the SSH key for this stack",
+      "Value": { "Ref": "keyName" }
+    },
+    "InnovationPlatformZoneID": {
+      "Description": "ID of the Hosted Zone",
+      "Value": { "Ref": "InnovationPlatformZone" }
+    },
+    "InnovationPlatformSSLCertificateARN": {
+      "Description": "ARN of the SSL Certificate",
+      "Value": {"Fn::Join": [":", [
+        "arn:aws:iam:", {"Ref": "AWS::AccountId"},
+        {"Fn::Join": ["", ["server-certificate", {"Ref": "sslCertificateIAMPath"}]]}
+      ] ] }
+    },
+    "InnovationPlatformVisibleELBSecurityGroupID": {
+      "Description": "ID of the Visible ELB's security group",
+      "Value": { "Fn::GetAtt": ["InnovationPlatformVisibleELBSecurityGroup", "GroupId"] }
+    }
+  },
+
+  "Resources": {
+    "InnovationPlatformZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "HostedZoneConfig": {
+          "Comment": "Innovation Platform"
+        },
+        "Name": {"Ref": "zoneDNSRoot"}
+      }
+    },
+
+    "InnovationPlatformApexWebsiteS3Bucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : {"Ref": "zoneDNSRoot"},
+        "AccessControl" : "PublicRead",
+        "WebsiteConfiguration" : {
+          "IndexDocument" : "index.html",
+          "ErrorDocument" : "error.html"
+        }
+      },
+      "DeletionPolicy" : "Delete"
+    },
+
+    "InnovationPlatformZoneApexRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {"Ref": "InnovationPlatformZone"},
+        "Name": {"Fn::Join": ["", [{"Ref": "zoneDNSRoot"}, "."]]},
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z3BJ6K6RIION7M",
+          "DNSName": "s3-website-us-west-2.amazonaws.com"
+        }
+      }
+    },
+
+    "InnovationPlatformVisibleELB": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "AvailabilityZones": { "Fn::GetAZs" : "" },
+        "Listeners": [ {
+          "LoadBalancerPort": "80",
+          "InstancePort": "8181",
+          "Protocol": "HTTP"
+        }, {
+          "LoadBalancerPort": "443",
+          "InstancePort": "8181",
+          "Protocol": "HTTPS",
+          "SSLCertificateId": {"Fn::Join": [":", [
+            "arn:aws:iam:", {"Ref": "AWS::AccountId"},
+            {"Fn::Join": ["", ["server-certificate", {"Ref": "sslCertificateIAMPath"}]]}
+          ] ] }
+        } ],
+        "HealthCheck": {
+          "Target": "HTTP:8182/v2/status",
+          "HealthyThreshold": "3",
+          "UnhealthyThreshold": "2",
+          "Interval": "10",
+          "Timeout": "2"
+        },
+        "SecurityGroups": [
+          { "Fn::GetAtt": ["InnovationPlatformVisibleELBSecurityGroup", "GroupId"] }
+        ]
+      }
+    },
+
+    "InnovationPlatformVisibleELBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "VISIBLE vulcand external public ELB.",
+        "SecurityGroupIngress": [ {
+          "IpProtocol": "tcp",
+          "FromPort": "80",
+          "ToPort": "80",
+          "CidrIp": "0.0.0.0/0"
+        },{
+          "IpProtocol" : "tcp",
+          "FromPort" : "443",
+          "ToPort" : "443",
+          "CidrIp" : "0.0.0.0/0"
+        } ]
+      }
+    },
+
+    "InnovationPlatformVisibleELBAliasesRecordGroup": {
+      "Type": "AWS::Route53::RecordSetGroup",
+      "Properties": {
+        "HostedZoneName": {"Fn::Join": [".", [{"Ref": "zoneDNSRoot"}, ""]]},
+        "Comment": "Aliases for Visible ELB",
+        "RecordSets": [ {
+          "Name": {"Fn::Join": [".", ["api", {"Ref": "zoneDNSRoot"}, ""]]},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+          }
+        }, {
+          "Name": {"Fn::Join": [".", ["docker", {"Ref": "zoneDNSRoot"}, ""]]},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+          }
+        }, {
+          "Name": {"Fn::Join": [".", ["influxdb", {"Ref": "zoneDNSRoot"}, ""]]},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+          }
+        }, {
+          "Name": {"Fn::Join": [".", ["elasticsearch", {"Ref": "zoneDNSRoot"}, ""]]},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+          }
+        }, {
+          "Name": {"Fn::Join": [".", ["consul", {"Ref": "zoneDNSRoot"}, ""]]},
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneNameID"] },
+            "DNSName": { "Fn::GetAtt": ["InnovationPlatformVisibleELB", "CanonicalHostedZoneName"] }
+          }
+        } ]
+      }
+    }
+  }
+}

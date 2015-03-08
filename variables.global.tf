@@ -22,4 +22,3 @@ variable "aws_ec2_key_name" {}
 variable "aws_route53_zone_id_cloud_nlab_io" {}
 variable "aws_vpc_zone_identifier" {}
 variable "aws_iam_server_certificate_arn" {}
-variable "aws_sns_topic_autoscaling_events_arn" {}

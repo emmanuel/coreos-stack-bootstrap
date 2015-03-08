@@ -18,19 +18,6 @@ aws autoscaling create-or-update-tags \
     "Key=CostCenter,Value=${var.aws_tag_value_cost_center},PropagateAtLaunch=true,ResourceId=${aws_autoscaling_group.control.name},ResourceType=auto-scaling-group"
 COMMAND
   }
-
-  provisioner "local-exec" {
-    command = <<COMMAND
-aws autoscaling put-notification-configuration \
-  --auto-scaling-group-name "${aws_autoscaling_group.control.name}" \
-  --topic-arn "${var.aws_sns_topic_autoscaling_events_arn}" \
-  --notification-types \
-    autoscaling:EC2_INSTANCE_LAUNCH \
-    autoscaling:EC2_INSTANCE_LAUNCH_ERROR \
-    autoscaling:EC2_INSTANCE_TERMINATE \
-    autoscaling:EC2_INSTANCE_TERMINATE_ERROR
-COMMAND
-  }
 }
 
 resource "aws_launch_configuration" "control" {
@@ -145,7 +132,7 @@ resource "aws_security_group" "cluster_services_elb_ingress" {
     from_port = 8181
     to_port =  8182
     protocol = "tcp"
-    security_groups = [ "${var.aws_security_group_elb_vulcand_visible_id}" ]
+    security_groups = [ "${var.aws_security_group_elb_visible_id}" ]
   }
 }
 

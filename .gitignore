@@ -15,4 +15,4 @@ coreos_ami
 
 keys.tfvars
 cluster_id.tfvars
-cluster_outputs.tfvars
+visible.tfvars
