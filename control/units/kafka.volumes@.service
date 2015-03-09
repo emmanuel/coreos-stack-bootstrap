@@ -15,7 +15,7 @@ TimeoutStartSec=5m
 ExecStartPre=/usr/bin/etcdctl set /skydns/local/cluster/kafka-%i '{"host":"${COREOS_PRIVATE_IPV4}"}'
 ExecStartPre=-/usr/bin/docker kill kafka-%i
 ExecStartPre=-/usr/bin/docker rm kafka-%i
-ExecStartPre=/usr/bin/docker pull docker.cloud.nlab.iokafka:${RELEASE}
+ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${RELEASE}
 
 ExecStartPre=-/usr/bin/docker run \
   --net none \

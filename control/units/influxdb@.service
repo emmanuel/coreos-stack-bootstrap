@@ -26,7 +26,7 @@ ExecStart=/usr/bin/docker run \
   --hostname influxdb-%i.${CLUSTER_DNS_SUFFIX} \
   --volumes-from influxdb.volumes-%i \
   --env INFLUXDB_SERVER_NUMBER=%i \
-  --env SERVICE_ID=influxdb-%i \
+  --env SERVICE_ID=%i \
   --publish 8086:8086 \
   --env SERVICE_8086_NAME=influxdb \
   --publish 8083:8083 \
