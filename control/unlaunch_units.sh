@@ -25,11 +25,10 @@ fleetctl destroy sysinfo_influxdb
 fleetctl destroy cadvisor
 fleetctl destroy influxdb.{vulcand_frontend,create_db}
 fleetctl destroy influxdb{.vulcand,}@1
-fleetctl destroy vulcand
 fleetctl destroy redis@1
 fleetctl destroy redis-lru@1
-fleetctl destroy skydns{,-registrator}
-fleetctl destroy logrotate
-fleetctl destroy consul{,-announce,-registrator}
+fleetctl destroy vulcand
+# fleetctl destroy consul{-announce,-registrator,}
+fleetctl destroy skydns{-registrator,}
 fleetctl destroy logspout
 fleetctl destroy aws_credentials

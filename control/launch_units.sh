@@ -17,16 +17,17 @@ echo "================="
 fleetctl start aws_credentials
 fleetctl start logspout
 fleetctl start skydns{,-registrator}
-fleetctl start consul{,-announce,-registrator}
-fleetctl start logrotate
-fleetctl start influxdb{.volumes,,.vulcand}@1
+# fleetctl start consul{,-announce,-registrator}
 fleetctl start vulcand
+fleetctl start influxdb{.volumes,}@1
 fleetctl start redis{.volumes,}@1
 fleetctl start redis-lru{.volumes,}@1
-fleetctl start docker-registry{,.vulcand}@{1..2}
+fleetctl start docker-registry@{1..2}
 sleep 30
 fleetctl start docker-registry.vulcand_frontend
+fleetctl start docker-registry.vulcand@{1..2}
 fleetctl start influxdb.{create_db,vulcand_frontend}
+fleetctl start influxdb.vulcand@1
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
 fleetctl start zookeeper{.placement,}@{1..5}
