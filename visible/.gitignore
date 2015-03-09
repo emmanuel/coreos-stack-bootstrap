@@ -2,6 +2,7 @@ certificates/STAR_cloud_nlab_io.key
 visible_stacks
 visible_iam_stack_id
 visible_dns_stack_id
+visible_gtin_stack_id
 
 visible_elb_hosted_zone_name
 visible_elb_hosted_zone_name_id
