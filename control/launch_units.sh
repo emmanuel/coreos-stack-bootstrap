@@ -38,3 +38,4 @@ sleep 60
 fleetctl start kafka.create_topics
 fleetctl start logstash@1
 fleetctl start syslog_kafka
+fleetctl start schema-registry@{1..2}
