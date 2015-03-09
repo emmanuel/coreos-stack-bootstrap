@@ -19,5 +19,10 @@ ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-influxdb/backend \
 ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-influxdb/frontend \
   '{"Type":"http","BackendId":"visible-influxdb","Route":"Host(`influxdb.cloud.nlab.io`)"}'
 
+ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/backends/${CLUSTER_ENVIRONMENT}-influxdb
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${CLUSTER_ENVIRONMENT}-influxdb
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/visible-influxdb
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/visible-influxdb
+
 [Install]
 WantedBy=multi-user.target
