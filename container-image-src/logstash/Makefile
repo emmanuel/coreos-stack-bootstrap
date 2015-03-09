@@ -1,4 +1,4 @@
-docker_account = docker.cloud.nlab.io
+docker_account = nordstrom
 release = 1.5.0.beta1
 download_url = https://github.com/elasticsearch/logstash/archive/v$(release).tar.gz
 

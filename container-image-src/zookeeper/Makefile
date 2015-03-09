@@ -1,4 +1,4 @@
-docker_account = docker.cloud.nlab.io
+docker_account = nordstrom
 release = 3.4.6
 download_url = http://www.us.apache.org/dist/zookeeper/zookeeper-$(release)/zookeeper-$(release).tar.gz
 
