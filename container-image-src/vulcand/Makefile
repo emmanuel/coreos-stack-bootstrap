@@ -2,7 +2,7 @@ release = 0.8.0-beta.2
 download_url = https://github.com/mailgun/vulcand/releases/download/v$(release)/vulcand-v$(release)-linux-amd64.tar.gz
 
 release:
-	docker tag -f influxdb nordstrom/vulcand:$(release)
+	docker tag -f vulcand nordstrom/vulcand:$(release)
 	docker push nordstrom/vulcand:$(release)
 
 build/container: dist/vulcand-v$(release)-linux-amd64
