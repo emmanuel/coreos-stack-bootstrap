@@ -8,7 +8,7 @@ build/container: dist/docker-gen.tar.gz dist/go-cron.tar.gz
 	touch build/container
 
 run/container:
-	docker run -d -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker $(container)
+	docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker $(container)
 
 release:
 	docker tag $(container) $(docker_account)/$(container):$(tag)
