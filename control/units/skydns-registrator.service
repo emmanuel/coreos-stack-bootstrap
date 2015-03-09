@@ -15,16 +15,16 @@ RestartSec=5
 
 EnvironmentFile=/etc/environment
 EnvironmentFile=/etc/cluster_environment
-Environment="RELEASE=v5"
+Environment="RELEASE=latest"
 
 TimeoutStartSec=5m
-ExecStartPre=-/usr/bin/docker kill registrator
-ExecStartPre=-/usr/bin/docker rm registrator
+ExecStartPre=-/usr/bin/docker kill skydns-registrator
+ExecStartPre=-/usr/bin/docker rm skydns-registrator
 ExecStartPre=/usr/bin/docker pull gliderlabs/registrator:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name skydns-registrator \
-  --hostname skydns-registrator.${CLUSTER_DNS_SUFFIX} \
+  --hostname ${COREOS_PRIVATE_IPV4} \
   --volume /var/run/docker.sock:/tmp/docker.sock \
     gliderlabs/registrator:${RELEASE} \
       -ttl 30 \
