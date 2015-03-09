@@ -50,11 +50,11 @@ dynamic:
       AWS_REGION=${var.aws_region}
       AWS_EC2_INSTANCE_TYPE=${var.aws_instance_type}
       AWS_IAM_INSTANCE_PROFILE=cluster_instance_profile
-  cluster_environment_content: &CLUSTER_ENVIRONMENT_CONTENT
+  stack_environment_content: &STACK_ENVIRONMENT_CONTENT
     content: |
-      CLUSTER_ENVIRONMENT=${var.stack_name}
-      CLUSTER_ROLE=control
-      CLUSTER_DNS_SUFFIX=cluster.local
+      STACK_NAME=${var.stack_name}
+      STACK_ROLE=control
+      STACK_DNS_SUFFIX=cluster.local
 ${file("control-cloud_config.yaml")}
 USER_DATA
 }

@@ -21,7 +21,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/redis:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name redis-%i \
-  --hostname redis-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname redis-%i.${STACK_DNS_SUFFIX} \
   --volumes-from redis.volumes-%i \
   --env SERVICE_ID=redis-%i \
   --publish 6379:6379 \

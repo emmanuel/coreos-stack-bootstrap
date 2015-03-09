@@ -24,7 +24,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
-  --hostname elasticsearch-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname elasticsearch-%i.${STACK_DNS_SUFFIX} \
   --env ES_NODE_NAME=elasticsearch-%i \
   --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
   --env SERVICE_ID=elasticsearch-%i \

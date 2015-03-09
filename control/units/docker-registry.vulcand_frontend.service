@@ -9,14 +9,14 @@ RemainAfterExit=true
 EnvironmentFile=/etc/cluster_environment
 
 ExecStartPre=/usr/bin/printf "Registering Docker registry with vulcand (frontend)"
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry/backend \
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/${STACK_NAME}-docker_registry/backend \
   '{"Type":"http"}'
 
 # Giving an unbalanced quote to Vulcan causes problems:
 # '"{
-ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-docker_registry/frontend \
-  '{"BackendId":"${CLUSTER_ENVIRONMENT}-docker_registry", \
-    "Route":"Host(`${CLUSTER_ENVIRONMENT}-docker.cloud.nlab.io`)", \
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${STACK_NAME}-docker_registry/frontend \
+  '{"BackendId":"${STACK_NAME}-docker_registry", \
+    "Route":"Host(`${STACK_NAME}-docker.cloud.nlab.io`)", \
     "Type":"http"}'
 
 ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/backend \
@@ -26,8 +26,8 @@ ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-docker_registry/fronte
     "Route":"Host(`docker.cloud.nlab.io`)", \
     "Type":"http"}'
 
-ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_registry
-ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${CLUSTER_ENVIRONMENT}-docker_registry
+ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/backends/${STACK_NAME}-docker_registry
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${STACK_NAME}-docker_registry
 ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/visible-docker_registry
 ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/visible-docker_registry
 

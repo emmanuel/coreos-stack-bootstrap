@@ -19,7 +19,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/statsdaemon:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name statsdaemon \
-  --hostname statsdaemon.${CLUSTER_DNS_SUFFIX} \
+  --hostname statsdaemon.${STACK_DNS_SUFFIX} \
   --env SERVICE_ID=statsdaemon-0 \
   --publish 8125:8125/udp \
   --env SERVICE_8125_NAME=statsdaemon \

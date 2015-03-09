@@ -22,7 +22,7 @@ ExecStartPre=/usr/bin/docker pull mailgun/vulcand:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name vulcand \
-  --hostname vulcand-%m.vulcand.${CLUSTER_DNS_SUFFIX} \
+  --hostname vulcand-%m.vulcand.${STACK_DNS_SUFFIX} \
   --env SERVICE_ID=%m \
   --publish 8181:8181 \
   --env SERVICE_8181_NAME=vulcand \

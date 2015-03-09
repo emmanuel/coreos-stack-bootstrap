@@ -21,7 +21,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/docker-registry:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name docker-registry-%i \
-  --hostname docker-registry-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname docker-registry-%i.${STACK_DNS_SUFFIX} \
   --env STANDALONE=true \
   --env SETTINGS_FLAVOR=s3 \
   --env STORAGE_REDIRECT=true \

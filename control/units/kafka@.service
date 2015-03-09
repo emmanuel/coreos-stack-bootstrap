@@ -23,7 +23,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name kafka-%i \
-  --hostname kafka-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname kafka-%i.${STACK_DNS_SUFFIX} \
   --volumes-from kafka.volumes-%i \
   --env SERVICE_ID=kafka-%i \
   --publish 9092:9092 \

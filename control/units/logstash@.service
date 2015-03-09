@@ -19,7 +19,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/logstash:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name logstash-%i \
-  --hostname logstash-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname logstash-%i.${STACK_DNS_SUFFIX} \
     nordstrom/logstash:${RELEASE}
 
 ExecStop=/usr/bin/docker kill logstash-%i

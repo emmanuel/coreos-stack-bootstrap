@@ -23,7 +23,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name influxdb-%i \
-  --hostname influxdb-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname influxdb-%i.${STACK_DNS_SUFFIX} \
   --volumes-from influxdb.volumes-%i \
   --env INFLUXDB_SERVER_NUMBER=%i \
   --env SERVICE_ID=%i \

@@ -83,7 +83,7 @@ write_files:
   - path: /etc/aws_environment
     <<: *AWS_ENVIRONMENT_CONTENT
   - path: /etc/cluster_environment
-    <<: *CLUSTER_ENVIRONMENT_CONTENT
+    <<: *STACK_ENVIRONMENT_CONTENT
   - path: /etc/profile.d/alias.sh
     content: |
       alias ll='ls -l'

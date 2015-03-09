@@ -34,7 +34,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/zookeeper:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name zookeeper-%i \
-  --hostname zookeeper-%i.${CLUSTER_DNS_SUFFIX} \
+  --hostname zookeeper-%i.${STACK_DNS_SUFFIX} \
   --volumes-from zookeeper.volumes-%i \
   --publish 2181:2181 \
   --env SERVICE_2181_NAME=zookeeper \
