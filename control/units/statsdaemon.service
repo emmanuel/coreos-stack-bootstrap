@@ -9,6 +9,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=a677ac357628277"
 
 TimeoutStartSec=5m
@@ -18,8 +19,8 @@ ExecStartPre=/usr/bin/docker pull nordstrom/statsdaemon:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name statsd \
-  --hostname statsd.cluster.local \
   --env SERVICE_ID=statsd-0 \
+  --hostname statsdaemon.${CLUSTER_DNS_SUFFIX} \
   --publish 8125:8125/udp \
   --env SERVICE_8125_NAME=statsd \
     nordstrom/statsdaemon:${RELEASE}

@@ -13,6 +13,7 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=0.8.8"
 
 TimeoutStartSec=5m
@@ -22,7 +23,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/influxdb:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name influxdb-%i \
-  --hostname influxdb-%i.cluster.local \
+  --hostname influxdb-%i.${CLUSTER_DNS_SUFFIX} \
   --volumes-from influxdb.volumes-%i \
   --env INFLUXDB_SERVER_NUMBER=%i \
   --env SERVICE_ID=influxdb-%i \

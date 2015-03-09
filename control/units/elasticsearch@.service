@@ -12,7 +12,9 @@ After=elasticsearch.volumes@%i.service
 Type=simple
 Restart=on-failure
 RestartSec=30
+
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=1.4.2"
 
 TimeoutStartSec=5m
@@ -22,7 +24,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/elasticsearch:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name elasticsearch-%i \
-  --hostname elasticsearch-%i.cluster.local \
+  --hostname elasticsearch-%i.${CLUSTER_DNS_SUFFIX} \
   --env ES_NODE_NAME=elasticsearch-%i \
   --env COREOS_PRIVATE_IPV4=${COREOS_PRIVATE_IPV4} \
   --env SERVICE_ID=elasticsearch-%i \

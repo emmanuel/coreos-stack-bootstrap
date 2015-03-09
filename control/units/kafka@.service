@@ -13,6 +13,7 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=0.8.2"
 
 TimeoutStartSec=5m
@@ -22,7 +23,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/kafka:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name kafka-%i \
-  --hostname kafka-%i.cluster.local \
+  --hostname kafka-%i.${CLUSTER_DNS_SUFFIX} \
   --volumes-from kafka.volumes-%i \
   --env SERVICE_ID=kafka-%i \
   --publish 9092:9092 \

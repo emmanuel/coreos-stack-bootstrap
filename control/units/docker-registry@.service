@@ -9,6 +9,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 # TODO: get this working with IAM instance profiles/roles
 EnvironmentFile=/etc/aws_environment
 Environment="RELEASE=0.9.1"
@@ -20,7 +21,7 @@ ExecStartPre=/usr/bin/docker pull nordstrom/docker-registry:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name docker-registry-%i \
-  --hostname docker-registry-%i.cluster.local \
+  --hostname docker-registry-%i.${CLUSTER_DNS_SUFFIX} \
   --env STANDALONE=true \
   --env SETTINGS_FLAVOR=s3 \
   --env STORAGE_REDIRECT=true \

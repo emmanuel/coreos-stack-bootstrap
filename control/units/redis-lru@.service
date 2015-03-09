@@ -11,6 +11,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=2.8.19"
 
 TimeoutStartSec=5m
@@ -20,11 +21,11 @@ ExecStartPre=/usr/bin/docker pull nordstrom/redis:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name redis-lru-%i \
-  --hostname redis-lru-%i.cluster.local \
+  --hostname redis-lru-%i.${CLUSTER_DNS_SUFFIX} \
   --volumes-from redis-lru.volumes-%i \
   --env SERVICE_ID=redis-lru-%i \
-  --publish 6379:6379 \
   --env SERVICE_6379_NAME=redis-lru \
+  --publish 6379:6379 \
     nordstrom/redis:${RELEASE}
 
 ExecStartPost=/bin/bash -c \

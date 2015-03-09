@@ -12,6 +12,7 @@ Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
 Environment="RELEASE=0.8.0-beta.2"
+EnvironmentFile=/etc/cluster_environment
 
 TimeoutStartSec=5m
 
@@ -21,8 +22,8 @@ ExecStartPre=/usr/bin/docker pull nordstrom/vulcand:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name vulcand \
-  --hostname vulcand.cluster.local \
   --env SERVICE_ID=vulcand-%m \
+  --hostname vulcand-%m.vulcand.${CLUSTER_DNS_SUFFIX} \
   --publish 8181:8181 \
   --env SERVICE_8181_NAME=vulcand \
   --publish 8182:8182 \
