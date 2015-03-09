@@ -8,44 +8,32 @@ Type=oneshot
 RemainAfterExit=true
 Environment="RELEASE=0.8.2"
 
-# ExecStartPre=-/usr/bin/docker kill kafka.create_topics.logspout
-# ExecStartPre=-/usr/bin/docker kill kafka.create_topics.syslog
-# ExecStartPre=-/usr/bin/docker rm kafka.create_topics.logspout
-# ExecStartPre=-/usr/bin/docker rm kafka.create_topics.syslog
-# ExecStartPre=-/usr/bin/docker kill kafka.configure_topics.logspout
-# ExecStartPre=-/usr/bin/docker kill kafka.configure_topics.syslog
-# ExecStartPre=-/usr/bin/docker rm kafka.configure_topics.logspout
-# ExecStartPre=-/usr/bin/docker rm kafka.configure_topics.syslog
 ExecStartPre=-/bin/bash -c "docker rm kafka.{configure,create}_topics.{logspout,syslog}"
 ExecStartPre=-/bin/bash -c "docker kill kafka.{configure,create}_topics.{logspout,syslog}"
-ExecStartPre=-/usr/bin/docker run \
-  --name kafka.create_topics.logspout \
-    nordstrom/kafka:${RELEASE} kafka-topics.sh \
-      --zookeeper zookeeper:2181 \
-      --create \
-      --topic logspout
-ExecStartPre=-/usr/bin/docker run \
-  --name kafka.create_topics.syslog \
-    nordstrom/kafka:${RELEASE} kafka-topics.sh \
-      --zookeeper zookeeper:2181 \
-      --create \
-      --topic syslog
-ExecStart=/usr/bin/docker run \
-  --name kafka.configure_topics.logspout \
-    nordstrom/kafka:${RELEASE} kafka-topics.sh \
-      --zookeeper zookeeper:2181 \
-      --alter \
-      --topic logspout \
-      --partitions 10 \
-      --replication-factor 3
-ExecStartPost=/usr/bin/docker run \
-  --name kafka.configure_topics.syslog \
-    nordstrom/kafka:${RELEASE} kafka-topics.sh \
-      --zookeeper zookeeper:2181 \
-      --alter \
-      --topic syslog \
-      --partitions 10 \
-      --replication-factor 3
+ExecStart=-/usr/bin/docker run --rm \
+  nordstrom/kafka:${RELEASE} kafka-topics \
+    --zookeeper zookeeper:2181 \
+    --create \
+    --replication-factor 3 \
+    --topic logspout
+ExecStart=-/usr/bin/docker run --rm \
+  nordstrom/kafka:${RELEASE} kafka-topics \
+    --zookeeper zookeeper:2181 \
+    --create \
+    --replication-factor 3 \
+    --topic syslog
+ExecStart=/usr/bin/docker run --rm \
+  nordstrom/kafka:${RELEASE} kafka-topics \
+    --zookeeper zookeeper:2181 \
+    --alter \
+    --topic logspout \
+    --partitions 10
+ExecStart=/usr/bin/docker run --rm \
+  nordstrom/kafka:${RELEASE} kafka-topics \
+    --zookeeper zookeeper:2181 \
+    --alter \
+    --topic syslog \
+    --partitions 10
 
 [X-Fleet]
 MachineOf=kafka@1.service

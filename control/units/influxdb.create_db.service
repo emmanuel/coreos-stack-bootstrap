@@ -12,26 +12,19 @@ Environment="INFLUXDB_DB_NAME_CADVISOR=cadvisor"
 Environment="INFLUXDB_DB_NAME_SYSINFO=sysinfo"
 Environment="INFLUXDB_DB_NAME_GRAFANA=grafana"
 
-ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_CADVISOR}
-ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_SYSINFO}
-ExecStartPre=-/usr/bin/docker rm influxdb.create_db.${INFLUXDB_DB_NAME_GRAFANA}
-
 ExecStart=/usr/bin/printf "Creating InfluxDB databases"
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_CADVISOR}'"
-ExecStart=/usr/bin/docker run \
-  --name influxdb.create_db.${INFLUXDB_DB_NAME_CADVISOR} \
-    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
-      -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
+ExecStart=/usr/bin/docker run --rm \
+  util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+    -d '{"name": "${INFLUXDB_DB_NAME_CADVISOR}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_SYSINFO}'"
-ExecStart=/usr/bin/docker run \
-  --name influxdb.create_db.${INFLUXDB_DB_NAME_SYSINFO} \
-    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
-      -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
+ExecStart=/usr/bin/docker run --rm \
+  util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+    -d '{"name": "${INFLUXDB_DB_NAME_SYSINFO}"}'
 ExecStart=/usr/bin/printf "Creating InfluxDB database '${INFLUXDB_DB_NAME_GRAFANA}'"
-ExecStart=/usr/bin/docker run \
-  --name influxdb.create_db.${INFLUXDB_DB_NAME_GRAFANA} \
-    nordstrom/util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
-      -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
+ExecStart=/usr/bin/docker run --rm \
+  util curl -s -X POST http://influxdb:8086/db?u=${INFLUXDB_USER}&p=${INFLUXDB_PASS} \
+    -d '{"name": "${INFLUXDB_DB_NAME_GRAFANA}"}'
 
 [X-Fleet]
 MachineMetadata="role=control"
