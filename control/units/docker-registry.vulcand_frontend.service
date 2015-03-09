@@ -16,7 +16,7 @@ ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-docker_r
 # '"{
 ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-docker_registry/frontend \
   '{"BackendId":"${CLUSTER_ENVIRONMENT}-docker_registry", \
-    "Route":"Host(`docker.${CLUSTER_ENVIRONMENT}.cloud.nlab.io`)", \
+    "Route":"Host(`${CLUSTER_ENVIRONMENT}-docker.cloud.nlab.io`)", \
     "Type":"http"}'
 
 ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/backend \
