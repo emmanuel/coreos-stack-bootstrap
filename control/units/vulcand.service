@@ -11,31 +11,31 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
-Environment="RELEASE=0.8.0-beta.2"
 EnvironmentFile=/etc/cluster_environment
+Environment="RELEASE=v0.8.0-beta.2"
 
 TimeoutStartSec=5m
-
 ExecStartPre=-/usr/bin/docker kill vulcand
 ExecStartPre=-/usr/bin/docker rm vulcand
-ExecStartPre=/usr/bin/docker pull nordstrom/vulcand:${RELEASE}
+# TODO: get nordstrom/vulcand working
+ExecStartPre=/usr/bin/docker pull mailgun/vulcand:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
   --name vulcand \
-  --env SERVICE_ID=vulcand-%m \
   --hostname vulcand-%m.vulcand.${CLUSTER_DNS_SUFFIX} \
+  --env SERVICE_ID=%m \
   --publish 8181:8181 \
   --env SERVICE_8181_NAME=vulcand \
   --publish 8182:8182 \
   --env SERVICE_8182_NAME=vulcand-api \
-    nordstrom/vulcand:${RELEASE} vulcand \
+    mailgun/vulcand:${RELEASE} /go/bin/vulcand \
       -interface=0.0.0.0 \
       -port=8181 \
       -apiInterface=0.0.0.0 \
       -apiPort=8182 \
       -log=console \
       -logSeverity=WARN \
-      -etcd=http://${COREOS_PRIVATE_IPV4}:4001
+      --etcd=http://172.17.42.1:4001
 
 [X-Fleet]
 MachineMetadata="role=control"
