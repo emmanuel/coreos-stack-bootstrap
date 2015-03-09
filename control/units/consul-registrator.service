@@ -1,24 +1,37 @@
 [Unit]
-Description=Registrator
-PartOf=consul.service
+Description=Docker container registration agent for Consul
+Documentation=https://github.com/gliderlabs/registrator
+Requires=docker.service
+After=docker.service
+Requires=consul.service
 After=consul.service
+Wants=logspout.service
+After=logspout.service
 
 [Service]
+Type=simple
 Restart=on-failure
+RestartSec=5
+
 EnvironmentFile=/etc/environment
-Environment="RELEASE=latest"
+EnvironmentFile=/etc/cluster_environment
+Environment="RELEASE=v5"
 
-ExecStartPre=-/usr/bin/docker kill registrator
-ExecStartPre=-/usr/bin/docker rm registrator
-ExecStartPre=/usr/bin/docker pull progrium/registrator:${RELEASE}
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill consul-registrator
+ExecStartPre=-/usr/bin/docker rm consul-registrator
+ExecStartPre=/usr/bin/docker pull gliderlabs/registrator:${RELEASE}
+
 ExecStart=/usr/bin/docker run \
-  --name registrator \
-  --hostname registrator \
+  --name consul-registrator \
+  --net container:consul \
   --volume /var/run/docker.sock:/tmp/docker.sock \
-    progrium/registrator:${RELEASE} \
-      consul://${COREOS_PRIVATE_IPV4}:8500
+    gliderlabs/registrator:${RELEASE} \
+      consul: \
+      -ip ${COREOS_PRIVATE_IPV4} \
+      -resync 10
 
-ExecStop=/usr/bin/docker stop registrator
+ExecStop=/usr/bin/docker stop consul-registrator
 
 [X-Fleet]
 MachineMetadata="role=control"
