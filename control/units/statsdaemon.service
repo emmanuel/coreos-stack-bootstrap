@@ -13,19 +13,19 @@ EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=a677ac357628277"
 
 TimeoutStartSec=5m
-ExecStartPre=-/usr/bin/docker kill statsd
-ExecStartPre=-/usr/bin/docker rm statsd
+ExecStartPre=-/usr/bin/docker kill statsdaemon
+ExecStartPre=-/usr/bin/docker rm statsdaemon
 ExecStartPre=/usr/bin/docker pull nordstrom/statsdaemon:${RELEASE}
 
 ExecStart=/usr/bin/docker run \
-  --name statsd \
-  --env SERVICE_ID=statsd-0 \
+  --name statsdaemon \
   --hostname statsdaemon.${CLUSTER_DNS_SUFFIX} \
+  --env SERVICE_ID=statsdaemon-0 \
   --publish 8125:8125/udp \
-  --env SERVICE_8125_NAME=statsd \
+  --env SERVICE_8125_NAME=statsdaemon \
     nordstrom/statsdaemon:${RELEASE}
 
-ExecStop=/usr/bin/docker kill statsd
+ExecStop=/usr/bin/docker kill statsdaemon
 
 [X-Fleet]
 MachineMetadata="role=control"
