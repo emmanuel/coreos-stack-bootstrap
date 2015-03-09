@@ -12,7 +12,7 @@ ExecStartPre=/usr/bin/printf "Registering InfluxDB with vulcand (frontend)"
 ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-influxdb/backend \
   '{"Type":"http"}'
 ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-influxdb/frontend \
-  '{"Type":"http","BackendId":"${CLUSTER_ENVIRONMENT}-influxdb","Route":"Host(`influxdb.${CLUSTER_ENVIRONMENT}.cloud.nlab.io`)"}'
+  '{"Type":"http","BackendId":"${CLUSTER_ENVIRONMENT}-influxdb","Route":"Host(`${CLUSTER_ENVIRONMENT}-influxdb.cloud.nlab.io`)"}'
 
 ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-influxdb/backend \
   '{"Type":"http"}'
