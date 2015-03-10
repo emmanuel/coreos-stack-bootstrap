@@ -1,3 +1,11 @@
+OS := $(shell uname -s)
+ifeq ($(OS),Darwin)
+	include ./Makefile.Darwin
+endif
+ifeq ($(OS),Linux)
+	include ./Makefile.Linux
+endif
+
 default: packages
 
 # TODO: make a one-command launch of the whole stack work
@@ -124,17 +132,6 @@ aws/credentials: ~/.aws/credentials
 	aws configure
 
 packages: /usr/local/bin/aws /usr/local/bin/jq
-
-awscli: /usr/local/bin/aws
-
-/usr/local/bin/aws:
-	brew install awscli
-
-jq: /usr/local/bin/jq
-
-/usr/local/bin/jq:
-	brew install jq
-
 
 aws_vpc_zone_identifier: 
 	echo "vpc-9111f3f4" >> aws_vpc_zone_identifier

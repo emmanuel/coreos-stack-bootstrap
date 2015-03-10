@@ -1,0 +1,9 @@
+awscli: /usr/local/bin/aws
+
+/usr/local/bin/aws:
+	brew install awscli
+
+jq: /usr/local/bin/jq
+
+/usr/local/bin/jq:
+	brew install jq

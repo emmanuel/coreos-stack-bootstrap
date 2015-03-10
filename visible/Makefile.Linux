@@ -1,0 +1,10 @@
+awscli: /usr/local/bin/aws
+
+/usr/local/bin/aws:
+	sudo apt-get -y install awscli
+
+jq: /usr/bin/jq
+
+/usr/bin/jq:
+	sudo apt-get -y install jq
+
