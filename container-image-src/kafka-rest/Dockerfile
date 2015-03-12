@@ -1,5 +1,5 @@
 FROM nordstrom/confluent-platform
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 RUN apt-get update -qy \
  && apt-get install -qy --no-install-suggests --no-install-recommends \

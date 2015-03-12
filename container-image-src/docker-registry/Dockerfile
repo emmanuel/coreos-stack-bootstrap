@@ -1,5 +1,5 @@
 FROM nordstrom/python:2.7
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 # copied from: https://github.com/docker/docker-registry/blob/master/Dockerfile
 RUN apt-get update -qy \
  && apt-get install -qy --no-install-suggests --no-install-recommends \

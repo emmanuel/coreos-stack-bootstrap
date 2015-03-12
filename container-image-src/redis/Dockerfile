@@ -1,5 +1,5 @@
 FROM nordstrom/baseimage-ubuntu:14.04.1
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 RUN echo "deb http://ppa.launchpad.net/chris-lea/redis-server/ubuntu trusty main" \
     | tee -a /etc/apt/sources.list.d/chris-lea_redis-server.list \

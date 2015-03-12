@@ -1,5 +1,5 @@
 FROM nordstrom/java-7:u75
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ENV LOGSTASH_RELEASE 1.5.0.beta1
 ADD dist/logstash-$LOGSTASH_RELEASE.tar.gz /opt/

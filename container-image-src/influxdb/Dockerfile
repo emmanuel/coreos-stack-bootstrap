@@ -1,5 +1,5 @@
 FROM nordstrom/baseimage-ubuntu:14.04.1
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ENV INFLUXDB_RELEASE 0.8.8
 ADD dist/influxdb_${INFLUXDB_RELEASE}_amd64.deb /

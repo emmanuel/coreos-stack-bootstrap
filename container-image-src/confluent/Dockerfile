@@ -1,5 +1,5 @@
 FROM nordstrom/java-7:u75
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ADD dist/confluent.apt-key /tmp/
 RUN apt-key add /tmp/confluent.apt-key \

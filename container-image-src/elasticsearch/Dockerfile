@@ -1,5 +1,5 @@
 FROM nordstrom/java-7:u75
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ADD conf/elasticsearch.apt-key /tmp/
 RUN apt-key add /tmp/elasticsearch.apt-key \

@@ -1,5 +1,5 @@
 FROM ubuntu-debootstrap:14.04.1
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 

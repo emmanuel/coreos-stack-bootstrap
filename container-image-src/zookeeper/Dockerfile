@@ -1,5 +1,5 @@
 FROM nordstrom/java-7:u75
-MAINTAINER Emmanuel Gomez "emmanuel.gomez@nordstrom.com"
+MAINTAINER Innovation Platform Team "invcldtm@nordstrom.com"
 
 ENV ZK_RELEASE 3.4.6
 ADD dist/zookeeper-$ZK_RELEASE.tar.gz /opt/
