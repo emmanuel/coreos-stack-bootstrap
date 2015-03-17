@@ -221,7 +221,7 @@ resource "aws_security_group" "elb_control" {
 }
 
 resource "aws_route53_record" "private_stack" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
@@ -229,7 +229,7 @@ resource "aws_route53_record" "private_stack" {
 }
 
 resource "aws_route53_record" "private_api" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}-api.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
@@ -237,7 +237,7 @@ resource "aws_route53_record" "private_api" {
 }
 
 resource "aws_route53_record" "private_consul" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}-consul.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
@@ -245,7 +245,7 @@ resource "aws_route53_record" "private_consul" {
 }
 
 resource "aws_route53_record" "private_influxdb" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}-influxdb.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
@@ -253,7 +253,7 @@ resource "aws_route53_record" "private_influxdb" {
 }
 
 resource "aws_route53_record" "private_docker_registry" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}-docker.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
@@ -261,7 +261,7 @@ resource "aws_route53_record" "private_docker_registry" {
 }
 
 resource "aws_route53_record" "private_elasticsearch" {
-  zone_id = "${var.aws_route53_zone_id_cloud_nlab_io}"
+  zone_id = "${var.aws_route53_zone_id}"
   name = "${var.stack_name}-elasticsearch.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"

@@ -37,7 +37,7 @@ outputs: keys.tfvars visible.tfvars
 clean:
 	rm -f aws_ec2_key_name
 	rm -f aws_iam_server_certificate_arn
-	rm -f aws_route53_zone_id_cloud_nlab_io
+	rm -f aws_route53_zone_id
 	rm -f aws_security_group_elb_visible_id
 	rm -f aws_tag_value_cost_center
 	rm -f aws_tag_value_team
@@ -61,9 +61,9 @@ visible.tfvars: ../visible.tfvars visible_elb_hosted_zone_name visible_elb_hoste
 
 keys.tfvars: ../keys.tfvars
 
-../visible.tfvars: aws_vpc_zone_identifier aws_route53_zone_id_cloud_nlab_io aws_iam_server_certificate_arn aws_ec2_key_name aws_security_group_elb_visible_id aws_tag_value_team aws_tag_value_cost_center
+../visible.tfvars: aws_vpc_zone_identifier aws_route53_zone_id aws_iam_server_certificate_arn aws_ec2_key_name aws_security_group_elb_visible_id aws_tag_value_team aws_tag_value_cost_center
 	echo "aws_vpc_zone_identifier              = \"$$(cat aws_vpc_zone_identifier)\"" >> ../visible.tfvars
-	echo "aws_route53_zone_id_cloud_nlab_io    = \"$$(cat aws_route53_zone_id_cloud_nlab_io)\"" >> ../visible.tfvars
+	echo "aws_route53_zone_id    = \"$$(cat aws_route53_zone_id)\"" >> ../visible.tfvars
 	echo "aws_iam_server_certificate_arn       = \"$$(cat aws_iam_server_certificate_arn)\"" >> ../visible.tfvars
 	echo "aws_ec2_key_name                     = \"$$(cat aws_ec2_key_name)\"" >> ../visible.tfvars
 	echo "aws_security_group_elb_visible_id    = \"$$(cat aws_security_group_elb_visible_id)\"" >> ../visible.tfvars
@@ -111,8 +111,8 @@ launch/gtin_stack:
 aws_ec2_key_name: visible_stacks
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "StackKeyName").OutputValue' > aws_ec2_key_name
 
-aws_route53_zone_id_cloud_nlab_io: visible_stacks
-	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "ZoneID").OutputValue' > aws_route53_zone_id_cloud_nlab_io
+aws_route53_zone_id: visible_stacks
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "ZoneID").OutputValue' > aws_route53_zone_id
 
 aws_security_group_elb_visible_id: visible_stacks
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBSecurityGroupID").OutputValue' > aws_security_group_elb_visible_id
@@ -135,15 +135,6 @@ packages: /usr/local/bin/aws /usr/local/bin/jq
 
 aws_vpc_zone_identifier: 
 	echo "vpc-9111f3f4" >> aws_vpc_zone_identifier
-
-# aws_route53_zone_id_cloud_nlab_io:
-# 	echo "Z23E6ZIBKPSZQE" >> aws_route53_zone_id_cloud_nlab_io
-
-# aws_ec2_key_name:
-# 	echo "coreos-beta" >> aws_ec2_key_name
-
-# aws_security_group_elb_visible_id:
-# 	echo "sg-ae0052cb" >> aws_security_group_elb_visible_id
 
 aws_tag_value_team: 
 	echo "InnovationPlatform" >> aws_tag_value_team
