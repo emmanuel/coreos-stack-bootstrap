@@ -1,3 +1,5 @@
+aws_region = "us-west-2"
+
 default: packages
 
 # TODO: make a one-command launch of the whole stack work
@@ -50,7 +52,7 @@ etcd_discovery_url:
 
 # CoreOS AMIs are alpha channel, HVM virtualization
 coreos_ami: jq
-	curl -s https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template | jq -r '.Mappings.RegionMap["us-west-2"].AMI' > coreos_ami
+	curl -s https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template | jq -r '.Mappings.RegionMap["$(aws_region)"].AMI' > coreos_ami
 
 packages: /usr/local/bin/terraform /usr/local/bin/fleetctl /usr/local/bin/jq
 
