@@ -30,10 +30,12 @@
       "Description": "Name of the SSH key for this stack",
       "Value": { "Ref": "keyName" }
     },
+
     "ZoneID": {
       "Description": "ID of the Hosted Zone",
       "Value": { "Ref": "Zone" }
     },
+
     "SSLCertificateARN": {
       "Description": "ARN of the SSL Certificate",
       "Value": {"Fn::Join": [":", [
@@ -41,14 +43,17 @@
         {"Fn::Join": ["", ["server-certificate", {"Ref": "sslCertificateIAMPath"}]]}
       ] ] }
     },
+
     "VisibleELBSecurityGroupID": {
       "Description": "ID of the Visible ELB's security group",
       "Value": { "Fn::GetAtt": ["VisibleELBSecurityGroup", "GroupId"] }
     },
+
     "VisibleELBHostedZoneNameID": {
       "Description": "ID of the Visible ELB's Hosted Zone",
       "Value": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneNameID"] }
     },
+
     "VisibleELBHostedZoneName": {
       "Description": "Name of the Visible ELB's Hosted Zone",
       "Value": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }

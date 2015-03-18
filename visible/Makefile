@@ -62,14 +62,14 @@ visible.tfvars: ../visible.tfvars visible_elb_hosted_zone_name visible_elb_hoste
 keys.tfvars: ../keys.tfvars
 
 ../visible.tfvars: aws_vpc_zone_identifier aws_route53_zone_id aws_iam_server_certificate_arn aws_ec2_key_name aws_security_group_elb_visible_id aws_tag_value_team aws_tag_value_cost_center
-	echo "aws_vpc_zone_identifier              = \"$$(cat aws_vpc_zone_identifier)\"" >> ../visible.tfvars
-	echo "aws_route53_zone_id    = \"$$(cat aws_route53_zone_id)\"" >> ../visible.tfvars
-	echo "aws_iam_server_certificate_arn       = \"$$(cat aws_iam_server_certificate_arn)\"" >> ../visible.tfvars
-	echo "aws_ec2_key_name                     = \"$$(cat aws_ec2_key_name)\"" >> ../visible.tfvars
-	echo "aws_security_group_elb_visible_id    = \"$$(cat aws_security_group_elb_visible_id)\"" >> ../visible.tfvars
-	echo "aws_tag_value_team                   = \"$$(cat aws_tag_value_team)\"" >> ../visible.tfvars
-	echo "aws_tag_value_cost_center            = \"$$(cat aws_tag_value_cost_center)\"" >> ../visible.tfvars
+	echo "aws_vpc_zone_identifier           = \"$$(cat aws_vpc_zone_identifier)\"" >> ../visible.tfvars
+	echo "aws_route53_zone_id               = \"$$(cat aws_route53_zone_id)\"" >> ../visible.tfvars
+	echo "aws_iam_server_certificate_arn    = \"$$(cat aws_iam_server_certificate_arn)\"" >> ../visible.tfvars
 	echo "aws_iam_instance_profile_control  = \"$$(cat aws_iam_instance_profile_control)\"" >> ../visible.tfvars
+	echo "aws_ec2_key_name                  = \"$$(cat aws_ec2_key_name)\"" >> ../visible.tfvars
+	echo "aws_security_group_elb_visible_id = \"$$(cat aws_security_group_elb_visible_id)\"" >> ../visible.tfvars
+	echo "aws_tag_value_team                = \"$$(cat aws_tag_value_team)\"" >> ../visible.tfvars
+	echo "aws_tag_value_cost_center         = \"$$(cat aws_tag_value_cost_center)\"" >> ../visible.tfvars
 
 ../keys.tfvars: instance_aws_access_key instance_aws_secret_key operator_aws_access_key operator_aws_secret_key
 	echo "aws_access_key          = \"$$(cat operator_aws_access_key)\"" >> ../keys.tfvars
