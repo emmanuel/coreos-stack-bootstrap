@@ -1,0 +1,9 @@
+#!/bin/bash
+
+plan
+# keys visible 
+
+TERRAFORM_DIR=/root
+
+terraform apply -input=false --var-file=$TERRAFORM_DIR/cluster_id.tfvars --var-file=$TERRAFORM_DIR/visible/tfvars
+

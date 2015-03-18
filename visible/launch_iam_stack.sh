@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
+BUILD_PATH="${SCRIPT_PATH}/../build"
 STACK_NAME="Innovation-Platform-Visible-IAM"
 
 aws cloudformation create-stack \
@@ -15,3 +16,5 @@ aws cloudformation create-stack \
     "ParameterKey=dockerRegistryS3BucketName,ParameterValue=internal-docker-registry" \
     "ParameterKey=registerableLoadBalancersPath,ParameterValue=loadbalancer/*" \
     "ParameterKey=readableDynamoDBTablesPath,ParameterValue=table/*"
+
+touch $BUILD_PATH/iam_stack_launched

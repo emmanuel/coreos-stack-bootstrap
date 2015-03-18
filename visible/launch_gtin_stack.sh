@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
+BUILD_PATH="${SCRIPT_PATH}/../build"
 STACK_NAME="Innovation-Platform-Visible-DNS-GTIN"
 VISIBLE_ELB_HOSTED_ZONE_NAME=$(cat visible_elb_hosted_zone_name)
 VISIBLE_ELB_HOSTED_ZONE_NAME_ID=$(cat visible_elb_hosted_zone_name_id)
@@ -15,3 +16,5 @@ aws cloudformation create-stack \
     "ParameterKey=zoneDNSRoot,ParameterValue=cloud.nlab.io,UsePreviousValue=false" \
     "ParameterKey=visibleELBHostedZoneName,ParameterValue=${VISIBLE_ELB_HOSTED_ZONE_NAME},UsePreviousValue=false" \
     "ParameterKey=visibleELBHostedZoneNameID,ParameterValue=${VISIBLE_ELB_HOSTED_ZONE_NAME_ID},UsePreviousValue=false"
+
+touch $BUILD_PATH/gtin_stack_launched

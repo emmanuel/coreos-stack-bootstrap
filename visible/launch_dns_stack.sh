@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
+BUILD_PATH="${SCRIPT_PATH}/../build"
 STACK_NAME="Innovation-Platform-Visible-DNS-ELB-S3"
 
 aws cloudformation create-stack \
@@ -14,3 +15,6 @@ aws cloudformation create-stack \
     "ParameterKey=keyName,ParameterValue=coreos-beta,UsePreviousValue=false" \
     "ParameterKey=sslCertificateIAMPath,ParameterValue=/tls/STAR.cloud.nlab.io,UsePreviousValue=false" \
     "ParameterKey=dockerRegistryBucketName,ParameterValue=docker-registry,UsePreviousValue=false"
+
+touch $BUILD_PATH/dns_stack_launched
+

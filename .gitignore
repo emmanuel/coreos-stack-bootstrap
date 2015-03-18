@@ -3,6 +3,7 @@
 vendor/
 **/build/container
 dist
+build
 
 terraform.tfstate
 terraform.tfstate.backup

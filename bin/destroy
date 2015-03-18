@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# keys visible
+
+TERRAFORM_DIR=/root
+
+terraform destroy -input=false --var-file=$(TERRAFORM_DIR)/cluster_id.tfvars --var-file=$(TERRAFORM_DIR)/visible/tfvars
+

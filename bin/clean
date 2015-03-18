@@ -1,0 +1,13 @@
+#!/bin/bash
+
+TERRAFORM_DIR=/root
+
+rm -f $TERRAFORM_DIR/plan
+rm -f $TERRAFORM_DIR/etcd_discovery_url
+rm -f $TERRAFORM_DIR/stack_name
+rm -f $TERRAFORM_DIR/coreos_ami
+rm -f $TERRAFORM_DIR/cluster_id.tfvars
+
+# rm -f $TERRAFORM_DIR/terraform.tfstate
+# rm -f $TERRAFORM_DIR/terraform.tfstate.backup
+
