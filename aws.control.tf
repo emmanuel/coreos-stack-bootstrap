@@ -30,7 +30,7 @@ resource "aws_launch_configuration" "control" {
   name = "${var.stack_name}-control-launch_config"
   image_id = "${var.coreos_ami}"
   instance_type = "${var.aws_instance_type}"
-  iam_instance_profile = "cluster_instance_profile"
+  iam_instance_profile = "${var.aws_iam_instance_profile_control}"
   security_groups = [ "${aws_security_group.cluster_instances.id}",
                       "${aws_security_group.cluster_services.id}",
                       "${aws_security_group.cluster_services_elb_ingress.id}" ]

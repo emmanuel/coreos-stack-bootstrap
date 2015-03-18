@@ -22,3 +22,4 @@ variable "aws_ec2_key_name" {}
 variable "aws_route53_zone_id" {}
 variable "aws_vpc_zone_identifier" {}
 variable "aws_iam_server_certificate_arn" {}
+variable "aws_iam_instance_profile_control" {}

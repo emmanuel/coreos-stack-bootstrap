@@ -25,6 +25,11 @@
   },
 
   "Outputs": {
+    "IAMInstanceProfileControlName": {
+      "Description": "Name of the instance profile",
+      "Value": { "Ref": "IAMInstanceProfileControl" }
+    },
+
     "IAMUserControlFauxInstanceProfileARN": {
       "Description": "ARN of the faux instance profile user",
       "Value": { "Fn::GetAtt": ["IAMUserControlFauxInstanceProfile", "Arn"] }

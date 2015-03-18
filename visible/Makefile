@@ -69,6 +69,7 @@ keys.tfvars: ../keys.tfvars
 	echo "aws_security_group_elb_visible_id    = \"$$(cat aws_security_group_elb_visible_id)\"" >> ../visible.tfvars
 	echo "aws_tag_value_team                   = \"$$(cat aws_tag_value_team)\"" >> ../visible.tfvars
 	echo "aws_tag_value_cost_center            = \"$$(cat aws_tag_value_cost_center)\"" >> ../visible.tfvars
+	echo "aws_iam_instance_profile_control  = \"$$(cat aws_iam_instance_profile_control)\"" >> ../visible.tfvars
 
 ../keys.tfvars: instance_aws_access_key instance_aws_secret_key operator_aws_access_key operator_aws_secret_key
 	echo "aws_access_key          = \"$$(cat operator_aws_access_key)\"" >> ../keys.tfvars
@@ -119,6 +120,9 @@ aws_security_group_elb_visible_id: visible_stacks
 
 aws_iam_server_certificate_arn: visible_stacks
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "SSLCertificateARN").OutputValue' > aws_iam_server_certificate_arn
+
+aws_iam_instance_profile_control: visible_stacks
+	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMInstanceProfileControl").OutputValue' > aws_iam_instance_profile_control
 
 visible_elb_hosted_zone_name: 
 	cat visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBHostedZoneName").OutputValue' > visible_elb_hosted_zone_name
