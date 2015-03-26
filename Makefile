@@ -20,7 +20,7 @@ destroy: $(build)/keys.tfvars $(build)/visible.tfvars
 	rm -f $(build)/terraform.tfstate.backup
 
 $(build)/cluster_id.tfvars: $(build)/etcd_discovery_url $(build)/stack_name $(build)/coreos_ami
-	echo "stack_name = \"$$(cat $(build)/stack_name)\"" >> $(build)/cluster_id.tfvars
+	echo "stack_name = \"$$(cat $(build)/stack_name)\"" > $(build)/cluster_id.tfvars
 	echo "etcd_discovery_url = \"$$(cat $(build)/etcd_discovery_url)\"" >> $(build)/cluster_id.tfvars
 	echo "coreos_ami = \"$$(cat $(build)/coreos_ami)\"" >> $(build)/cluster_id.tfvars
 
@@ -30,17 +30,17 @@ $(build)/keys.tfvars:
 $(build)/visible.tfvars: 
 	cd visible; make outputs
 
-$(build)/stack_name:
+$(build)/stack_name:| $(build)
 	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > $(build)/stack_name
 
-$(build)/etcd_discovery_url: $(build)
+$(build)/etcd_discovery_url: | $(build)
 	curl -s https://discovery.etcd.io/new?size=5 > $(build)/etcd_discovery_url
 
 # CoreOS AMIs are alpha channel, HVM virtualization
-$(build)/coreos_ami: 
+$(build)/coreos_ami: | $(build)
 	curl -s https://s3.amazonaws.com/coreos.com/dist/aws/coreos-alpha-hvm.template | jq -r '.Mappings.RegionMap["$(aws_region)"].AMI' > $(build)/coreos_ami
 
-$(build):
+$(build): 
 	mkdir -p $(build)
 
 .PHONY: clean
