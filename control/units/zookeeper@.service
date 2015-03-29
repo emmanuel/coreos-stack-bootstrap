@@ -14,7 +14,7 @@ Restart=on-failure
 RestartSec=30
 
 EnvironmentFile=/etc/environment
-EnvironmentFile=/etc/cluster_environment
+EnvironmentFile=/etc/stack_environment
 Environment="RELEASE=3.4.6"
 
 ExecStartPre=-/usr/bin/docker rm -f zookeeper.volumes-%i

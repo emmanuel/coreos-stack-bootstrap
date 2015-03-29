@@ -6,14 +6,14 @@ After=etcd.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-EnvironmentFile=/etc/cluster_environment
+EnvironmentFile=/etc/stack_environment
 
 ExecStartPre=/usr/bin/printf "Registering InfluxDB with vulcand (frontend)"
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/${CLUSTER_ENVIRONMENT}-influxdb/backend \
+ExecStart=/usr/bin/etcdctl set /vulcand/backends/${STACK_NAME}-influxdb/backend \
   '{"Type":"http"}'
-ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${CLUSTER_ENVIRONMENT}-influxdb/frontend \
-  '{"BackendId":"${CLUSTER_ENVIRONMENT}-influxdb", \
-    "Route":"Host(`${CLUSTER_ENVIRONMENT}-influxdb.cloud.nlab.io`)", \
+ExecStart=/usr/bin/etcdctl set /vulcand/frontends/${STACK_NAME}-influxdb/frontend \
+  '{"BackendId":"${STACK_NAME}-influxdb", \
+    "Route":"Host(`${STACK_NAME}-influxdb.cloud.nlab.io`)", \
     "Type":"http"}'
 
 ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-influxdb/backend \
@@ -23,10 +23,10 @@ ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-influxdb/frontend \
     "Route":"Host(`influxdb.cloud.nlab.io`)", \
     "Type":"http"}'
 
-ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${CLUSTER_ENVIRONMENT}-influxdb
+ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${STACK_NAME}-influxdb
 ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/visible-influxdb
 
-ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/${CLUSTER_ENVIRONMENT}-influxdb
+ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/${STACK_NAME}-influxdb
 ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/visible-influxdb
 
 [Install]

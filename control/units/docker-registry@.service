@@ -9,9 +9,9 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
-EnvironmentFile=/etc/cluster_environment
 # TODO: get this working with IAM instance profiles/roles
 EnvironmentFile=/etc/aws_environment
+EnvironmentFile=/etc/stack_environment
 Environment="RELEASE=0.9.1"
 
 TimeoutStartSec=5m

@@ -14,7 +14,6 @@ Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment
-EnvironmentFile=/etc/cluster_environment
 Environment="RELEASE=latest"
 
 TimeoutStartSec=5m

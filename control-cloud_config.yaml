@@ -82,7 +82,7 @@ coreos:
 write_files:
   - path: /etc/aws_environment
     <<: *AWS_ENVIRONMENT_CONTENT
-  - path: /etc/cluster_environment
+  - path: /etc/stack_environment
     <<: *STACK_ENVIRONMENT_CONTENT
   - path: /etc/profile.d/alias.sh
     content: |

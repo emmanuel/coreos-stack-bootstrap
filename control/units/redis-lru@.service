@@ -11,7 +11,7 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 EnvironmentFile=/etc/environment
-EnvironmentFile=/etc/cluster_environment
+EnvironmentFile=/etc/stack_environment
 Environment="RELEASE=2.8.19"
 
 TimeoutStartSec=5m

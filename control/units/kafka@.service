@@ -13,7 +13,7 @@ Type=simple
 Restart=on-failure
 RestartSec=30
 EnvironmentFile=/etc/environment
-EnvironmentFile=/etc/cluster_environment
+EnvironmentFile=/etc/stack_environment
 Environment="RELEASE=0.8.2"
 
 TimeoutStartSec=5m
