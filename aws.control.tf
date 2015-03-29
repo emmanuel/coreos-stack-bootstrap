@@ -130,7 +130,7 @@ resource "aws_security_group" "cluster_services_elb_ingress" {
     from_port = 8181
     to_port =  8182
     protocol = "tcp"
-    security_groups = [ "${aws_security_group.elb_control.id}" ]
+    security_groups = [ "${aws_security_group.elb_vulcand.id}" ]
   }
 
   # (VISIBLE) vulcand traffic (8181) and API (8182)
@@ -146,21 +146,6 @@ resource "aws_elb" "control" {
   name               = "${var.stack_name}-control-external"
   availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
   security_groups    = [ "${aws_security_group.elb_control.id}" ]
-
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 8181
-    instance_protocol = "http"
-  }
-
-  listener {
-    lb_port = 443
-    lb_protocol = "https"
-    instance_port = 8181
-    instance_protocol = "http"
-    ssl_certificate_id = "${var.aws_iam_server_certificate_arn}"
-  }
 
   listener {
     lb_port            = 2222
@@ -189,9 +174,66 @@ COMMAND
   }
 }
 
+resource "aws_elb" "vulcand" {
+  name               = "${var.stack_name}-vulcand-external"
+  availability_zones = [ "us-west-2a", "us-west-2b", "us-west-2c" ]
+  security_groups    = [ "${aws_security_group.elb_vulcand.id}" ]
+
+  listener {
+    lb_port = 80
+    lb_protocol = "http"
+    instance_port = 8181
+    instance_protocol = "http"
+  }
+
+  listener {
+    lb_port = 443
+    lb_protocol = "https"
+    instance_port = 8181
+    instance_protocol = "http"
+    ssl_certificate_id = "${var.aws_iam_server_certificate_arn}"
+  }
+
+  health_check {
+    target              = "HTTP:8182/v2/status"
+    healthy_threshold   = 2
+    unhealthy_threshold = 5
+    timeout             = 5
+    interval            = 30
+  }
+
+  provisioner "local-exec" {
+    command = <<COMMAND
+aws elb add-tags \
+  --load-balancer-names \
+    "${aws_elb.vulcand.name}" \
+  --tags \
+    "Key=Team,Value=${var.aws_tag_value_team}" \
+    "Key=CostCenter,Value=${var.aws_tag_value_cost_center}"
+COMMAND
+  }
+}
+
 resource "aws_security_group" "elb_control" {
   name = "${var.stack_name}-control-external"
-  description = "STACK(${var.stack_name}) Allow external access to services."
+  description = "STACK(${var.stack_name}) Allow external access to fleet."
+
+  tags {
+    Team = "${var.aws_tag_value_team}"
+    CostCenter = "${var.aws_tag_value_cost_center}"
+  }
+
+  ingress {
+    from_port = 2222
+    to_port =  2222
+    protocol = "tcp"
+    cidr_blocks = [ "${var.allow_ssh_from}" ]
+  }
+}
+
+resource "aws_security_group" "elb_vulcand" {
+  name = "${var.stack_name}-vulcand-external"
+  description = "STACK(${var.stack_name}) Allow external access to HTTP services."
 
   tags {
     Team = "${var.aws_tag_value_team}"
@@ -211,13 +253,6 @@ resource "aws_security_group" "elb_control" {
     protocol = "tcp"
     cidr_blocks = [ "0.0.0.0/0" ]
   }
-
-  ingress {
-    from_port = 2222
-    to_port =  2222
-    protocol = "tcp"
-    cidr_blocks = [ "${var.allow_ssh_from}" ]
-  }
 }
 
 resource "aws_route53_record" "private_stack" {
@@ -233,7 +268,7 @@ resource "aws_route53_record" "private_api" {
   name = "${var.stack_name}-api.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}." ]
+  records = [ "${aws_elb.vulcand.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_consul" {
@@ -241,7 +276,7 @@ resource "aws_route53_record" "private_consul" {
   name = "${var.stack_name}-consul.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}." ]
+  records = [ "${aws_elb.vulcand.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_influxdb" {
@@ -249,7 +284,7 @@ resource "aws_route53_record" "private_influxdb" {
   name = "${var.stack_name}-influxdb.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}." ]
+  records = [ "${aws_elb.vulcand.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_docker_registry" {
@@ -257,7 +292,7 @@ resource "aws_route53_record" "private_docker_registry" {
   name = "${var.stack_name}-docker.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}." ]
+  records = [ "${aws_elb.vulcand.dns_name}." ]
 }
 
 resource "aws_route53_record" "private_elasticsearch" {
@@ -265,5 +300,5 @@ resource "aws_route53_record" "private_elasticsearch" {
   name = "${var.stack_name}-elasticsearch.cloud.nlab.io"
   type = "CNAME"
   ttl = "300"
-  records = [ "${aws_elb.control.dns_name}." ]
+  records = [ "${aws_elb.vulcand.dns_name}." ]
 }
