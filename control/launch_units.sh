@@ -18,7 +18,7 @@ fleetctl start aws_credentials
 fleetctl start logspout
 fleetctl start skydns{,-registrator}
 # fleetctl start consul{,-announce,-registrator}
-fleetctl start vulcand
+fleetctl start vulcand{,.elb}@1
 fleetctl start influxdb{.volumes,}@1
 fleetctl start redis{.volumes,}@1
 fleetctl start redis-lru{.volumes,}@1
