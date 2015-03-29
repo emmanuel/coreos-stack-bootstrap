@@ -18,6 +18,13 @@
     }
   },
 
+  "Outputs": {
+    "DeprecatedGTINDNS": {
+      "Description": "DNS name of the GTIN service",
+      "Value": {"Fn::Join": [".", ["gtin.api", {"Ref": "zoneDNSRoot"}]]}
+    }
+  },
+
   "Resources": {
     "ZoneGTINRecord": {
       "Type": "AWS::Route53::RecordSet",
