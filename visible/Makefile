@@ -70,6 +70,7 @@ $(build)/visible_stacks: $(build)/stack_launched_iam $(build)/stack_launched_dns
 	aws cloudformation describe-stacks > $(build)/visible_stacks
 
 $(build)/stack_launched_iam: 
+	touch $(build)/stack_launched_iam
 	aws cloudformation create-stack \
 	  --stack-name $(stack_name_visible_iam) \
 	  --template-body file://$$(PWD)/iam.json \
@@ -82,10 +83,9 @@ $(build)/stack_launched_iam:
 	    "ParameterKey=dockerRegistryS3BucketName,ParameterValue=internal-docker-registry" \
 	    "ParameterKey=registerableLoadBalancersPath,ParameterValue=loadbalancer/*" \
 	    "ParameterKey=readableDynamoDBTablesPath,ParameterValue=table/*"
-	
-	touch $(build)/stack_launched_iam
 
 $(build)/stack_launched_dns: 
+	touch $(build)/stack_launched_dns
 	aws cloudformation create-stack \
 	  --stack-name $(stack_name_visible_dns) \
 	  --template-body file://$$(PWD)/dns.json \
@@ -97,10 +97,9 @@ $(build)/stack_launched_dns:
 	    "ParameterKey=keyName,ParameterValue=coreos-beta,UsePreviousValue=false" \
 	    "ParameterKey=sslCertificateIAMPath,ParameterValue=/tls/$(aws_server_certificate_visible_tls_name),UsePreviousValue=false" \
 	    "ParameterKey=dockerRegistryBucketName,ParameterValue=docker-registry,UsePreviousValue=false"
-	
-	touch $(build)/stack_launched_dns
 
 $(build)/stack_launched_gtin: $(build)/visible_elb_hosted_zone_name $(build)/visible_elb_hosted_zone_name_id
+	touch $(build)/stack_launched_gtin
 	aws cloudformation create-stack \
 	  --stack-name $(stack_name_visible_gtin) \
 	  --template-body file://$$(PWD)/gtin.json \
@@ -111,10 +110,9 @@ $(build)/stack_launched_gtin: $(build)/visible_elb_hosted_zone_name $(build)/vis
 	    "ParameterKey=zoneDNSRoot,ParameterValue=cloud.nlab.io,UsePreviousValue=false" \
 	    "ParameterKey=visibleELBHostedZoneName,ParameterValue=$$(cat visible_elb_hosted_zone_name),UsePreviousValue=false" \
 	    "ParameterKey=visibleELBHostedZoneNameID,ParameterValue=$$(cat visible_elb_hosted_zone_name_id),UsePreviousValue=false"
-	
-	touch $(build)/stack_launched_gtin
 
 $(build)/stack_updated_iam: iam.json
+	touch $(build)/stack_updated_iam
 	aws cloudformation update-stack \
 	  --stack-name $(stack_name_visible_iam) \
 	  --template-body file://$$(PWD)/iam.json \
@@ -125,10 +123,9 @@ $(build)/stack_updated_iam: iam.json
 	    "ParameterKey=dockerRegistryS3BucketName,UsePreviousValue=true" \
 	    "ParameterKey=registerableLoadBalancersPath,UsePreviousValue=true" \
 	    "ParameterKey=readableDynamoDBTablesPath,UsePreviousValue=true"
-	
-	touch $(build)/stack_updated_iam
 
 $(build)/stack_updated_dns: dns.json
+	touch $(build)/stack_updated_dns
 	aws cloudformation update-stack \
 	  --stack-name $(stack_name_visible_dns) \
 	  --template-body file://$$(PWD)/dns.json \
@@ -138,10 +135,9 @@ $(build)/stack_updated_dns: dns.json
 	    "ParameterKey=keyName,UsePreviousValue=true" \
 	    "ParameterKey=sslCertificateIAMPath,UsePreviousValue=true" \
 	    "ParameterKey=dockerRegistryBucketName,UsePreviousValue=true"
-	
-	touch $(build)/stack_updated_dns
 
 $(build)/stack_updated_gtin: gtin.json
+	touch $(build)/stack_updated_gtin
 	aws cloudformation update-stack \
 	  --stack-name $(stack_name_visible_gtin) \
 	  --template-body file://$$(PWD)/gtin.json \
@@ -150,8 +146,6 @@ $(build)/stack_updated_gtin: gtin.json
 	    "ParameterKey=zoneDNSRoot,UsePreviousValue=true" \
 	    "ParameterKey=visibleELBHostedZoneName,UsePreviousValue=true" \
 	    "ParameterKey=visibleELBHostedZoneNameID,UsePreviousValue=true"
-	
-	touch $(build)/stack_updated_gtin
 
 $(build)/aws_ec2_key_name: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "StackKeyName").OutputValue' > $(build)/aws_ec2_key_name
