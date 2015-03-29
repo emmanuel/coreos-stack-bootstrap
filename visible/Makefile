@@ -159,8 +159,8 @@ $(build)/aws_ec2_key_name: $(build)/visible_stacks
 $(build)/aws_route53_zone_id: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "ZoneID").OutputValue' > $(build)/aws_route53_zone_id
 
-$(build)/aws_security_group_elb_visible_id: $(build)/visible_stacks
-	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBSecurityGroupID").OutputValue' > $(build)/aws_security_group_elb_visible_id
+$(build)/aws_security_group_visible_elb_sg_id: $(build)/visible_stacks
+	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBSecurityGroupID").OutputValue' > $(build)/aws_security_group_visible_elb_sg_id
 
 $(build)/aws_iam_server_certificate_arn: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "SSLCertificateARN").OutputValue' > $(build)/aws_iam_server_certificate_arn
@@ -197,7 +197,7 @@ clean:
 	rm -f $(build)/aws_ec2_key_name
 	rm -f $(build)/aws_iam_server_certificate_arn
 	rm -f $(build)/aws_route53_zone_id
-	rm -f $(build)/aws_security_group_elb_visible_id
+	rm -f $(build)/aws_security_group_visible_elb_sg_id
 	rm -f $(build)/aws_tag_value_cost_center
 	rm -f $(build)/aws_tag_value_team
 	rm -f $(build)/aws_vpc_zone_identifier

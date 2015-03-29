@@ -138,7 +138,7 @@ resource "aws_security_group" "cluster_services_elb_ingress" {
     from_port = 8181
     to_port =  8182
     protocol = "tcp"
-    security_groups = [ "${var.aws_security_group_elb_visible_id}" ]
+    security_groups = [ "${var.aws_security_group_visible_elb_sg_id}" ]
   }
 }
 
