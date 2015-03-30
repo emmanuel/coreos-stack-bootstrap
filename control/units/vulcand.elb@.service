@@ -6,27 +6,21 @@ After=vulcand@%i.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-EnvironmentFile=/etc/cluster_environment
 EnvironmentFile=/etc/aws_environment
-# TODO: switch to IAM instance profile/role
-EnvironmentFile=/etc/aws_credentials
+EnvironmentFile=/etc/stack_environment
 
 TimeoutStartSec=5m
-ExecStartPre=-/usr/bin/docker kill vulcand.elb-${STACK_NAME}-%i
-ExecStartPre=-/usr/bin/docker rm vulcand.elb-${STACK_NAME}-%i
-ExecStartPre=/usr/bin/docker pull nordstrom/awscli
 
 ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${STACK_NAME}-vulcand-external)"
-ExecStart=/usr/bin/docker run --rm \
+# TODO: awscli doesn't detect (or use) the EC2 instance role when this command is run
+# directly under systemd (ie., without bash). why?
+ExecStart=/usr/bin/bash -c "docker run --rm \
   --name vulcand.elb-${STACK_NAME}-%i \
-  --env "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
-  --env "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
-  --env "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}" \
-    nordstrom/awscli \
+    awscli \
       aws elb register-instances-with-load-balancer \
         --load-balancer-name ${STACK_NAME}-vulcand-external \
         --region ${AWS_REGION} \
-        --instances ${EC2_INSTANCE_ID}
+        --instances ${EC2_INSTANCE_ID}"
 
 [X-Fleet]
 MachineOf=vulcand@%i.service
