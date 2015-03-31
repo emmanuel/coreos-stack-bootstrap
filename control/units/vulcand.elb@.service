@@ -12,15 +12,16 @@ EnvironmentFile=/etc/stack_environment
 TimeoutStartSec=5m
 
 ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${STACK_NAME}-vulcand-external)"
-# TODO: awscli doesn't detect (or use) the EC2 instance role when this command is run
-# directly under systemd (ie., without bash). why?
-ExecStart=/usr/bin/bash -c "docker run --rm \
-  --name vulcand.elb-${STACK_NAME}-%i \
+# TODO: awscli only intermittently detects the EC2 instance role
+#   this unit should be started/stopped until success
+
+ExecStart=/usr/bin/bash -c \
+  "docker run --rm \
     awscli \
-      aws elb register-instances-with-load-balancer \
-        --load-balancer-name ${STACK_NAME}-vulcand-external \
-        --region ${AWS_REGION} \
-        --instances ${EC2_INSTANCE_ID}"
+    aws elb register-instances-with-load-balancer \
+      --load-balancer-name ${STACK_NAME}-vulcand-external \
+      --region ${AWS_REGION} \
+      --instances ${EC2_INSTANCE_ID}"
 
 [X-Fleet]
 MachineOf=vulcand@%i.service
