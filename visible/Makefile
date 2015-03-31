@@ -51,6 +51,12 @@ $(build)/operator_aws_access_key: ~/.aws/credentials
 $(build)/operator_aws_secret_key: ~/.aws/credentials
 	cat ~/.aws/credentials | grep -v '^#' | grep 'aws_secret_access_key' | head -1 | cut -d'=' -f2 | sed -E -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$$//' > $(build)/operator_aws_secret_key
 
+$(build)/connector_aws_access_key: $(build)/visible_stacks 
+	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMUserConnectorAccessKey").OutputValue' > $(build)/connector_aws_access_key
+
+$(build)/connector_aws_secret_key: $(build)/visible_stacks
+	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMUserConnectorSecretKey").OutputValue' > $(build)/connector_aws_secret_key
+
 $(build)/instance_aws_access_key: $(build)/visible_stacks 
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMUserControlFauxInstanceProfileAccessKey").OutputValue' > $(build)/instance_aws_access_key
 

@@ -43,10 +43,36 @@
     "IAMUserControlFauxInstanceProfileSecretKey": {
       "Description": "Secret access key of the faux instance profile user",
       "Value": { "Fn::GetAtt": ["IAMUserControlFauxInstanceProfileAccessKey", "SecretAccessKey"] }
+    },
+
+    "IAMUserConnectorAccessKey": {
+      "Description": "Access key of the faux instance profile user",
+      "Value": { "Ref": "IAMUserConnectorAccessKey" }
+    },
+
+    "IAMUserConnectorSecretKey": {
+      "Description": "Secret access key of the faux instance profile user",
+      "Value": { "Fn::GetAtt": ["IAMUserConnectorAccessKey", "SecretAccessKey"] }
     }
   },
 
   "Resources": {
+    "IAMUserConnector": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Path": "/innovation_platform/connector/"
+      }
+    },
+
+    "IAMUserConnectorAccessKey": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "Serial": 0,
+        "Status": "Active",
+        "UserName": { "Ref": "IAMUserConnector" }
+      }
+    },
+
     "IAMUserControlFauxInstanceProfile": {
       "Type": "AWS::IAM::User",
       "Properties": {
@@ -85,6 +111,50 @@
           }]
         },
         "Path": "/innovation_platform/control/"
+      }
+    },
+
+    "AllowWriteToAnyDynamoDBTablePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_write_any_dynamodb_table",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:BatchWriteItem",
+              "dynamodb:PutItem"
+            ],
+            "Resource": [{ "Fn::Join": [":", [
+              "arn:aws:dynamodb", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" },
+              { "Ref": "readableDynamoDBTablesPath" }
+            ] ] }]
+          }]
+        },
+        "Users": [{ "Ref": "IAMUserConnector" }]
+      }
+    },
+
+    "AllowUpdateToAnyDynamoDBTablePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "allow_update_any_dynamodb_table",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:DescribeTable",
+              "dynamodb:UpdateTable"
+            ],
+            "Resource": [{ "Fn::Join": [":", [
+              "arn:aws:dynamodb", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" },
+              { "Ref": "readableDynamoDBTablesPath" }
+            ] ] }]
+          }]
+        },
+        "Users": [{ "Ref": "IAMUserConnector" }]
       }
     },
 
