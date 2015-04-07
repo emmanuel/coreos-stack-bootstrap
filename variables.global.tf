@@ -23,3 +23,4 @@ variable "aws_route53_zone_id" {}
 variable "aws_vpc_zone_identifier" {}
 variable "aws_iam_server_certificate_arn" {}
 variable "aws_iam_instance_profile_control" {}
+variable "aws_elb_visible_api_gateway" {}

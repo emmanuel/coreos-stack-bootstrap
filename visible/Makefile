@@ -29,11 +29,12 @@ upload-certificates: certificates/STAR_cloud_nlab_io.key certificates/STAR_cloud
 .PHONY: outputs
 outputs: $(build)/keys.tfvars $(build)/visible.tfvars $(build)/visible_elb_hosted_zone_name $(build)/visible_elb_hosted_zone_name_id
 
-$(build)/visible.tfvars: $(build)/aws_vpc_zone_identifier $(build)/aws_route53_zone_id $(build)/aws_iam_server_certificate_arn $(build)/aws_iam_instance_profile_control $(build)/aws_ec2_key_name $(build)/aws_security_group_visible_elb_sg_id $(build)/aws_tag_value_team $(build)/aws_tag_value_cost_center
+$(build)/visible.tfvars: $(build)/aws_vpc_zone_identifier $(build)/aws_route53_zone_id $(build)/aws_iam_server_certificate_arn $(build)/aws_iam_instance_profile_control $(build)/aws_elb_visible_api_gateway $(build)/aws_ec2_key_name $(build)/aws_security_group_visible_elb_sg_id $(build)/aws_tag_value_team $(build)/aws_tag_value_cost_center
 	echo "aws_vpc_zone_identifier              = \"$$(cat $(build)/aws_vpc_zone_identifier)\"" > $(build)/visible.tfvars
 	echo "aws_route53_zone_id                  = \"$$(cat $(build)/aws_route53_zone_id)\"" >> $(build)/visible.tfvars
 	echo "aws_iam_server_certificate_arn       = \"$$(cat $(build)/aws_iam_server_certificate_arn)\"" >> $(build)/visible.tfvars
 	echo "aws_iam_instance_profile_control     = \"$$(cat $(build)/aws_iam_instance_profile_control)\"" >> $(build)/visible.tfvars
+	echo "aws_elb_visible_api_gateway          = \"$$(cat $(build)/aws_elb_visible_api_gateway)\"" >> $(build)/visible.tfvars
 	echo "aws_ec2_key_name                     = \"$$(cat $(build)/aws_ec2_key_name)\"" >> $(build)/visible.tfvars
 	echo "aws_security_group_visible_elb_sg_id = \"$$(cat $(build)/aws_security_group_visible_elb_sg_id)\"" >> $(build)/visible.tfvars
 	echo "aws_tag_value_team                   = \"$$(cat $(build)/aws_tag_value_team)\"" >> $(build)/visible.tfvars
@@ -168,11 +169,14 @@ $(build)/aws_iam_server_certificate_arn: $(build)/visible_stacks
 $(build)/aws_iam_instance_profile_control: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "IAMInstanceProfileControlName").OutputValue' > $(build)/aws_iam_instance_profile_control
 
-$(build)/visible_elb_hosted_zone_name: 
+$(build)/visible_elb_hosted_zone_name: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBHostedZoneName").OutputValue' > $(build)/visible_elb_hosted_zone_name
 
-$(build)/visible_elb_hosted_zone_name_id: 
+$(build)/visible_elb_hosted_zone_name_id: $(build)/visible_stacks
 	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBHostedZoneNameID").OutputValue' > $(build)/visible_elb_hosted_zone_name_id
+
+$(build)/aws_elb_visible_api_gateway: $(build)/visible_stacks
+	cat $(build)/visible_stacks | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "VisibleELBName").OutputValue' > $(build)/aws_elb_visible_api_gateway
 
 ~/.aws/credentials: 
 	aws configure
@@ -201,6 +205,7 @@ clean:
 	rm -f $(build)/aws_tag_value_cost_center
 	rm -f $(build)/aws_tag_value_team
 	rm -f $(build)/aws_vpc_zone_identifier
+	rm -f $(build)/aws_elb_visible_api_gateway
 	rm -f $(build)/visible_stacks
 	rm -f $(build)/visible_iam_stack_id
 	rm -f $(build)/visible_dns_stack_id

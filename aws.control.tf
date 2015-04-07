@@ -55,6 +55,7 @@ dynamic:
       STACK_NAME=${var.stack_name}
       STACK_ROLE=control
       STACK_DNS_SUFFIX=cluster.local
+      STACK_VISIBLE_LOAD_BALANCER=${var.aws_elb_visible_api_gateway}
 ${file("control-cloud_config.yaml")}
 USER_DATA
 }

@@ -57,6 +57,11 @@
     "VisibleELBHostedZoneName": {
       "Description": "Name of the Visible ELB's Hosted Zone",
       "Value": { "Fn::GetAtt": ["VisibleELB", "CanonicalHostedZoneName"] }
+    },
+
+    "VisibleELBName": {
+      "Description": "Name of the Visible ELB",
+      "Value": { "Ref": "VisibleELB" }
     }
   },
 
