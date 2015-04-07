@@ -17,7 +17,7 @@ ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with loa
 
 ExecStart=/usr/bin/bash -c \
   "docker run --rm \
-    awscli \
+    nordstrom/awscli:1.7.12 \
     aws elb register-instances-with-load-balancer \
       --load-balancer-name ${STACK_NAME}-vulcand-external \
       --region ${AWS_REGION} \
