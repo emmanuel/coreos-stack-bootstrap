@@ -124,6 +124,7 @@
             "Effect": "Allow",
             "Action": [
               "dynamodb:BatchWriteItem",
+              "dynamodb:UpdateItem",
               "dynamodb:PutItem"
             ],
             "Resource": [{ "Fn::Join": [":", [
