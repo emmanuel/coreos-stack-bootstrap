@@ -5,33 +5,25 @@ After=etcd.service
 
 [Service]
 Type=simple
-Restart=on-failure
-# RemainAfterExit=true
+Restart=always
+RestartSec=60s
+
 EnvironmentFile=/etc/stack_environment
 
 ExecStartPre=/usr/bin/printf "Registering Docker registry with vulcand (frontend)"
-ExecStartPre=/usr/bin/etcdctl set /vulcand/backends/${STACK_NAME}-docker_registry/backend \
+ExecStartPre=/usr/bin/etcdctl set --ttl 90 /vulcand/backends/${STACK_NAME}-docker_registry/backend \
   '{"Type":"http"}'
-
-# Giving an unbalanced quote to Vulcan causes problems:
-# '"{
-ExecStartPre=/usr/bin/etcdctl set /vulcand/frontends/${STACK_NAME}-docker_registry/frontend \
+ExecStartPre=/usr/bin/etcdctl set --ttl 90 /vulcand/frontends/${STACK_NAME}-docker_registry/frontend \
   '{"BackendId":"${STACK_NAME}-docker_registry", \
     "Route":"Host(`${STACK_NAME}-docker.cloud.nlab.io`)", \
     "Type":"http"}'
 
-ExecStartPre=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/backend \
+ExecStartPre=/usr/bin/etcdctl set --ttl 90 /vulcand/backends/visible-docker_registry/backend \
   '{"Type":"http"}'
-ExecStart=/usr/bin/etcdctl set /vulcand/frontends/visible-docker_registry/frontend \
+ExecStart=/usr/bin/etcdctl set --ttl 90 /vulcand/frontends/visible-docker_registry/frontend \
   '{"BackendId":"visible-docker_registry", \
     "Route":"Host(`docker.cloud.nlab.io`)", \
     "Type":"http"}'
-
-# ExecStop=/usr/bin/etcdctl rm --recursive /vulcand/frontends/${STACK_NAME}-docker_registry
-# ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/frontends/visible-docker_registry
-
-# ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/${STACK_NAME}-docker_registry
-# ExecStopPost=/usr/bin/etcdctl rm --recursive /vulcand/backends/visible-docker_registry
 
 [Install]
 WantedBy=multi-user.target

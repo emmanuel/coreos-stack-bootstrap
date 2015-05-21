@@ -4,19 +4,18 @@ Requires=docker-registry@%i.service
 After=docker-registry@%i.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+Type=simple
+Restart=always
+RestartSec=10s
+
 EnvironmentFile=/etc/environment
 EnvironmentFile=/etc/stack_environment
 
 ExecStartPre=/usr/bin/printf "Registering Docker registry with vulcand (instance)"
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/${STACK_NAME}-docker_registry/servers/%i \
+ExecStart=/usr/bin/etcdctl set --ttl 15 /vulcand/backends/${STACK_NAME}-docker_registry/servers/%i \
   '{"URL":"http://${COREOS_PRIVATE_IPV4}:5000"}'
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-docker_registry/servers/%i \
+ExecStart=/usr/bin/etcdctl set --ttl 15 /vulcand/backends/visible-docker_registry/servers/%i \
   '{"URL":"http://${COREOS_PRIVATE_IPV4}:5000"}'
-
-ExecStop=/usr/bin/etcdctl rm /vulcand/backends/${STACK_NAME}-docker_registry/servers/%i
-ExecStopPost=/usr/bin/etcdctl rm /vulcand/backends/visible-docker_registry/servers/%i
 
 [X-Fleet]
 MachineOf=docker-registry@%i.service

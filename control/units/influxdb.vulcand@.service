@@ -2,19 +2,18 @@
 Description=InfluxDB vulcand instance registration
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+Type=simple
+Restart=always
+RestartSec=10s
+
 EnvironmentFile=/etc/environment
 EnvironmentFile=/etc/stack_environment
 
 ExecStartPre=/usr/bin/printf "Registering InfluxDB with vulcand (instance)"
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/${STACK_NAME}-influxdb/servers/%i \
+ExecStart=/usr/bin/etcdctl set --ttl 15 /vulcand/backends/${STACK_NAME}-influxdb/servers/%i \
   '{"URL":"http://${COREOS_PRIVATE_IPV4}:8086"}'
-ExecStart=/usr/bin/etcdctl set /vulcand/backends/visible-influxdb/servers/%i \
+ExecStart=/usr/bin/etcdctl set --ttl 15 /vulcand/backends/visible-influxdb/servers/%i \
   '{"URL":"http://${COREOS_PRIVATE_IPV4}:8086"}'
-
-ExecStop=/usr/bin/etcdctl rm /vulcand/backends/${STACK_NAME}-influxdb/servers/%i
-ExecStopPost=/usr/bin/etcdctl rm /vulcand/backends/visible-influxdb/servers/%i
 
 [X-Fleet]
 MachineOf=influxdb@%i.service
