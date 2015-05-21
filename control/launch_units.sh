@@ -26,8 +26,9 @@ fleetctl start docker-registry@{1..2}
 sleep 30
 fleetctl start docker-registry.vulcand_frontend
 fleetctl start docker-registry.vulcand@{1..2}
-fleetctl start influxdb.{create_db,vulcand_frontend}
-fleetctl start influxdb.vulcand@1
+fleetctl start influxdb.{create_db}
+# fleetctl start influxdb.{create_db,vulcand_frontend}
+# fleetctl start influxdb.vulcand@1
 fleetctl start cadvisor
 fleetctl start sysinfo_influxdb
 fleetctl start zookeeper{.placement,}@{1..5}
