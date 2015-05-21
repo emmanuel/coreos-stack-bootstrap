@@ -14,7 +14,7 @@ Restart=on-failure
 RestartSec=5
 
 EnvironmentFile=/etc/environment
-Environment="RELEASE=latest"
+Environment="RELEASE=v4"
 
 TimeoutStartSec=5m
 ExecStartPre=-/usr/bin/docker kill skydns-registrator
