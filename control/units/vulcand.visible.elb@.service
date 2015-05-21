@@ -4,19 +4,20 @@ BindTo=vulcand@%i.service
 After=vulcand@%i.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+Type=simple
+Restart=on-failure
+RestartSec=10s
+
 EnvironmentFile=/etc/aws_environment
 EnvironmentFile=/etc/stack_environment
+Environment="RELEASE=1.7.12"
 
 TimeoutStartSec=5m
 
+# TODO: remove the hard-coded visible load balancer name
 ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${STACK_NAME}-vulcand-external)"
-# TODO: awscli only intermittently detects the EC2 instance role
-#   this unit should be started/stopped until success
-
 ExecStart=/usr/bin/docker run --rm \
-  nordstrom/awscli:1.7.12 \
+  nordstrom/awscli:${RELEASE} \
     aws elb register-instances-with-load-balancer \
       --load-balancer-name Innovatio-VisibleE-1DZ40EIDP75YI \
       --region ${AWS_REGION} \

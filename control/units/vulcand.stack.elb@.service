@@ -4,24 +4,24 @@ BindTo=vulcand@%i.service
 After=vulcand@%i.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+# TODO: awscli only intermittently detects the EC2 instance role
+#   long-term solution is to fix the intermittent failure.
+#   until then restart this unit until success
+Type=simple
+Restart=on-failure
+RestartSec=10s
+
 EnvironmentFile=/etc/aws_environment
 EnvironmentFile=/etc/stack_environment
-
-TimeoutStartSec=5m
+Environment="RELEASE=1.7.12"
 
 ExecStartPre=/usr/bin/printf "Registering instance (${EC2_INSTANCE_ID}) with load balancer (${STACK_NAME}-vulcand-external)"
-# TODO: awscli only intermittently detects the EC2 instance role
-#   this unit should be started/stopped until success
-
-ExecStart=/usr/bin/bash -c \
-  "docker run --rm \
-    nordstrom/awscli:1.7.12 \
+ExecStart=/usr/bin/docker run --rm \
+  nordstrom/awscli:${RELEASE} \
     aws elb register-instances-with-load-balancer \
       --load-balancer-name ${STACK_NAME}-vulcand-external \
       --region ${AWS_REGION} \
-      --instances ${EC2_INSTANCE_ID}"
+      --instances ${EC2_INSTANCE_ID}
 
 [X-Fleet]
 MachineOf=vulcand@%i.service
