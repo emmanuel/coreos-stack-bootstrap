@@ -1,0 +1,7 @@
+#cloud-config
+
+coreos:
+  etcd:
+    discovery: ${etcd_discovery_url}
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001

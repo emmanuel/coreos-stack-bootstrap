@@ -88,18 +88,11 @@ module "my_autoscaling_group" {
 
   subnet_az1 = "${var.subnet_az1}"
   subnet_az2 = "${var.subnet_az2}"
-
-  aws_access_key = "${var.aws_access_key}"
-  aws_secret_key = "${var.aws_secret_key}"
-  aws_region = "${var.aws_region}"
 }
 ```
 
 2.) Setting values for the following variables, either through `terraform.tfvars` or `-var` arguments on the CLI
 
-- aws_access_key
-- aws_secret_key
-- aws_region
 - launch_config_name
 - ami_id
 - instance_type
@@ -107,8 +100,8 @@ module "my_autoscaling_group" {
 - key_name
 - security_group
 - user_data
-- asg_name
-- asg_desired_capacity.
+- autoscaling_group_name
+- autoscaling_group_desired_capacity.
 - load_balancer_name
 - subnet_az1
 - subnet_az2

@@ -1,25 +1,31 @@
+variable "aws_region" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "vpc_id" {
+    default = ""
+}
+
 variable "launch_config_name" {}
 variable "ami_id" {}
 variable "instance_type" {}
 variable "iam_instance_profile" {}
 variable "key_name" {}
 
-variable "security_groups" {}
+variable "security_group_ids" {}
 
 variable "user_data" {
   description = "The user_data content for the instances"
 }
 
 // Auto-Scaling Group
-variable "asg_name" {}
-variable "asg_max_size" {
+variable "autoscaling_group_name" {}
+variable "autoscaling_group_max_size" {
   description = "The maximum number of instances the ASG should maintain"
-  # default = "${var.asg_desired_capacity + 1}"
 }
-variable "asg_min_size" {
+variable "autoscaling_group_min_size" {
   description = "The minimum number of instances the ASG should maintain"
 }
-variable "asg_desired_capacity" {
+variable "autoscaling_group_desired_capacity" {
   description = "The number of instances we want in the ASG"
 }
 
@@ -49,8 +55,3 @@ variable "availability_zones" {
 variable "subnet_ids" {
   description = "VPC subnet IDs for AZs"
 }
-
-// Variables for providers used in this module
-variable "aws_access_key" {}
-variable "aws_secret_key" {}
-variable "aws_region" {}
