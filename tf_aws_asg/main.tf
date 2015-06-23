@@ -1,8 +1,8 @@
-provider "aws" {
-    region = "${var.aws_region}"
-    access_key = "${var.aws_access_key}"
-    secret_key = "${var.aws_secret_key}"
-}
+# provider "aws" {
+#     region = "${var.aws_region}"
+#     access_key = "${var.aws_access_key}"
+#     secret_key = "${var.aws_secret_key}"
+# }
 
 resource "aws_launch_configuration" "main" {
     name = "${var.launch_config_name}"
@@ -32,5 +32,4 @@ resource "aws_autoscaling_group" "main" {
     health_check_grace_period = "${var.health_check_grace_period}"
     health_check_type = "ELB"
     default_cooldown = "${var.default_cooldown}"
-    load_balancers = [ "${var.load_balancer_name}" ]
 }

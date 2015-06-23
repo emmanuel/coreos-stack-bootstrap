@@ -42,9 +42,6 @@ Input Variables
    time out. Defaults to 300.
 - `health_check_type` - The health check type. Options are `ELB` and
    `EC2`. It defaults to `ELB` in this module.
-- `load_balancer_name` - The name of the ELB to associate with the ASG,
-   for settings it's backend instances. Ideally this is a reference to
-   an ELB you're making in the same template as this ASG.
 - `subnet_ids` - The VPC subnet IDs (matching the AZs)
 
 Outputs
@@ -80,9 +77,6 @@ module "my_autoscaling_group" {
   asg_desired_capacity = "${var.asg_desired_capacity}"
   asg_minimum_number_of_instancs = "${var.asg_min_size}"
 
-  //Using a reference to an SG we create in the same template
-  load_balancer_name = "${module.my_elb.elb_name}"
-
   // The health_check_type can be EC2 or ELB and defaults to ELB
   health_check_type = "${var.health_check_type}"
 
@@ -102,7 +96,6 @@ module "my_autoscaling_group" {
 - user_data
 - autoscaling_group_name
 - autoscaling_group_desired_capacity.
-- load_balancer_name
 - subnet_az1
 - subnet_az2
 

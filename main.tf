@@ -17,7 +17,7 @@ module "vpc" {
 }
 
 module "test-asg" {
-    source = "tf_aws_asg_elb"
+    source = "tf_aws_asg"
 
     aws_region = "${var.aws_region}"
     aws_access_key = "${var.aws_access_key}"
