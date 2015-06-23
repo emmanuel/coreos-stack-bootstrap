@@ -8,6 +8,6 @@ output "launch_config_id" {
 }
 
 // Output the ID of the Launch Config
-output "autoscaling_group_id" {
-    value = "${aws_autoscaling_group.main.id}"
+output "asg_ids" {
+    value = "${join(\",\", aws_autoscaling_group.main.*.id)}"
 }

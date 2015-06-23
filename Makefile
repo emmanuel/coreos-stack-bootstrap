@@ -59,7 +59,7 @@ build/stack_name: | build
 	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > build/stack_name
 
 tf_aws_asg_elb/*.tf: 
-	terraform-get
+	terraform get
 
 .PHONY: terraform
 .PHONY: terraform-get
@@ -89,15 +89,23 @@ jq: /usr/local/bin/jq
 build:
 	mkdir -p build
 
-# .PHONY: destroy
-
+.PHONY: destroy
 destroy: after-destroy.tfstate
 
-after-destroy.tfstate: | terraform
-	terraform destroy -input=false -state-out=after-destroy.tfstate
+.PHONY: destroy_plan
+destroy_plan: destroy.tfplan
 
-clean: destroy
+terraform.tfstate:
+
+destroy.tfplan: terraform.tfstate | terraform
+	terraform plan -input=false -destroy -out=destroy.tfplan
+
+after-destroy.tfstate: destroy.tfplan | terraform
+	terraform apply -state-out=after-destroy.tfstate destroy.tfplan
+
+clean: 
 	rm -rf build
 	rm -f terraform.tfstate
 	rm -f after-destroy.tfstate
 	rm -f terraform.tfvars
+	rm -f destroy.tfplan

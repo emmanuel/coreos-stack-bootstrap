@@ -16,92 +16,35 @@ module "vpc" {
     azs = "us-west-2a,us-west-2b,us-west-2c"
 }
 
-module "test-asg" {
-    source = "tf_aws_asg"
+module "subnet-egress-nat-asg" {
+    source = "tf_aws_subnet_asg"
 
-    aws_region = "${var.aws_region}"
-    aws_access_key = "${var.aws_access_key}"
-    aws_secret_key = "${var.aws_secret_key}"
-    vpc_id = "${module.vpc.vpc_id}"
 
-    launch_config_name = "${var.stack_name}-test-launch_config"
+    launch_config_name = "${var.stack_name}-subnet-egress-nat-test-launch_config"
     ami_id = "${var.coreos_ami_id}"
     instance_type = "${var.ec2_instance_type}"
     iam_instance_profile = "${aws_iam_instance_profile.test_profile.name}"
     key_name = "${var.ec2_key_name}"
-
     security_group_ids = "${aws_security_group.cluster_members.id}"
+    user_data = "${template_file.test-cloud_config.rendered}"
 
-    user_data = ""
-
-    autoscaling_group_name = "${var.stack_name}-test-asg"
-    autoscaling_group_max_size = 5
-    autoscaling_group_min_size = 3
-    autoscaling_group_desired_capacity = 3
+    asg_name = "${var.stack_name}-subnet-egress-nat-test-asg"
+    asg_max_size = 2
+    asg_min_size = 1
+    asg_desired_capacity = 1
+    asg_health_check_type = "EC2"
     health_check_grace_period = "${var.health_check_grace_period}"
     default_cooldown = "${var.default_cooldown}"
-    health_check_type = "${var.health_check_type}"
-    load_balancer_name = "${aws_elb.test-elb.name}"
 
     availability_zones = "${var.availability_zones}"
     subnet_ids = "${module.vpc.private_subnets}"
 }
 
-resource "aws_security_group" "test-elb_sg" {
-    name = "${var.stack_name}-test-elb_sg"
-    description = "Marker security group for test-elb"
-
-    tags {
-        Name = "test-elb_sg"
-        StackName = "${var.stack_name}"
-    }
-}
-
-resource "aws_elb" "test-elb" {
-    name = "${var.stack_name}-test-elb"
-    availability_zones = [ "${split(\",\", var.availability_zones)}" ]
-    security_groups = [ "${aws_security_group.test-elb_sg.id}" ]
-
-    listener {
-        instance_port = 4001
-        instance_protocol = "http"
-        lb_port = 4001
-        lb_protocol = "http"
-    }
-
-    # listener {
-    #     instance_port = 8000
-    #     instance_protocol = "http"
-    #     lb_port = 443
-    #     lb_protocol = "https"
-    #     ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
-    # }
-
-    # health_check {
-    #     healthy_threshold = 2
-    #     unhealthy_threshold = 2
-    #     timeout = 3
-    #     target = "HTTP:7001/"
-    #     interval = 30
-    # }
-
-    # instances = ["${aws_instance.foo.id}"]
-    cross_zone_load_balancing = true
-    idle_timeout = 60
-    connection_draining = true
-    connection_draining_timeout = 300
-
-    tags {
-        Name = "test-elb"
-        StackName = "${var.stack_name}"
-    }
-}
-
-resource "template_file" "test-cloud_config" {
-    filename = "test.yaml.tmpl"
+resource "template_file" "subnet-egress-nat-test-cloud_config" {
+    filename = "subnet-egress-nat-test-cloud_config.yaml.tmpl"
 
     vars {
-        etcd_discovery_url = "${var.etcd_discovery_url}"
+        # etcd_discovery_url = "${var.etcd_discovery_url}"
     }
 }
 
