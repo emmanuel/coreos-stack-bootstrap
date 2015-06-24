@@ -72,6 +72,23 @@ vpc/apply: vpc/plan
 .PHONY: vpc/plan
 vpc/plan: build/vpc.tfplan
 
+.PHONY: subnet-egress-nat
+subnet-egress-nat: subnet-egress-nat/apply subnet-egress-nat/state
+
+.PHONY: subnet-egress-nat/state
+subnet-egress-nat/state: subnet-egress-nat/apply
+	cd subnet-egress-nat; make state
+
+.PHONY: subnet-egress-nat/apply
+subnet-egress-nat/apply: subnet-egress-nat/plan
+	cd subnet-egress-nat; make apply
+
+.PHONY: subnet-egress-nat/plan
+subnet-egress-nat/plan: build/subnet-egress-nat.tfplan
+
+build/subnet-egress-nat.tfplan:
+	cd subnet-egress-nat; make plan
+
 tf_aws_asg_elb/*.tf: 
 	terraform get
 
