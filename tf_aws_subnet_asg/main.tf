@@ -14,7 +14,7 @@ resource "aws_launch_configuration" "main" {
 resource "aws_autoscaling_group" "main" {
     depends_on = [ "aws_launch_configuration.main" ]
     count = "${length(split(\",\", var.availability_zones))}"
-    name = "${var.asg_name}-${count.index}"
+    name = "${var.asg_name}-${element(split(\",\", var.subnet_ids), count.index)}"
 
     availability_zones = [ "${element(split(\",\", var.availability_zones), count.index)}" ]
     vpc_zone_identifier = [ "${element(split(\",\", var.subnet_ids), count.index)}" ]
