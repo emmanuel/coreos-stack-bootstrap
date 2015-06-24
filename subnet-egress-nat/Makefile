@@ -10,7 +10,7 @@ apply: ../build/subnet-egress-nat.tfplan
 .PHONY: plan
 plan: ../build/subnet-egress-nat.tfplan
 
-.PHONY: pushsstate
+.PHONY: push_state
 push_state: | configure_state terraform
 	terraform remote push
 
