@@ -4,18 +4,6 @@ provider "aws" {
     secret_key = "${var.aws_secret_key}"
 }
 
-module "vpc" {
-    source = "github.com/terraform-community-modules/tf_aws_vpc"
-
-    name = "test-vpc"
-
-    cidr = "172.33.0.0/16"
-    private_subnets = "172.33.1.0/24,172.33.2.0/24,172.33.3.0/24"
-    public_subnets = "172.33.101.0/24,172.33.102.0/24,172.33.103.0/24"
-
-    azs = "us-west-2a,us-west-2b,us-west-2c"
-}
-
 module "subnet-egress-nat-asg" {
     source = "tf_aws_subnet_asg"
 

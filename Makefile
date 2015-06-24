@@ -58,6 +58,20 @@ build/ec2_availability_zones.json: | build awscli
 build/stack_name: | build
 	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > build/stack_name
 
+.PHONY: vpc
+vpc: vpc/apply vpc/state
+
+.PHONY: vpc/state
+vpc/state: vpc/apply
+	cd vpc; make state
+
+.PHONY: vpc/apply
+vpc/apply: vpc/plan
+	cd vpc; make apply
+
+.PHONY: vpc/plan
+vpc/plan: build/vpc.tfplan
+
 tf_aws_asg_elb/*.tf: 
 	terraform get
 
