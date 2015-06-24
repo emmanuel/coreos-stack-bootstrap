@@ -21,12 +21,12 @@ coreos:
         ExecStartPre=/usr/sbin/iptables -A LOGGINGI -m limit --limit 2/min -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
         ExecStartPre=/usr/sbin/iptables -A LOGGINGF -j DROP
         ExecStartPre=/usr/sbin/iptables -A LOGGINGI -j DROP
-        ExecStartPre=/usr/sbin/iptables -A FORWARD -s ${var.network_prefix}.0.0/16 -j ACCEPT
+        ExecStartPre=/usr/sbin/iptables -A FORWARD -s ${network_prefix}.0.0/16 -j ACCEPT
         ExecStartPre=/usr/sbin/iptables -A FORWARD -j LOGGINGF
         ExecStartPre=/usr/sbin/iptables -P FORWARD DROP
         ExecStartPre=/usr/sbin/iptables -I FORWARD -m state --state "ESTABLISHED,RELATED" -j ACCEPT
-        ExecStartPre=/usr/sbin/iptables -t nat -I POSTROUTING -s ${var.network_prefix}.0.0/16 -d 0.0.0.0/0 -j MASQUERADE
-        ExecStartPre=/usr/sbin/iptables -A INPUT -s ${var.network_prefix}.0.0/16 -j ACCEPT
+        ExecStartPre=/usr/sbin/iptables -t nat -I POSTROUTING -s ${network_prefix}.0.0/16 -d 0.0.0.0/0 -j MASQUERADE
+        ExecStartPre=/usr/sbin/iptables -A INPUT -s ${network_prefix}.0.0/16 -j ACCEPT
         ExecStartPre=/usr/sbin/iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
         ExecStartPre=/usr/sbin/iptables -I INPUT -m state --state "ESTABLISHED,RELATED" -j ACCEPT
         ExecStartPre=/usr/sbin/iptables -I INPUT -i lo -j ACCEPT
