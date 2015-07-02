@@ -1,4 +1,5 @@
 *.tfvars*
 *.tfstate*
+*.tfplan
 .terraform/
 build

@@ -4,7 +4,8 @@ resource "aws_launch_configuration" "main" {
     instance_type = "${var.instance_type}"
     # iam_instance_profile = "${var.iam_instance_profile}"
     key_name = "${var.key_name}"
-    security_groups = [ "${split(\",\", var.security_group_ids)}" ]
+    security_groups = [ "${split(",", var.security_group_ids)}" ]
+    # security_groups = [ "${var.security_group_ids}" ]
     user_data = "${var.user_data}"
     lifecycle {
         create_before_destroy = true
@@ -13,14 +14,11 @@ resource "aws_launch_configuration" "main" {
 
 resource "aws_autoscaling_group" "main" {
     depends_on = [ "aws_launch_configuration.main" ]
-    count = "${length(split(\",\", var.availability_zones))}"
-    name = "${format("%s-%s", var.asg_name, element(split(\",\", var.subnet_ids), count.index))}"
+    name = "${var.asg_name}-${element(split(",", var.subnet_ids), count.index)}"
+    count = "${length(split(",", var.availability_zones))}"
 
-    availability_zones = [ "${element(split(\",\", var.availability_zones), count.index)}" ]
-    vpc_zone_identifier = [ "${element(split(\",\", var.subnet_ids), count.index)}" ]
-    # availability_zones = [ "${split(\",\", var.availability_zones)}" ]
-    # vpc_zone_identifier = [ "${split(\",\", var.subnet_ids)}" ]
-
+    availability_zones = [ "${element(split(",", var.availability_zones), count.index)}" ]
+    vpc_zone_identifier = [ "${element(split(",", var.subnet_ids), count.index)}" ]
     launch_configuration = "${aws_launch_configuration.main.id}"
 
     max_size = "${var.asg_max_size}"

@@ -5,6 +5,7 @@ variable "aws_secret_key" {}
 variable "ec2_key_name" {}
 variable "ec2_instance_type" {}
 variable "coreos_ami_id" {}
+variable "stack_name" {}
 
 variable "availability_zones" {}
 # variable "autoscaling_group_health_check_type" {

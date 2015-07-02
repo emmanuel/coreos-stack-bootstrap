@@ -1,39 +1,35 @@
+build=../build/vpc
 region=us-west-2
 
-.PHONY: all
+.PHONY: all apply plan push_state configure_state
 all:
-	
-.PHONY: apply
-apply: ../build/vpc.tfplan
-	terraform apply ../build/vpc.tfplan
 
-.PHONY: plan
-plan: ../build/vpc.tfplan
+apply: $(build)/terraform.tfstate push_state
 
-.PHONY: push_state
+plan: $(build)/terraform.tfplan
+
 push_state: | configure_state terraform
-	terraform remote push
+	cd $(build); terraform remote push
 
-.PHONY: configure_state
 configure_state: | terraform
-	terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/vpc.tfstate"
+	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/vpc/terraform.tfstate"
 
-../build/vpc.tfplan: terraform.tfvars *.tf ../tf_aws_asg_elb/*.tf | build
-	terraform plan -out=../build/vpc.tfplan -module-depth=2
+$(build)/terraform.tfstate: $(build)/terraform.tfplan
+	terraform apply -state=$@ $(build)/terraform.tfplan
 
-terraform.tfvars: ../build/keys.tfvars ../build/availability_zones
-	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > terraform.tfvars
-	cat ../build/keys.tfvars >> terraform.tfvars
-	echo "availability_zones = \"$$(cat ../build/availability_zones)\"" >> terraform.tfvars
+$(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf | $(build) .terraform
+	terraform plan -state=$(build)/terraform.tfstate -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
+
+$(build)/terraform.tfvars: ../build/keys.tfvars ../build/availability_zones | $(build)
+	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
+	cat ../build/keys.tfvars >> $@
+	echo "availability_zones = \"$$(cat ../build/availability_zones)\"" >> $@
 
 ../build/keys.tfvars:
 	cd ..; make build/keys.tfvars
 
 ../build/availability_zones:
 	cd ..; make build/availability_zones
-
-../tf_aws_asg_elb/*.tf: 
-	terraform get
 
 terraform: /usr/local/bin/terraform
 terraform-get: .terraform
@@ -53,23 +49,21 @@ jq: /usr/local/bin/jq
 /usr/local/bin/jq:
 	brew install jq
 
-build:
-	mkdir -p build
+$(build):
+	mkdir -p $(build)
 
-.PHONY: destroy
-destroy: after-destroy.tfstate
+.PHONY: destroy destroy_plan
+destroy: $(build)/after-destroy.tfstate
 
-.PHONY: destroy_plan
-destroy_plan: destroy.tfplan
+destroy_plan: $(build)/destroy.tfplan
 
-terraform.tfstate:
+$(build)/terraform.tfstate:
 
-destroy.tfplan: terraform.tfstate | terraform
-	terraform plan -module-depth=2 -input=false -destroy -out=destroy.tfplan
+$(build)/destroy.tfplan: $(build)/terraform.tfstate | terraform
+	terraform plan -module-depth=2 -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -out=$@
 
-after-destroy.tfstate: destroy.tfplan | terraform
-	terraform apply -state-out=after-destroy.tfstate destroy.tfplan
+$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
+	terraform apply -state-out=$@ $(build)/destroy.tfplan
 
 clean:
-	rm -rf build
-	rm -f terraform.tfstate
+	rm -rf $(build)

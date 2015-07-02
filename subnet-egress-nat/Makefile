@@ -1,32 +1,33 @@
+# PATH=$(GOPATH)/bin:$$(PATH)
+build=../build/subnet-egress-nat
 region=us-west-2
+# terraform=terraform
+terraform=$(GOPATH)/bin/terraform
 
-.PHONY: all
+.PHONY: all apply plan push_state configure_state
 all:
-	
-.PHONY: apply
-apply: ../build/subnet-egress-nat.tfplan
-	terraform apply ../build/subnet-egress-nat.tfplan
 
-.PHONY: plan
-plan: ../build/subnet-egress-nat.tfplan
+apply: $(build)/terraform.tfstate
 
-.PHONY: push_state
+plan: $(build)/terraform.tfplan
+
 push_state: | configure_state terraform
-	terraform remote push
+	$(terraform) remote push
 
-.PHONY: configure_state
 configure_state: | terraform
-	terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/subnet-egress-nat.tfstate"
+	$(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/subnet-egress-nat/terraform.tfstate"
 
-../build/subnet-egress-nat.tfplan: terraform.tfvars *.tf ../tf_aws_asg_elb/*.tf | build
-	terraform plan -out=../build/subnet-egress-nat.tfplan -module-depth=2
+$(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
+	$(terraform) apply -state-out=$@ $(build)/terraform.tfplan
 
-terraform.tfvars: ../build/keys.tfvars ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones
-	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > terraform.tfvars
-	cat ../build/keys.tfvars >> terraform.tfvars
-	cat ../build/aws.tfvars >> terraform.tfvars
-	# cat ../build/stack.tfvars >> terraform.tfvars
-	echo "availability_zones = \"$$(cat ../build/availability_zones)\"" >> terraform.tfvars
+$(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf *.tmpl ../tf_aws_subnet_asg/*.tf | terraform-get
+	$(terraform) plan -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -module-depth=2 -out=$@
+
+$(build)/terraform.tfvars: ../build/keys.tfvars ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones | $(build)
+	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
+	cat ../build/keys.tfvars >> $@
+	cat ../build/aws.tfvars >> $@
+	cat ../build/stack.tfvars >> $@
 
 ../build/keys.tfvars:
 	cd ..; make build/keys.tfvars
@@ -40,17 +41,21 @@ terraform.tfvars: ../build/keys.tfvars ../build/aws.tfvars ../build/stack.tfvars
 ../build/availability_zones:
 	cd ..; make build/availability_zones
 
-../tf_aws_asg_elb/*.tf: 
-	terraform get
+../tf_aws_subnet_asg/*.tf: 
+	$(terraform) get
 
 terraform: /usr/local/bin/terraform
+# terraform: $(GOPATH)/bin/terraform
 terraform-get: .terraform
 awscli: /usr/local/bin/aws
 curl: /usr/bin/curl
 jq: /usr/local/bin/jq
 
 .terraform: | terraform
-	terraform get
+	$(terraform) get
+
+$$(GOPATH)/bin/terraform:
+	go get github.com/hashicorp/terraform
 
 /usr/local/bin/terraform:
 	brew install terraform
@@ -61,23 +66,21 @@ jq: /usr/local/bin/jq
 /usr/local/bin/jq:
 	brew install jq
 
-build:
-	mkdir -p build
+$(build):
+	mkdir -p $@
 
-.PHONY: destroy
-destroy: after-destroy.tfstate
+.PHONY: destroy destroy_plan
+destroy: $(build)/after-destroy.tfstate
 
-.PHONY: destroy_plan
-destroy_plan: destroy.tfplan
+destroy_plan: $(build)/destroy.tfplan
 
-terraform.tfstate:
+$(build)/terraform.tfstate:
 
-destroy.tfplan: terraform.tfstate | terraform
-	terraform plan -input=false -destroy -out=destroy.tfplan
+$(build)/destroy.tfplan: $(build)/terraform.tfstate | terraform
+	terraform plan -input=false -destroy -out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate
 
-after-destroy.tfstate: destroy.tfplan | terraform
-	terraform apply -state-out=after-destroy.tfstate destroy.tfplan
+$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
+	terraform apply -state-out=$@ -state=$(build)/terraform.tfstate $(build)/destroy.tfplan
 
 clean:
-	rm -rf build
-	rm -f terraform.tfstate
+	rm -rf $(build)

@@ -1,15 +1,7 @@
-output "availability_zones" {
-  value = "${var.availability_zones}"
+output "launch_config_id" {
+  value = "${module.subnet-egress-nat-asg.launch_config_id}"
 }
 
-output "private_subnets" {
-  value = "${terraform_remote_state.vpc.private_subnets}"
-}
-
-output "public_subnets" {
-  value = "${terraform_remote_state.vpc.public_subnets}"
-}
-
-output "vpc_id" {
-  value = "${terraform_remote_state.vpc.vpc_id}"
+output "asg_ids" {
+  value = "${module.subnet-egress-nat-asg.asg_ids}"
 }

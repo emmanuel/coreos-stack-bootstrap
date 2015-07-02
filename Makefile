@@ -1,103 +1,90 @@
+build=build
 region=us-west-2
 
-.PHONY: all
+.PHONY: all apply plan
 
 all:
-	
-.PHONY: apply
 
-apply: build/test.tfplan
-	terraform apply build/test.tfplan
+apply: $(build)/terraform.tfstate
 
-.PHONY: plan
+plan: $(build)/terraform.tfplan
 
-plan: build/test.tfplan
+$(build)/terraform.tfstate: $(build)/terraform.tfplan
+	terraform apply -out=$@ $(build)/terraform.tfplan
 
-build/test.tfplan: *.tf terraform.tfvars tf_aws_asg_elb/*.tf
-	terraform plan -out=build/test.tfplan -module-depth=2
+$(build)/terraform.tfplan: *.tf $(build)/terraform.tfvars $(build)/terraform.tfstate tf_aws_subnet_asg/*.tf | terraform-get
+	terraform plan -out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -module-depth=2
 
-terraform.tfvars: build/keys.tfvars build/aws.tfvars build/stack.tfvars
+$(build)/terraform.tfvars: $(build)/keys.tfvars $(build)/aws.tfvars $(build)/stack.tfvars
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > terraform.tfvars
-	cat build/keys.tfvars >> terraform.tfvars
-	cat build/aws.tfvars >> terraform.tfvars
-	cat build/stack.tfvars >> terraform.tfvars
+	cat $(build)/keys.tfvars >> $@
+	cat $(build)/aws.tfvars >> $@
+	cat $(build)/stack.tfvars >> $@
 
-build/keys.tfvars: | build
-	echo "# keys.tfvars: this file is machine generated. built at $$(date)" > build/keys.tfvars
-	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> build/keys.tfvars
-	echo "aws_access_key = \"$$(cat $(HOME)/.aws/config | grep aws_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> build/keys.tfvars
-	echo "aws_secret_key = \"$$(cat $(HOME)/.aws/config | grep aws_secret_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> build/keys.tfvars
+$(build)/keys.tfvars: | $(build)
+	echo "# keys.tfvars: this file is machine generated. built at $$(date)" > $@
+	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
+	echo "aws_access_key = \"$$(cat $(HOME)/.aws/config | grep aws_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
+	echo "aws_secret_key = \"$$(cat $(HOME)/.aws/config | grep aws_secret_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
 
-build/aws.tfvars: build/availability_zones | build
-	echo "# aws.tfvars: this file is machine generated. built at $$(date)" > build/aws.tfvars
-	echo "availability_zones = \"$$(cat build/availability_zones)\"" >> build/aws.tfvars
-	echo "ec2_key_name = \"coreos-beta\"" >> build/aws.tfvars
-	echo "ec2_instance_type = \"t2.small\"" >> build/aws.tfvars
+$(build)/aws.tfvars: $(build)/availability_zones | $(build)
+	echo "# aws.tfvars: this file is machine generated. built at $$(date)" > $@
+	echo "availability_zones = \"$$(cat $(build)/availability_zones)\"" >> $@
+	echo "ec2_key_name = \"coreos-beta\"" >> $@
+	echo "ec2_instance_type = \"t2.small\"" >> $@
 
-build/stack.tfvars: build/stack_name build/coreos_alpha_ami_id build/etcd_discovery_url | build
-	echo "# stack.tfvars: this file is machine generated. built at $$(date)" > build/stack.tfvars
-	echo "coreos_ami_id = \"$$(cat build/coreos_alpha_ami_id)\"" >> build/stack.tfvars
-	echo "etcd_discovery_url = \"$$(cat build/etcd_discovery_url)\"" >> build/stack.tfvars
-	echo "stack_name = \"$$(cat build/stack_name)\"" >> build/stack.tfvars
+$(build)/stack.tfvars: $(build)/stack_name $(build)/coreos_alpha_ami_id $(build)/etcd_discovery_url | $(build)
+	echo "# stack.tfvars: this file is machine generated. built at $$(date)" > $@
+	echo "coreos_ami_id = \"$$(cat $(build)/coreos_alpha_ami_id)\"" >> $@
+	echo "etcd_discovery_url = \"$$(cat $(build)/etcd_discovery_url)\"" >> $@
+	echo "stack_name = \"$$(cat $(build)/stack_name)\"" >> $@
 
-build/coreos_alpha_ami_id: build/coreos_production_ami_all.json | jq
-	cat build/coreos_production_ami_all.json | jq -r ".amis | map(select(\"$(region)\" == .name))[0].hvm" > build/coreos_alpha_ami_id
+$(build)/coreos_alpha_ami_id: $(build)/coreos_production_ami_all.json | jq
+	cat $(build)/coreos_production_ami_all.json | jq -r ".amis | map(select(\"$(region)\" == .name))[0].hvm" > $@
 
-build/availability_zones: build/ec2_availability_zones.json | jq
-	cat build/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > build/availability_zones
+$(build)/availability_zones: $(build)/ec2_availability_zones.json | jq
+	cat $(build)/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > $@
 
-build/etcd_discovery_url: | build curl
-	curl -s https://discovery.etcd.io/new?size=3 > build/etcd_discovery_url
+$(build)/etcd_discovery_url: | $(build) curl
+	curl -s https://discovery.etcd.io/new?size=3 > $@
 
-build/coreos_production_ami_all.json: | build curl
-	curl -sk https://alpha.release.core-os.net/amd64-usr/current/coreos_production_ami_all.json > build/coreos_production_ami_all.json
+$(build)/coreos_production_ami_all.json: | $(build) curl
+	curl -sk https://alpha.release.core-os.net/amd64-usr/current/coreos_production_ami_all.json > $@
 
-build/ec2_availability_zones.json: | build awscli
-	aws ec2 describe-availability-zones --region="$(region)" --output="json" > build/ec2_availability_zones.json
+$(build)/ec2_availability_zones.json: | $(build) awscli
+	aws ec2 describe-availability-zones --region="$(region)" --output="json" > $@
 
-build/stack_name: | build
-	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > build/stack_name
+$(build)/stack_name: | $(build)
+	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > $@
 
-.PHONY: vpc
-vpc: vpc/apply vpc/state
+.PHONY: vpc vpc/state vpc/apply vpc/plan subnet-egress-nat subnet-egress-nat/state subnet-egress-nat/apply subnet-egress-nat/plan subnet-egress-nat/state
+vpc: vpc/apply
 
-.PHONY: vpc/state
-vpc/state: vpc/apply
-	cd vpc; make state
-
-.PHONY: vpc/apply
 vpc/apply: vpc/plan
 	cd vpc; make apply
 
-.PHONY: vpc/plan
-vpc/plan: build/vpc.tfplan
+vpc/plan: $(build)/vpc.tfplan
 
-.PHONY: subnet-egress-nat
+$(build)/vpc/terraform.tfplan:
+	cd vpc; make plan
+
 subnet-egress-nat: subnet-egress-nat/apply subnet-egress-nat/state
 
-.PHONY: subnet-egress-nat/state
 subnet-egress-nat/state: subnet-egress-nat/apply
 	cd subnet-egress-nat; make state
 
-.PHONY: subnet-egress-nat/apply
 subnet-egress-nat/apply: subnet-egress-nat/plan
 	cd subnet-egress-nat; make apply
 
-.PHONY: subnet-egress-nat/plan
-subnet-egress-nat/plan: build/subnet-egress-nat.tfplan
+subnet-egress-nat/plan: $(build)/subnet-egress-nat/terraform.tfplan
 
-build/subnet-egress-nat.tfplan:
+$(build)/subnet-egress-nat/terraform.tfplan:
 	cd subnet-egress-nat; make plan
 
-tf_aws_asg_elb/*.tf: 
+tf_aws_subnet_asg/*.tf: 
 	terraform get
 
-.PHONY: terraform
-.PHONY: terraform-get
-.PHONY: awscli
-.PHONY: aws_config
-.PHONY: curl
-.PHONY: jq
+.PHONY: terraform terraform-get awscli aws_config curl jq
 
 terraform: /usr/local/bin/terraform
 terraform-get: .terraform
@@ -126,17 +113,13 @@ destroy: after-destroy.tfstate
 .PHONY: destroy_plan
 destroy_plan: destroy.tfplan
 
-terraform.tfstate:
+$(build)/terraform.tfstate:
 
-destroy.tfplan: terraform.tfstate | terraform
-	terraform plan -input=false -destroy -out=destroy.tfplan
+$(build)/destroy.tfplan: $(build)/terraform.tfstate | terraform
+	terraform plan -input=false -destroy -out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate 
 
-after-destroy.tfstate: destroy.tfplan | terraform
-	terraform apply -state-out=after-destroy.tfstate destroy.tfplan
+$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
+	terraform apply -state-out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate $(build)/destroy.tfplan
 
 clean: 
-	rm -rf build
-	rm -f terraform.tfstate
-	rm -f after-destroy.tfstate
-	rm -f terraform.tfvars
-	rm -f destroy.tfplan
+	rm -rf $(build)

@@ -2,13 +2,33 @@
 
 coreos:
   units:
+    - name: etcd2.service
+      command: stop
+    - name: fleet.service
+      command: stop
+    - name: flanneld.service
+      command: stop
+    # - name: assign-subnet-default-route.service
+    #   enable: true
+    #   command: start
+    #   content: |
+    #     [Unit]
+    #     Description=Assign subnet default route to this instance
+    #     After=network-online.target
+    #
+    #     [Service]
+    #     Type=oneshot
+    #     RemainAfterExit=true
+    #     ExecStartPre=/usr/bin/printf 1 > /proc/sys/net/ipv4/ip_forward
+    #     ExecStart=/usr/bin/docker run nordstrom/awscli:1.7.34
     - name: subnet-nat-egress-iptables-rules.install.service
-      command: start
       enable: true
+      command: start
       content: |
         [Unit]
-        Description=AWS runtime environment installer
-        After=fleet.service
+        Description=Install iptables rules for NAT egress
+        After=network.target
+        Before=network-online.target
          
         [Service]
         Type=oneshot
