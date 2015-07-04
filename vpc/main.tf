@@ -7,7 +7,7 @@ provider "aws" {
 module "vpc" {
     source = "github.com/terraform-community-modules/tf_aws_vpc"
 
-    name = "innovation-platform-vpc"
+    name = "innovation-platform-vpc-dev"
 
     cidr = "172.33.0.0/16"
     private_subnets = "172.33.1.0/24,172.33.2.0/24,172.33.3.0/24"
