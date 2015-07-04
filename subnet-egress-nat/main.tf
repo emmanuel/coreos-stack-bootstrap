@@ -21,7 +21,7 @@ module "subnet-egress-nat-asg" {
     instance_type = "${var.ec2_instance_type}"
     iam_instance_profile = ""
     key_name = "${var.ec2_key_name}"
-    security_group_ids = "${aws_security_group.subnet-egress-nat-instances.id}"
+    security_group_ids = "${terraform_remote_state.vpc.output.subnet_egress_nat_instances_sg_id}"
     user_data = "${template_file.subnet-egress-nat-test-cloud_config.rendered}"
     # user_data = ""
 
@@ -43,53 +43,5 @@ resource "template_file" "subnet-egress-nat-test-cloud_config" {
 
     vars {
         network_prefix = "172.33"
-    }
-}
-
-resource "aws_security_group" "subnet-egress-nat-instances" {
-    name = "${var.stack_name}-subnet-egress-nat-instances-allow-egress"
-    description = "Allow egress traffic from DMZ instances"
-    vpc_id = "${terraform_remote_state.vpc.output.vpc_id}"
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        security_groups = [ "${aws_security_group.cluster_members.id}" ]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = [ "0.0.0.0/0" ]
-    }
-
-    tags {
-        Name = "allow_cluster_members_to_connect_to_subnet_egress_sg"
-    }
-}
-
-resource "aws_security_group" "cluster_members" {
-    name = "${var.stack_name}-cluster_members_allow_all"
-    description = "Allow all traffic between cluster members"
-    vpc_id = "${terraform_remote_state.vpc.output.vpc_id}"
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        self = true
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        self = true
-    }
-
-    tags {
-        Name = "allow_all_intra_cluster_traffic_sg"
     }
 }
