@@ -8,7 +8,7 @@ resource "terraform_remote_state" "vpc" {
     backend = "s3"
     config {
         bucket = "tf-remote-state"
-        key = "innovation-platform-prod/vpc/terraform.tfstate"
+        key = "innovation-platform-dev/vpc/terraform.tfstate"
     }
 }
 

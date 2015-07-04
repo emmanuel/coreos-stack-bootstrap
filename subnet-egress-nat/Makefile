@@ -14,7 +14,7 @@ push_state: | configure_state terraform
 	$(terraform) remote push
 
 configure_state: | terraform
-	$(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/subnet-egress-nat/terraform.tfstate"
+	$(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/subnet-egress-nat/terraform.tfstate"
 
 $(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
 	$(terraform) apply -state-out=$@ $(build)/terraform.tfplan

@@ -14,7 +14,7 @@ push_state: | configure_state terraform
 
 configure_state: export AWS_DEFAULT_REGION = $(region)
 configure_state: | terraform
-	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/vpc/terraform.tfstate"
+	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/vpc/terraform.tfstate"
 
 refresh_state: export AWS_DEFAULT_REGION = $(region)
 refresh_state: | terraform
