@@ -1,8 +1,7 @@
 # PATH=$(GOPATH)/bin:$$(PATH)
 build=../build/subnet-egress-nat
 region=us-west-2
-# terraform=terraform
-terraform=$(GOPATH)/bin/terraform
+terraform=terraform
 
 .PHONY: all apply plan push_state configure_state
 all:
@@ -45,7 +44,6 @@ $(build)/terraform.tfvars: ../build/keys.tfvars ../build/aws.tfvars ../build/sta
 	$(terraform) get
 
 terraform: /usr/local/bin/terraform
-# terraform: $(GOPATH)/bin/terraform
 terraform-get: .terraform
 awscli: /usr/local/bin/aws
 curl: /usr/bin/curl
