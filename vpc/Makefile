@@ -1,7 +1,7 @@
 build=../build/vpc
 region=us-west-2
 
-.PHONY: all apply plan push_state configure_state
+.PHONY: all apply plan push_state configure_state refresh_state
 all:
 
 apply: $(build)/terraform.tfstate push_state
@@ -13,6 +13,10 @@ push_state: | configure_state terraform
 
 configure_state: | terraform
 	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-prod/vpc/terraform.tfstate"
+
+refresh_state: | terraform
+	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate
+	rm $(build)/terraform.tfplan
 
 $(build)/terraform.tfstate: $(build)/terraform.tfplan
 	terraform apply -state=$@ $(build)/terraform.tfplan
