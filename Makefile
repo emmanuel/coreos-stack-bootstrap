@@ -24,8 +24,6 @@ $(build)/aws.tfvars: $(build)/availability_zones | $(build)
 	echo "# aws.tfvars: this file is machine generated. built at $$(date)" > $@
 	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
 	echo "availability_zones = \"$$(cat $(build)/availability_zones)\"" >> $@
-	echo "ec2_key_name = \"coreos-beta\"" >> $@
-	echo "ec2_instance_type = \"t2.small\"" >> $@
 
 $(build)/stack.tfvars: $(build)/stack_name $(build)/coreos_alpha_ami_id $(build)/etcd_discovery_url | $(build)
 	echo "# stack.tfvars: this file is machine generated. built at $$(date)" > $@

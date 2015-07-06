@@ -26,6 +26,8 @@ $(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars ../build/av
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
 	cat ../build/aws.tfvars >> $@
 	cat ../build/stack.tfvars >> $@
+	echo "ec2_key_name = \"coreos-beta\"" >> $@
+	echo "ec2_instance_type = \"t2.small\"" >> $@
 
 ../build/aws.tfvars:
 	cd ..; make build/aws.tfvars
