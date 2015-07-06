@@ -22,14 +22,10 @@ $(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
 $(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf *.tmpl ../tf_aws_subnet_asg/*.tf | terraform-get
 	$(terraform) plan -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -module-depth=2 -out=$@
 
-$(build)/terraform.tfvars: ../build/keys.tfvars ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones | $(build)
+$(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones | $(build)
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
-	cat ../build/keys.tfvars >> $@
 	cat ../build/aws.tfvars >> $@
 	cat ../build/stack.tfvars >> $@
-
-../build/keys.tfvars:
-	cd ..; make build/keys.tfvars
 
 ../build/aws.tfvars:
 	cd ..; make build/aws.tfvars

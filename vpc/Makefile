@@ -30,16 +30,12 @@ $(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf | $(build) .terraform
 	terraform plan -state=$(build)/terraform.tfstate -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
 
 $(build)/terraform.tfvars: export AWS_DEFAULT_REGION = $(region)
-$(build)/terraform.tfvars: ../build/keys.tfvars ../build/availability_zones | $(build)
+$(build)/terraform.tfvars: ../build/aws.tfvars | $(build)
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
-	cat ../build/keys.tfvars >> $@
-	echo "availability_zones = \"$$(cat ../build/availability_zones)\"" >> $@
+	cat ../build/aws.tfvars >> $@
 
-../build/keys.tfvars:
-	cd ..; make build/keys.tfvars
-
-../build/availability_zones:
-	cd ..; make build/availability_zones
+../build/aws.tfvars:
+	cd ..; make build/aws.tfvars
 
 terraform: /usr/local/bin/terraform
 terraform-get: .terraform

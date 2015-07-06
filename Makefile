@@ -15,20 +15,14 @@ $(build)/terraform.tfstate: $(build)/terraform.tfplan
 $(build)/terraform.tfplan: *.tf $(build)/terraform.tfvars $(build)/terraform.tfstate tf_aws_subnet_asg/*.tf | terraform-get
 	terraform plan -out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -module-depth=2
 
-$(build)/terraform.tfvars: $(build)/keys.tfvars $(build)/aws.tfvars $(build)/stack.tfvars
+$(build)/terraform.tfvars: $(build)/aws.tfvars $(build)/stack.tfvars
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > terraform.tfvars
-	cat $(build)/keys.tfvars >> $@
 	cat $(build)/aws.tfvars >> $@
 	cat $(build)/stack.tfvars >> $@
 
-$(build)/keys.tfvars: | $(build)
-	echo "# keys.tfvars: this file is machine generated. built at $$(date)" > $@
-	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
-	echo "aws_access_key = \"$$(cat $(HOME)/.aws/config | grep aws_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
-	echo "aws_secret_key = \"$$(cat $(HOME)/.aws/config | grep aws_secret_access_key | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
-
 $(build)/aws.tfvars: $(build)/availability_zones | $(build)
 	echo "# aws.tfvars: this file is machine generated. built at $$(date)" > $@
+	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
 	echo "availability_zones = \"$$(cat $(build)/availability_zones)\"" >> $@
 	echo "ec2_key_name = \"coreos-beta\"" >> $@
 	echo "ec2_instance_type = \"t2.small\"" >> $@
