@@ -19,7 +19,7 @@ module "subnet-egress-nat-asg" {
     iam_instance_profile = ""
     key_name = "${var.ec2_key_name}"
     security_group_ids = "${terraform_remote_state.vpc.output.subnet_egress_nat_instances_sg_id}"
-    user_data = "${template_file.subnet-egress-nat-test-cloud_config.rendered}"
+    user_data = "${template_file.cloud_config.rendered}"
 
     asg_name = "${var.stack_name}-subnet-egress-nat-asg"
     asg_max_size = 2
@@ -33,7 +33,7 @@ module "subnet-egress-nat-asg" {
     subnet_ids = "${terraform_remote_state.vpc.output.public_subnets}"
 }
 
-resource "template_file" "subnet-egress-nat-test-cloud_config" {
+resource "template_file" "cloud_config" {
     filename = "cloud_config.yaml.tmpl"
 
     vars {
