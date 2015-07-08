@@ -1,33 +1,37 @@
 build=../build/vpc
 region=us-west-2
+default_tfstate=$(build)/.terraform/terraform.tfstate
 
 .PHONY: all apply plan push_state configure_state refresh_state
 all:
 
-apply: $(build)/terraform.tfstate push_state
+apply: export AWS_DEFAULT_REGION = $(region)
+apply: plan
+	terraform apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
 
-plan: $(build)/terraform.tfplan
+plan: configure_state $(build)/terraform.tfplan
 
 push_state: export AWS_DEFAULT_REGION = $(region)
-push_state: | configure_state terraform
+push_state: | terraform
 	cd $(build); terraform remote push
 
-configure_state: export AWS_DEFAULT_REGION = $(region)
-configure_state: | terraform
+configure_state: $(default_tfstate) | terraform
+
+$(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/.terraform/terraform.tfstate: | $(build) terraform
 	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/vpc/terraform.tfstate"
 
 refresh_state: export AWS_DEFAULT_REGION = $(region)
-refresh_state: | terraform
-	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate
-	rm $(build)/terraform.tfplan
+refresh_state: $(default_tfstate) | terraform
+	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) && rm $(build)/terraform.tfplan
 
-$(build)/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
-$(build)/terraform.tfstate: $(build)/terraform.tfplan
-	terraform apply -state=$@ $(build)/terraform.tfplan
+# $(build)/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
+# $(build)/terraform.tfstate: $(build)/terraform.tfplan
+# 	terraform apply -state=$@ $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
 
 $(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
-$(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf | $(build) .terraform
-	terraform plan -state=$(build)/terraform.tfstate -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
+$(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_vpc/*.tf | $(build) .terraform
+	terraform plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
 
 $(build)/terraform.tfvars: export AWS_DEFAULT_REGION = $(region)
 $(build)/terraform.tfvars: ../build/aws.tfvars | $(build)
@@ -63,11 +67,9 @@ destroy: $(build)/after-destroy.tfstate
 
 destroy_plan: $(build)/destroy.tfplan
 
-$(build)/terraform.tfstate:
-
 $(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
-$(build)/destroy.tfplan: $(build)/terraform.tfstate | terraform
-	terraform plan -module-depth=2 -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -out=$@
+$(build)/destroy.tfplan: $(default_tfstate) | terraform
+	terraform plan -module-depth=2 -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -out=$@
 
 $(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
 $(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
