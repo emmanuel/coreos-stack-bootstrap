@@ -1,26 +1,44 @@
 # PATH=$(GOPATH)/bin:$$(PATH)
 build=../build/subnet-egress-nat
+default_tfstate=$(build)/.terraform/terraform.tfstate
 region=us-west-2
 terraform=terraform
 
 .PHONY: all apply plan push_state configure_state
 all:
 
-apply: $(build)/terraform.tfstate
+apply: export AWS_DEFAULT_REGION = $(region)
+apply: $(build)/terraform.tfplan
+	$(terraform) apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
 
-plan: $(build)/terraform.tfplan
+visual: $(build)/terraform_view.png
+	open $(build)/terraform_view.png
 
+plan: configure_state $(build)/terraform.tfplan
+
+push_state: export AWS_DEFAULT_REGION = $(region)
 push_state: | configure_state terraform
-	$(terraform) remote push
+	cd $(build); $(terraform) remote push
 
-configure_state: | terraform
-	$(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/subnet-egress-nat/terraform.tfstate"
+configure_state: export AWS_DEFAULT_REGION = $(region)
+configure_state: $(default_tfstate) | terraform
 
-$(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
-	$(terraform) apply -state-out=$@ $(build)/terraform.tfplan
+$(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/.terraform/terraform.tfstate: | $(build) terraform
+	cd $(build); $(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/subnet-egress-nat/terraform.tfstate"
 
-$(build)/terraform.tfplan: $(build)/terraform.tfvars *.tf *.tmpl ../tf_aws_subnet_asg/*.tf | terraform-get
-	$(terraform) plan -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate -module-depth=2 -out=$@
+refresh_state: export AWS_DEFAULT_REGION = $(region)
+refresh_state: $(default_tfstate) | terraform
+	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) && rm $(build)/terraform.tfplan
+
+$(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
+$(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) .terraform
+	$(terraform) plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
+
+$(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) terraform dot
+	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
 
 $(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones | $(build)
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
@@ -46,6 +64,7 @@ terraform-get: .terraform
 awscli: /usr/local/bin/aws
 curl: /usr/bin/curl
 jq: /usr/local/bin/jq
+dot: /usr/local/bin/dot
 
 .terraform: | terraform
 	$(terraform) get
@@ -62,6 +81,9 @@ $$(GOPATH)/bin/terraform:
 /usr/local/bin/jq:
 	brew install jq
 
+/usr/local/bin/dot:
+	brew install graphviz
+
 $(build):
 	mkdir -p $@
 
@@ -70,13 +92,15 @@ destroy: $(build)/after-destroy.tfstate
 
 destroy_plan: $(build)/destroy.tfplan
 
-$(build)/terraform.tfstate:
+$(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
+$(build)/destroy.tfplan: $(default_tfstate) | terraform
+	terraform plan -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -module-depth=2 -out=$@
 
-$(build)/destroy.tfplan: $(build)/terraform.tfstate | terraform
-	terraform plan -input=false -destroy -out=$@ -var-file=$(build)/terraform.tfvars -state=$(build)/terraform.tfstate
-
+$(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
 $(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
-	terraform apply -state-out=$@ -state=$(build)/terraform.tfstate $(build)/destroy.tfplan
+	terraform apply -state-out=$@ $(build)/destroy.tfplan && rm $(build)/destroy.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
 
 clean:
 	rm -rf $(build)
