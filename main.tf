@@ -6,7 +6,7 @@ resource "terraform_remote_state" "vpc" {
     backend = "s3"
     config {
         bucket = "tf-remote-state"
-        key = "innovation-platform-dev/vpc.tfstate"
+        key = "innovation-platform-dev/vpc/terraform.tfstate"
     }
 }
 
@@ -14,7 +14,7 @@ resource "terraform_remote_state" "subnet-egress-nat" {
     backend = "s3"
     config {
         bucket = "tf-remote-state"
-        key = "innovation-platform-dev/subnet-egress-nat.tfstate"
+        key = "innovation-platform-dev/subnet-egress-nat/terraform.tfstate"
     }
 }
 
