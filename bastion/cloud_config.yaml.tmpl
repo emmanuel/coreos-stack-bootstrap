@@ -1,0 +1,12 @@
+#cloud-config
+
+coreos:
+  units:
+    - name: etcd2.service
+      command: stop
+    - name: fleet.service
+      command: stop
+    - name: flanneld.service
+      command: stop
+    - name: sshd.service
+      command: start

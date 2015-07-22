@@ -1,0 +1,96 @@
+build=../build/bastion
+default_tfstate=$(build)/.terraform/terraform.tfstate
+region=us-west-2
+terraform=terraform
+
+.PHONY: all apply plan push_state configure_state
+all:
+
+apply: export AWS_DEFAULT_REGION = $(region)
+apply: plan
+	terraform apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
+
+visual: $(build)/terraform_view.png
+	open $(build)/terraform_view.png
+
+plan: configure_state $(build)/terraform.tfplan
+
+push_state: | terraform
+	cd $(build); terraform remote push
+
+configure_state: $(default_tfstate) | terraform
+
+$(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/.terraform/terraform.tfstate: | terraform
+	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/bastion/terraform.tfstate"
+
+refresh_state: export AWS_DEFAULT_REGION = $(region)
+refresh_state: $(default_tfstate) | terraform
+	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) && rm $(build)/terraform.tfplan
+
+# $(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
+# 	$(terraform) apply -state-out=$@ $(build)/terraform.tfplan
+
+$(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
+$(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf *.tmpl | $(build)
+	terraform plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
+
+$(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) terraform dot
+	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
+
+$(build)/terraform.tfvars: export AWS_DEFAULT_REGION = $(region)
+$(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars | $(build)
+	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
+	cat ../build/aws.tfvars >> $@
+	cat ../build/stack.tfvars >> $@
+	echo "ec2_key_name = \"coreos-beta\"" >> $@
+	echo "ec2_instance_type = \"t2.small\"" >> $@
+	echo "route53_zone_id = \"ZM70TX7ZBX2O0\"" >> $@
+
+../build/aws.tfvars:
+	cd ..; make build/aws.tfvars
+
+../build/stack.tfvars:
+	cd ..; make build/stack.tfvars
+
+terraform: /usr/local/bin/terraform
+awscli: /usr/local/bin/aws
+curl: /usr/bin/curl
+jq: /usr/local/bin/jq
+dot: /usr/local/bin/dot
+
+$$(GOPATH)/bin/terraform:
+	go get github.com/hashicorp/terraform
+
+/usr/local/bin/terraform:
+	brew install terraform
+
+/usr/local/bin/aws:
+	brew install awscli
+
+/usr/local/bin/jq:
+	brew install jq
+
+/usr/local/bin/dot:
+	brew install graphviz
+
+$(build):
+	mkdir -p $@
+
+.PHONY: destroy destroy_plan
+destroy: $(build)/after-destroy.tfstate
+
+destroy_plan: $(build)/destroy.tfplan
+
+$(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
+$(build)/destroy.tfplan: $(default_tfstate) | terraform
+	terraform plan -input=false -destroy -out=$@ -var-file=$(build)/terraform.tfvars -state=$(default_tfstate)
+
+$(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
+	terraform apply -state-out=$@ -state=$(default_tfstate) $(build)/destroy.tfplan
+
+clean:
+	rm -rf $(build)
