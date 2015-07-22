@@ -21,7 +21,7 @@ resource "aws_security_group" "cluster_members" {
     vpc_id = "${module.vpc.vpc_id}"
 
     tags {
-        Name = "${module.vpc.vpc_id}-cluster_members-sg"
+        Name = "cluster_members"
     }
 }
 
@@ -50,7 +50,6 @@ resource "aws_security_group_rule" "cluster_members_allow_bastion_instances_ssh_
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    # cidr_blocks = ["0.0.0.0/0"]
 
     security_group_id = "${aws_security_group.cluster_members.id}"
     source_security_group_id = "${aws_security_group.bastion_instances.id}"
@@ -58,7 +57,7 @@ resource "aws_security_group_rule" "cluster_members_allow_bastion_instances_ssh_
 
 resource "aws_security_group" "bastion_instances" {
     name = "${module.vpc.vpc_id}-bastion_instances"
-    description = "Allow SSH ingress traffic to bastion instances"
+    description = "Includes all bastion instances"
     vpc_id = "${module.vpc.vpc_id}"
 
     tags {
@@ -87,7 +86,7 @@ resource "aws_security_group_rule" "bastion_instances_allow_ssh_egress_to_cluste
 }
 
 resource "aws_security_group" "subnet_egress_nat_instances" {
-    name = "${module.vpc.vpc_id}-subnet_egress_nat_instances-allow-egress"
+    name = "${module.vpc.vpc_id}-subnet_egress_nat_instances"
     description = "Allow egress traffic from DMZ instances"
     vpc_id = "${module.vpc.vpc_id}"
 

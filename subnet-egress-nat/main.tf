@@ -31,7 +31,6 @@ resource "template_file" "cloud_config" {
 }
 
 resource "aws_launch_configuration" "main" {
-    # name = "${var.stack_name}-subnet-egress-nat-launch_config-${element(split(",", terraform_remote_state.vpc.output.private_route_table_ids), count.index)}"
     count = "${length(split(",", var.availability_zones))}"
 
     image_id = "${var.coreos_ami_id}"

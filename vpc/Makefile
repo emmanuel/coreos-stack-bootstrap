@@ -1,6 +1,6 @@
 build=../build/vpc
-region=us-west-2
 default_tfstate=$(build)/.terraform/terraform.tfstate
+region=us-west-2
 
 .PHONY: all apply plan push_state configure_state refresh_state
 all:
@@ -80,7 +80,7 @@ destroy_plan: $(build)/destroy.tfplan
 
 $(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
 $(build)/destroy.tfplan: $(default_tfstate) | terraform
-	terraform plan -module-depth=2 -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -out=$@
+	terraform plan -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -module-depth=2 -out=$@
 
 $(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
 $(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
