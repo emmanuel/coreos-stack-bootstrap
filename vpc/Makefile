@@ -10,6 +10,9 @@ apply: plan
 	terraform apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
 	mv .terraform/terraform.tfstate $(default_tfstate)
 
+visual: $(build)/terraform_view.png
+	open $(build)/terraform_view.png
+
 plan: configure_state $(build)/terraform.tfplan
 
 push_state: export AWS_DEFAULT_REGION = $(region)
@@ -34,6 +37,9 @@ $(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
 $(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_vpc/*.tf | $(build) .terraform
 	terraform plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
 
+$(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) terraform dot
+	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
+
 $(build)/terraform.tfvars: export AWS_DEFAULT_REGION = $(region)
 $(build)/terraform.tfvars: ../build/aws.tfvars | $(build)
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
@@ -47,6 +53,7 @@ terraform-get: .terraform
 awscli: /usr/local/bin/aws
 curl: /usr/bin/curl
 jq: /usr/local/bin/jq
+dot: /usr/local/bin/dot
 
 .terraform: | terraform
 	terraform get
@@ -59,6 +66,9 @@ jq: /usr/local/bin/jq
 
 /usr/local/bin/jq:
 	brew install jq
+
+/usr/local/bin/dot:
+	brew install graphviz
 
 $(build):
 	mkdir -p $(build)
