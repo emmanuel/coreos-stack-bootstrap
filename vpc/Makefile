@@ -8,6 +8,7 @@ all:
 apply: export AWS_DEFAULT_REGION = $(region)
 apply: plan
 	terraform apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
 
 plan: configure_state $(build)/terraform.tfplan
 
@@ -74,6 +75,8 @@ $(build)/destroy.tfplan: $(default_tfstate) | terraform
 $(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
 $(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
 	terraform apply -state-out=$@ $(build)/destroy.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
 
 clean:
 	rm -rf $(build)
