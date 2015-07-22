@@ -7,7 +7,7 @@ terraform=terraform
 all:
 
 apply: export AWS_DEFAULT_REGION = $(region)
-apply: plan
+apply: $(build)/terraform.tfplan
 	terraform apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
 	mv .terraform/terraform.tfstate $(default_tfstate)
 	make push_state
@@ -23,20 +23,18 @@ push_state: | terraform
 configure_state: $(default_tfstate) | terraform
 
 $(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
-$(build)/.terraform/terraform.tfstate: | terraform
+$(build)/.terraform/terraform.tfstate: | $(build) terraform
 	cd $(build); terraform remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/bastion/terraform.tfstate"
 
 refresh_state: export AWS_DEFAULT_REGION = $(region)
 refresh_state: $(default_tfstate) | terraform
 	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) && rm $(build)/terraform.tfplan
 
-# $(build)/terraform.tfstate: $(build)/terraform.tfplan | $(build)
-# 	$(terraform) apply -state-out=$@ $(build)/terraform.tfplan
-
 $(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
 $(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf *.tmpl | $(build)
 	terraform plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
 
+$(build)/terraform_view.png: export AWS_DEFAULT_REGION = $(region)
 $(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) terraform dot
 	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
 
@@ -90,7 +88,9 @@ $(build)/destroy.tfplan: $(default_tfstate) | terraform
 
 $(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
 $(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
-	terraform apply -state-out=$@ -state=$(default_tfstate) $(build)/destroy.tfplan
+	terraform apply -state-out=$@ -state=$(default_tfstate) $(build)/destroy.tfplan && rm $(build)/destroy.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
 
 clean:
 	rm -rf $(build)

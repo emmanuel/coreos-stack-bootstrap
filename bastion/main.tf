@@ -8,10 +8,18 @@ resource "terraform_remote_state" "vpc" {
         bucket = "tf-remote-state"
         key = "innovation-platform-dev/vpc/terraform.tfstate"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "template_file" "cloud_config" {
     filename = "cloud_config.yaml.tmpl"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_route53_record" "ssh" {
@@ -24,11 +32,16 @@ resource "aws_route53_record" "ssh" {
         zone_id = "${aws_elb.main.zone_id}"
         evaluate_target_health = true
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_elb" "main" {
     name = "${terraform_remote_state.vpc.output.vpc_id}-bastion-elb"
-    availability_zones = [ "${split(",", var.availability_zones)}" ]
+    # availability_zones = [ "${split(",", var.availability_zones)}" ]
+    subnets = [ "${split(",", terraform_remote_state.vpc.output.public_subnets)}" ]
 
     listener {
         instance_port = 22
@@ -50,20 +63,27 @@ resource "aws_elb" "main" {
     tags {
         Name = "bastion-elb"
     }
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_launch_configuration" "main" {
-    name = "${terraform_remote_state.vpc.output.vpc_id}-bastion-launch_config"
+    # name = "${terraform_remote_state.vpc.output.vpc_id}-bastion-launch_config"
     image_id = "${var.coreos_ami_id}"
     instance_type = "${var.ec2_instance_type}"
     # iam_instance_profile = "${var.iam_instance_profile}"
     key_name = "${var.ec2_key_name}"
     security_groups = [ "${terraform_remote_state.vpc.output.bastion_instances_sg_id}" ]
     user_data = "${template_file.cloud_config.rendered}"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_autoscaling_group" "main" {
-    depends_on = [ "aws_launch_configuration.main" ]
     name = "${terraform_remote_state.vpc.output.vpc_id}-bastion-asg"
 
     availability_zones = [ "${split(",", var.availability_zones)}" ]
@@ -77,4 +97,8 @@ resource "aws_autoscaling_group" "main" {
     health_check_grace_period = "300"
     health_check_type = "EC2"
     default_cooldown = "120"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
