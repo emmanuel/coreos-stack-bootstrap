@@ -85,6 +85,16 @@ resource "aws_security_group_rule" "bastion_instances_allow_ssh_egress_to_cluste
     source_security_group_id = "${aws_security_group.cluster_members.id}"
 }
 
+resource "aws_security_group_rule" "bastion_instances_allow_ssh_egress_to_subnet_egress_nat_instances" {
+    type = "egress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+
+    security_group_id = "${aws_security_group.bastion_instances.id}"
+    source_security_group_id = "${aws_security_group.subnet_egress_nat_instances.id}"
+}
+
 resource "aws_security_group" "subnet_egress_nat_instances" {
     name = "${module.vpc.vpc_id}-subnet_egress_nat_instances"
     description = "Allow egress traffic from DMZ instances"
@@ -95,6 +105,13 @@ resource "aws_security_group" "subnet_egress_nat_instances" {
         to_port = 0
         protocol = "-1"
         security_groups = [ "${aws_security_group.cluster_members.id}" ]
+    }
+
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        security_groups = [ "${aws_security_group.bastion_instances.id}" ]
     }
 
     egress {
