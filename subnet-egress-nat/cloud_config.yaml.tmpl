@@ -8,6 +8,9 @@ coreos:
       command: stop
     - name: flanneld.service
       command: stop
+    # iptables-restore.service loads /var/lib/iptables/rules-save (defined below)
+    - name: iptables-restore.service
+      enable: true
     - name: aws-environment.install.service
       command: start
       enable: true
@@ -53,8 +56,8 @@ coreos:
         [Install]
         WantedBy=early-docker.target
     - name: subnet_egress_nat.iptables_rules.install.service
-      enable: true
-      command: start
+      enable: false
+      command: stop
       content: |
         [Unit]
         Description=Install iptables rules for subnet egress NAT
@@ -77,32 +80,38 @@ write_files:
          iptables -t nat -C POSTROUTING -o eth0 -s ${vpc_cidr_range} -j MASQUERADE 2> /dev/null ||
          iptables -t nat -A POSTROUTING -o eth0 -s ${vpc_cidr_range} -j MASQUERADE ) ||
              exit 1
-  - path: /opt/bin/enable_nat_experimental
-    permissions: 0755
-    owner: root
+  # /var/lib/iptables/rules-save from: http://www.jimmycuadra.com/posts/securing-coreos-with-iptables/
+  # rules from: https://github.com/terraform-community-modules/tf_aws_nat/blob/e591cf826bc3fa096b7fffa835bd967bcea05b74/nat.conf
+  - path: /var/lib/iptables/rules-save
+    permissions: 0644
+    owner: root:root
     content: |
-      #!/bin/bash
-      # thanks! https://github.com/terraform-community-modules/tf_aws_nat/blob/e591cf826bc3fa096b7fffa835bd967bcea05b74/nat.conf
-      echo 1 > /proc/sys/net/ipv4/ip_forward
-      echo 655361 > /proc/sys/net/netfilter/nf_conntrack_max
-      
-      iptables -N LOGGINGF
-      iptables -N LOGGINGI
-      iptables -A LOGGINGF -m limit --limit 2/min -j LOG --log-prefix "IPTables-FORWARD-Dropped: " --log-level 4
-      iptables -A LOGGINGI -m limit --limit 2/min -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
-      iptables -A LOGGINGF -j DROP
-      iptables -A LOGGINGI -j DROP
-      iptables -A FORWARD -s ${vpc_cidr_range} -j ACCEPT
-      iptables -A FORWARD -j LOGGINGF
-      iptables -P FORWARD DROP
-      iptables -I FORWARD -m state --state "ESTABLISHED,RELATED" -j ACCEPT
-      iptables -t nat -I POSTROUTING -s ${vpc_cidr_range} -d 0.0.0.0/0 -j MASQUERADE
-      iptables -A INPUT -s ${vpc_cidr_range} -j ACCEPT
-      iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
-      iptables -I INPUT -m state --state "ESTABLISHED,RELATED" -j ACCEPT
-      iptables -I INPUT -i lo -j ACCEPT
-      iptables -A INPUT -j LOGGINGI
-      iptables -P INPUT DROP
+      *filter
+      :INPUT DROP [0:0]
+      :FORWARD DROP [0:0]
+      :OUTPUT ACCEPT [0:0]
+      :LOGGINGF DROP [0:0]
+      :LOGGINGI DROP [0:0]
+      [0:0] -A INPUT -i lo -j ACCEPT
+      [0:0] -A INPUT -s ${vpc_cidr_range} -j ACCEPT
+      [0:0] -A INPUT -m state --state "ESTABLISHED,RELATED" -j ACCEPT
+      [0:0] -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
+      [0:0] -A INPUT -p icmp -m icmp --icmp-type 0 -j ACCEPT
+      [0:0] -A INPUT -p icmp -m icmp --icmp-type 3 -j ACCEPT
+      [0:0] -A INPUT -p icmp -m icmp --icmp-type 11 -j ACCEPT
+      [0:0] -A INPUT -j LOGGINGI
+      [0:0] -A FORWARD -s ${vpc_cidr_range} -j ACCEPT
+      [0:0] -A FORWARD -m state --state "ESTABLISHED,RELATED" -j ACCEPT
+      [0:0] -A FORWARD -j LOGGINGF
+      [0:0] -A LOGGINGI -m limit --limit 2/min -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
+      [0:0] -A LOGGINGF -m limit --limit 2/min -j LOG --log-prefix "IPTables-FORWARD-Dropped: " --log-level 4
+      COMMIT
+      *nat
+      :PREROUTING ACCEPT [0:0]
+      :OUTPUT ACCEPT [0:0]
+      :POSTROUTING ACCEPT [0:0]
+      [0:0] -A POSTROUTING -s ${vpc_cidr_range} -o eth0 -j MASQUERADE
+      COMMIT
   - path: /opt/bin/disable_source_destination_checks
     permissions: 0755
     owner: root
