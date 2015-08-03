@@ -1,8 +1,10 @@
 # PATH=$(GOPATH)/bin:$$(PATH)
-build=../build/subnet-egress-nat
-default_tfstate=$(build)/.terraform/terraform.tfstate
-region=us-west-2
-terraform=terraform
+build := ../build/subnet-egress-nat
+default_tfstate := $(build)/.terraform/terraform.tfstate
+region := us-west-2
+terraform := terraform
+ec2_key_name := coreos-beta
+ec2_instance_type := t2.micro
 
 .PHONY: all apply plan push_state configure_state
 all:
@@ -44,8 +46,8 @@ $(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars ../build/av
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
 	cat ../build/aws.tfvars >> $@
 	cat ../build/stack.tfvars >> $@
-	echo "ec2_key_name = \"coreos-beta\"" >> $@
-	echo "ec2_instance_type = \"t2.small\"" >> $@
+	echo "ec2_key_name = \"$(ec2_key_name)\"" >> $@
+	echo "ec2_instance_type = \"$(ec2_instance_type)\"" >> $@
 
 ../build/aws.tfvars:
 	cd ..; make build/aws.tfvars
