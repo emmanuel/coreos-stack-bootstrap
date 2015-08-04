@@ -1,5 +1,6 @@
 build=build
 region=us-west-2
+dns_domain_root := cloud.nlab.io
 
 .PHONY: all apply plan
 
@@ -20,10 +21,12 @@ $(build)/terraform.tfvars: $(build)/aws.tfvars $(build)/stack.tfvars
 	cat $(build)/aws.tfvars >> $@
 	cat $(build)/stack.tfvars >> $@
 
-$(build)/aws.tfvars: $(build)/availability_zones | $(build)
+$(build)/aws.tfvars: $(build)/availability_zones $(build)/aws_account_id $(build)/aws_region $(build)/route53_zone_id | $(build)
 	echo "# aws.tfvars: this file is machine generated. built at $$(date)" > $@
-	echo "aws_region = \"$$(cat $(HOME)/.aws/config | grep region | head -1 | cut -f2 -d= | tr -d '[[:space:]]')\"" >> $@
+	echo "aws_account_id = \"$$(cat $(build)/aws_account_id)\"" >> $@
+	echo "aws_region = \"$$(cat $(build)/aws_region)\"" >> $@
 	echo "availability_zones = \"$$(cat $(build)/availability_zones)\"" >> $@
+	echo "route53_zone_id = \"$$(cat $(build)/route53_zone_id)\"" >> $@
 
 $(build)/stack.tfvars: $(build)/stack_name $(build)/coreos_alpha_ami_id $(build)/etcd_discovery_url | $(build)
 	echo "# stack.tfvars: this file is machine generated. built at $$(date)" > $@
@@ -34,20 +37,29 @@ $(build)/stack.tfvars: $(build)/stack_name $(build)/coreos_alpha_ami_id $(build)
 $(build)/coreos_alpha_ami_id: $(build)/coreos_production_ami_all.json | jq
 	cat $(build)/coreos_production_ami_all.json | jq -r ".amis | map(select(\"$(region)\" == .name))[0].hvm" > $@
 
-$(build)/availability_zones: $(build)/ec2_availability_zones.json | jq
-	cat $(build)/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > $@
 
 $(build)/etcd_discovery_url: | $(build) curl
 	curl -s https://discovery.etcd.io/new?size=3 > $@
+$(build)/aws_account_id: | awscli jq
+	aws iam get-user | jq -r .User.Arn | cut -d: -f5 > $@
 
 $(build)/coreos_production_ami_all.json: | $(build) curl
 	curl -sk https://alpha.release.core-os.net/amd64-usr/current/coreos_production_ami_all.json > $@
+$(build)/aws_region: 
+	grep region $(HOME)/.aws/config | head -1 | cut -f2 -d= | tr -d '[[:space:]]' > $@
+
+$(build)/availability_zones: $(build)/ec2_availability_zones.json | jq
+	cat $(build)/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > $@
 
 $(build)/ec2_availability_zones.json: | $(build) awscli
 	aws ec2 describe-availability-zones --region="$(region)" --output="json" > $@
 
 $(build)/stack_name: | $(build)
 	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > $@
+
+$(build)/route53_zone_id: | $(build)
+	# .HostedZones[].Id looks like "/hostedzone/ZM70TX7ZBX2O0"
+	aws route53 list-hosted-zones | jq -r '.HostedZones | map(select(.Name=="$(dns_domain_root)."))[0].Id' | cut -d/ -f3 > $@
 
 .PHONY: vpc vpc/state vpc/apply vpc/plan subnet-egress-nat subnet-egress-nat/state subnet-egress-nat/apply subnet-egress-nat/plan subnet-egress-nat/state
 vpc: vpc/apply
