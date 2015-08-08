@@ -90,8 +90,8 @@ write_files:
       :INPUT DROP [0:0]
       :FORWARD DROP [0:0]
       :OUTPUT ACCEPT [0:0]
-      :LOGGINGF DROP [0:0]
-      :LOGGINGI DROP [0:0]
+      -N LOGGINGF
+      -N LOGGINGI
       [0:0] -A INPUT -i lo -j ACCEPT
       [0:0] -A INPUT -s ${vpc_cidr_range} -j ACCEPT
       [0:0] -A INPUT -m state --state "ESTABLISHED,RELATED" -j ACCEPT
@@ -105,6 +105,10 @@ write_files:
       [0:0] -A FORWARD -j LOGGINGF
       [0:0] -A LOGGINGI -m limit --limit 2/min -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
       [0:0] -A LOGGINGF -m limit --limit 2/min -j LOG --log-prefix "IPTables-FORWARD-Dropped: " --log-level 4
+      [0:0] -A LOGGINGI -m limit --limit 2/min -j LOG --log-prefix "IPTables-INPUT-Dropped: " --log-level 4
+      [0:0] -A LOGGINGF -m limit --limit 2/min -j LOG --log-prefix "IPTables-FORWARD-Dropped: " --log-level 4
+      [0:0] -A LOGGINGF -j DROP
+      [0:0] -A LOGGINGI -j DROP
       COMMIT
       *nat
       :PREROUTING ACCEPT [0:0]
