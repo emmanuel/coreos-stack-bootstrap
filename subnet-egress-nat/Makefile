@@ -5,104 +5,19 @@ region := us-west-2
 terraform := terraform
 ec2_key_name := coreos-beta
 ec2_instance_type := t2.micro
+remote_state_s3_bucket := tf-remote-state
+remote_state_s3_key := innovation-platform/dev/subnet-egress-nat/terraform.tfstate
 
-.PHONY: all apply plan push_state configure_state
-all:
+include ../Makefile.shared # defines vpc_cidr_range
+include ../Makefile.utils
 
-apply: export AWS_DEFAULT_REGION = $(region)
-apply: $(build)/terraform.tfplan
-	$(terraform) apply -state=$(default_tfstate) $(build)/terraform.tfplan && rm $(build)/terraform.tfplan
-	mv .terraform/terraform.tfstate $(default_tfstate)
-	make push_state
-
-visual: $(build)/terraform_view.png
-	open $(build)/terraform_view.png
-
-plan: configure_state $(build)/terraform.tfplan
-
-push_state: export AWS_DEFAULT_REGION = $(region)
-push_state: | configure_state terraform
-	cd $(build); $(terraform) remote push
-
-configure_state: export AWS_DEFAULT_REGION = $(region)
-configure_state: $(default_tfstate) | terraform
-
-$(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
-$(build)/.terraform/terraform.tfstate: | $(build) terraform
-	cd $(build); $(terraform) remote config --backend=s3 --backend-config="bucket=tf-remote-state" --backend-config="key=innovation-platform-dev/subnet-egress-nat/terraform.tfstate"
-
-refresh_state: export AWS_DEFAULT_REGION = $(region)
-refresh_state: $(default_tfstate) | terraform
-	terraform refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) && rm $(build)/terraform.tfplan
-
-$(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
-$(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) .terraform
+$(build)/terraform.tfplan: $(default_tfstate) $(build)/terraform.tfvars *.tf cloud_config.yaml.tmpl | $(build) .terraform
 	$(terraform) plan -state=$(default_tfstate) -var-file=$(build)/terraform.tfvars -module-depth=2 -out=$@
 
-$(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf ../tf_aws_subnet_asg/*.tf | $(build) terraform dot
-	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
-
-$(build)/terraform.tfvars: ../build/aws.tfvars ../build/stack.tfvars ../build/availability_zones | $(build)
+$(build)/terraform.tfvars: ../build/aws.tfvars ../build/coreos_stable_ami_id | $(build)
 	echo "# terraform.tfvars: this file is machine generated. built at $$(date)" > $@
 	cat ../build/aws.tfvars >> $@
-	cat ../build/stack.tfvars >> $@
+	echo "vpc_cidr_range = \"$(vpc_cidr_range)\"" >> $@
+	echo "coreos_ami_id = \"$$(cat ../build/coreos_stable_ami_id)\"" >> $@
 	echo "ec2_key_name = \"$(ec2_key_name)\"" >> $@
 	echo "ec2_instance_type = \"$(ec2_instance_type)\"" >> $@
-
-../build/aws.tfvars:
-	cd ..; make build/aws.tfvars
-
-../build/stack.tfvars:
-	cd ..; make build/stack.tfvars
-
-../build/availability_zones:
-	cd ..; make build/availability_zones
-
-../tf_aws_subnet_asg/*.tf: 
-	$(terraform) get
-
-terraform: /usr/local/bin/terraform
-terraform-get: .terraform
-awscli: /usr/local/bin/aws
-curl: /usr/bin/curl
-jq: /usr/local/bin/jq
-dot: /usr/local/bin/dot
-
-.terraform: | terraform
-	$(terraform) get
-
-$$(GOPATH)/bin/terraform:
-	go get github.com/hashicorp/terraform
-
-/usr/local/bin/terraform:
-	brew install terraform
-
-/usr/local/bin/aws:
-	brew install awscli
-
-/usr/local/bin/jq:
-	brew install jq
-
-/usr/local/bin/dot:
-	brew install graphviz
-
-$(build):
-	mkdir -p $@
-
-.PHONY: destroy destroy_plan
-destroy: $(build)/after-destroy.tfstate
-
-destroy_plan: $(build)/destroy.tfplan
-
-$(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
-$(build)/destroy.tfplan: $(default_tfstate) | terraform
-	terraform plan -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -module-depth=2 -out=$@
-
-$(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
-$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
-	terraform apply -state-out=$@ $(build)/destroy.tfplan && rm $(build)/destroy.tfplan
-	mv .terraform/terraform.tfstate $(default_tfstate)
-	make push_state
-
-clean:
-	rm -rf $(build)

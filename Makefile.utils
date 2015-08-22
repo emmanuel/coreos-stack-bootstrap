@@ -1,0 +1,24 @@
+terraform ?= terraform
+
+.PHONY: terraform awscli curl jq dot
+
+terraform: /usr/local/bin/terraform
+awscli: /usr/local/bin/aws
+curl: /usr/bin/curl
+jq: /usr/local/bin/jq
+dot: /usr/local/bin/dot
+
+.terraform: | terraform
+	$(terraform) get
+
+/usr/local/bin/terraform:
+	brew install terraform
+
+/usr/local/bin/aws:
+	brew install awscli
+
+/usr/local/bin/jq:
+	brew install jq
+
+/usr/local/bin/dot:
+	brew install graphviz

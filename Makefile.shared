@@ -1,0 +1,80 @@
+vpc_cidr_range := 172.20.0.0/16
+remote_state_s3_bucket ?= tf-remote-state
+
+.PHONY: all apply plan push_state configure_state destroy destroy_plan
+all:
+
+apply: export AWS_DEFAULT_REGION = $(region)
+apply: $(build)/terraform.tfplan
+	-$(terraform) apply -state=$(default_tfstate) $(build)/terraform.tfplan
+	rm $(build)/terraform.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
+
+visual: $(build)/terraform_view.png
+	open $(build)/terraform_view.png
+
+plan: configure_state $(build)/terraform.tfplan
+
+push_state: export AWS_DEFAULT_REGION = $(region)
+push_state: | configure_state terraform
+	cd $(build); $(terraform) remote push
+
+configure_state: export AWS_DEFAULT_REGION = $(region)
+configure_state: $(default_tfstate) | terraform
+
+destroy: $(build)/after-destroy.tfstate
+
+destroy_plan: $(build)/destroy.tfplan
+
+refresh_state: export AWS_DEFAULT_REGION = $(region)
+refresh_state: $(default_tfstate) | terraform
+	$(terraform) refresh -var-file=$(build)/terraform.tfvars -state=$(default_tfstate)
+	rm $(build)/terraform.tfplan
+
+$(build)/terraform.tfplan: export AWS_DEFAULT_REGION = $(region)
+
+$(build)/terraform_view.png: $(default_tfstate) $(build)/terraform.tfvars *.tf | $(build) terraform dot
+	$(terraform) graph -verbose -module-depth=2 | dot -Tpng > $@
+
+$(build)/.terraform/terraform.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/.terraform/terraform.tfstate: | $(build) terraform
+	cd $(build); $(terraform) remote config --backend=s3 --backend-config="bucket=$(remote_state_s3_bucket)" --backend-config="key=$(remote_state_s3_key)"
+
+$(build)/destroy.tfplan: export AWS_DEFAULT_REGION = $(region)
+$(build)/destroy.tfplan: $(default_tfstate) | terraform
+	$(terraform) plan -input=false -destroy -var-file=$(build)/terraform.tfvars -state=$(default_tfstate) -module-depth=2 -out=$@
+
+$(build)/after-destroy.tfstate: export AWS_DEFAULT_REGION = $(region)
+$(build)/after-destroy.tfstate: $(build)/destroy.tfplan | terraform
+	-$(terraform) apply -state-out=$@ $(build)/destroy.tfplan
+	rm $(build)/destroy.tfplan
+	mv .terraform/terraform.tfstate $(default_tfstate)
+	make push_state
+
+$(build):
+	mkdir -p $@
+
+clean:
+	rm -rf $(build)
+
+../build/aws.tfvars:
+	cd ..; make build/aws.tfvars
+
+../build/stack.tfvars:
+	cd ..; make build/stack.tfvars
+
+../build/coreos_stable_ami_id:
+	cd ..; make build/coreos_stable_ami_id
+
+../build/coreos_beta_ami_id:
+	cd ..; make build/coreos_beta_ami_id
+
+../build/coreos_alpha_ami_id:
+	cd ..; make build/coreos_alpha_ami_id
+
+../build/stack_name:
+	cd ..; make build/stack_name
+
+../build/dns_domain_root:
+	cd ..; make build/dns_domain_root
