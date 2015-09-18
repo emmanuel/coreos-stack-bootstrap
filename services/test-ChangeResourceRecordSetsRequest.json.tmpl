@@ -1,0 +1,14 @@
+{
+    "Comment": "string",
+    "Changes": [{
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+            "Name": "${stack_name}-kube-apiserver.cloud.nlab.io.",
+            "Type": "A",
+            "ResourceRecords": [{
+                "Value": "${private_ipv4}"
+            }],
+            "TTL": 10
+        }
+    }]
+}

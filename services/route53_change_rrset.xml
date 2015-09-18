@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2013-04-01/">
+    <ChangeBatch>
+        <Comment>
+        This change batch creates an A record for kube-apiserver.cloud.nlab.io.
+        </Comment>
+        <Changes>
+            <Change>
+                <Action>UPSERT</Action>
+                <ResourceRecordSet>
+                    <Name>kube-apiserver.cloud.nlab.io.</Name>
+                    <Type>A</Type>
+                    <TTL>30</TTL>
+                    <ResourceRecords>
+                        <ResourceRecord>
+                            <Value>192.0.2.3</Value>
+                        </ResourceRecord>
+                    </ResourceRecords>
+                </ResourceRecordSet>
+            </Change>
+        </Changes>
+    </ChangeBatch>
+</ChangeResourceRecordSetsRequest>

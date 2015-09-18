@@ -1,0 +1,23 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStartPre=-/usr/bin/mkdir -p /opt/bin
+ExecStartPre=/usr/bin/curl -L -o /opt/bin/kubelet -z /opt/bin/kubelet https://storage.googleapis.com/kubernetes-release/release/v1.0.3/bin/linux/amd64/kubelet
+ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
+
+ExecStart=/opt/bin/kubelet \
+  --api-servers=http://${api_server_dns_name}:8080 \
+  --cluster-dns=10.200.255.10 \
+  --cluster-domain=cluster.local \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+Global=true
+Metadata="role=services"

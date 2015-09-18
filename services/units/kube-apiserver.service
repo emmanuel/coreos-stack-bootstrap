@@ -1,0 +1,26 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Requires=setup-network-environment.service etcd2.service
+After=setup-network-environment.service etcd2.service
+
+[Service]
+EnvironmentFile=/etc/network-environment
+ExecStartPre=/usr/bin/docker pull b.gcr.io/kuar/kube-apiserver:1.0.3
+ExecStart=/usr/bin/docker run --rm --net=host --privileged=true \
+  b.gcr.io/kuar/kube-apiserver:1.0.3 \
+    --runtime-config=api/v1 \
+    --allow-privileged=true \
+    --insecure-bind-address=0.0.0.0 \
+    --insecure-port=8080 \
+    --kubelet-https=true \
+    --secure-port=6443 \
+    --service-cluster-ip-range=10.20.255.0/24
+    --etcd-servers=http://127.0.0.1:2379 \
+    --public-address-override=$COREOS_PRIVATE_IPV4 \
+    --logtostderr=true
+Restart=always
+RestartSec=10
+
+[X-Fleet]
+MachineOf=%n.placement.service

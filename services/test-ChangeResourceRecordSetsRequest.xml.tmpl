@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2013-04-01/">
+<ChangeBatch>
+   <Comment>
+   This change batch creates a TXT record for www.example.com.,
+   and changes the A record for test.example.com. from 192.0.2.3 to 192.0.2.1.
+   </Comment>
+   <Changes>
+      <Change>
+         <Action>UPSERT</Action>
+         <ResourceRecordSet>
+            <Name>test-foobar.cloud.nlab.io.</Name>
+            <Type>A</Type>
+            <TTL>600</TTL>
+            <ResourceRecords>
+               <ResourceRecord>
+                  <Value>"52.25.226.162"</Value>
+               </ResourceRecord>
+            </ResourceRecords>
+         </ResourceRecordSet>
+      </Change>
+   </Changes>
+</ChangeBatch>
+</ChangeResourceRecordSetsRequest>

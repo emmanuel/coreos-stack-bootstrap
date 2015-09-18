@@ -1,0 +1,91 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
+    discovery: ${etcd_discovery_url}
+    advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-peer-urls: http://$private_ipv4:2380
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 50-network-config.conf
+          content: |
+            [Unit]
+            Requires=etcd2.service
+            After=etcd2.service
+            [Service]
+            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network":"${container_cidr_range}", "Backend": {"Type": "aws-vpc"}}'
+    - name: setup-aws-environment.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=Install AWS runtime environment
+        After=early-docker.service network-online.target
+        Before=early-docker.target
+         
+        [Service]
+        Type=oneshot
+        RemainAfterExit=true
+        Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
+        ExecStart=/bin/sh -c '/opt/bin/echo_aws_environment > /etc/aws_environment'
+write_files:
+  - path: /etc/conf.d/nfs
+    permissions: '0644'
+    content: |
+      OPTS_RPC_MOUNTD=""
+  - path: /opt/bin/wupiao
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      # [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
+      [ -n "$1" ] && \
+        until curl -o /dev/null -sIf http://${1}; do \
+          sleep 1 && echo .;
+        done;
+      exit $?
+  - path: /opt/bin/echo_aws_environment
+    permissions: '0755'
+    owner: root
+    content: |
+      #!/bin/bash
+      function main {
+        local readonly ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+        local readonly availability_zone=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+        local readonly aws_region_autoscaling_groups=$(docker run --rm --net=host nordstrom/awscli:1.7.36 autoscaling describe-auto-scaling-groups --region ${aws_region})
+        local readonly my_autoscaling_group=$(echo "$aws_region_autoscaling_groups" | jq --raw-output ".[] | map(select(.Instances[].InstanceId | contains(\"$ec2_instance_id\"))) | .[].AutoScalingGroupName")
+        cat <<EOF
+      AWS_REGION=${aws_region}
+      AWS_AVAILABILITY_ZONE=$availability_zone
+      ROUTE53_INTERNAL_ZONE_ID=${internal_route53_zone_id}
+      AWS_AUTOSCALING_GROUP=$my_autoscaling_group
+      EC2_INSTANCE_ID=$ec2_instance_id
+      EOF
+      }
+      main "$@"
+  - path: /opt/lib/kubernetes/kube-apiserver-dns-registration-request.json
+    permissions: '0644'
+    owner: root
+    content: |
+      {
+        "Comment": "string",
+        "Changes": [{
+          "Action": "UPSERT",
+          "ResourceRecordSet": {
+            "Name": "${kube_apiserver_dns_name}.",
+            "Type": "A",
+            "ResourceRecords": [{
+              "Value": "$private_ipv4"
+            }],
+            "TTL": 10
+          }
+        }]
+      }

@@ -1,0 +1,18 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Requires=setup-network-environment.service etcd2.service
+After=setup-network-environment.service etcd2.service
+
+[Service]
+EnvironmentFile=/etc/aws_environment
+ExecStartPre=/usr/bin/docker pull nordstrom/awscli:1.7.36
+ExecStart=/usr/bin/docker run --rm --net=host \
+  nordstrom/awscli:1.7.36 route53 change-resource-record-sets \
+    --hosted-zone-id ${ROUTE53_INTERNAL_ZONE_ID} \
+    --change-batch file:///opt/lib/kubernetes/kube-apiserver-dns-registration-request.json
+Restart=always
+RestartSec=10
+
+[X-Fleet]
+Metadata="role=services"

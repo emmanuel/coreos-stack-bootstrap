@@ -1,0 +1,46 @@
+[Unit]
+Description=cAdvisor
+Documentation=https://github.com/google/cadvisor
+Requires=docker.service
+After=docker.service
+Wants=skydns.service
+After=skydns.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+Environment="RELEASE=0.16.0"
+Environment="INFLUXDB_DATABASE_USER=root"
+Environment="INFLUXDB_DATABASE_PASS=root"
+
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/docker kill cadvisor-%m
+ExecStartPre=-/usr/bin/docker rm cadvisor-%m
+ExecStartPre=/usr/bin/docker pull google/cadvisor:${RELEASE}
+
+# cadvisor CPU metrics are simple counters. Interpret them as described here:
+# https://github.com/google/cadvisor/issues/679#issuecomment-118013102
+ExecStart=/usr/bin/docker run \
+  --name cadvisor-%m \
+  --hostname %m \
+  --volume /var/run:/var/run:rw \
+  --volume /sys:/sys:ro \
+  --volume /var/lib/docker:/var/lib/docker:ro \
+    google/cadvisor:${RELEASE} \
+      --logtostderr \
+      --docker_only \
+      --storage_driver=influxdb \
+      --storage_driver_host=influxdb:8086 \
+      --storage_driver_db=cadvisor \
+      --storage_driver_user=${INFLUXDB_DATABASE_USER} \
+      --storage_driver_password=${INFLUXDB_DATABASE_PASS} \
+      --housekeeping_interval=10s \
+      --global_housekeeping_interval=10s
+
+[X-Fleet]
+Global=true
+
+[Install]
+WantedBy=multi-user.target
