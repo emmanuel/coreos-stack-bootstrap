@@ -44,10 +44,10 @@ $(build)/ec2_availability_zones.json: | $(build) awscli
 	aws ec2 describe-availability-zones --region="$(region)" --output="json" > $@
 
 $(build)/availability_zones: $(build)/ec2_availability_zones.json | jq
-	cat $(build)/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > $@
+	cat $(build)/ec2_availability_zones.json | jq -r '.AvailabilityZones | map(select("available" == .State))[0].ZoneName' | tr '\n' ',' | sed -e 's/,$$//g' > $@
 
 $(build)/stack_name: | $(build)
-	cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-z' | head -c 5 > $@
+	cat /dev/urandom | LC_ALL=C tr -dc 'a-z' | head -c 5 > $@
 
 $(build)/dns_domain_root: | $(build)
 	echo $(dns_domain_root) > $@
@@ -55,6 +55,9 @@ $(build)/dns_domain_root: | $(build)
 $(build)/route53_zone_id: | $(build)
 	# .HostedZones[].Id looks like "/hostedzone/ZM70TX7ZBX2O0"
 	aws route53 list-hosted-zones | jq -r '.HostedZones | map(select(.Name == "$(dns_domain_root)."))[0].Id' | cut -d/ -f3 > $@
+
+$(build):
+	mkdir -p $@
 
 clean: 
 	rm -rf $(build)

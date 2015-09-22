@@ -6,6 +6,7 @@ variable "coreos_ami_id" {}
 variable "stack_name" {}
 
 variable "route53_zone_id" {}
+variable "ssh_dns_name" {}
 
 variable "availability_zones" {}
 

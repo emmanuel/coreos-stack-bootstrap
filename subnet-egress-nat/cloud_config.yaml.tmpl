@@ -11,6 +11,13 @@ coreos:
     # iptables-restore.service loads /var/lib/iptables/rules-save (defined below)
     - name: iptables-restore.service
       enable: true
+      command: start
+      drop-ins:
+        - name: 01-delay-rules.conf
+          content: |
+            [Unit]
+            Wants=attach-nat-interface.service
+            After=attach-nat-interface.service
     - name: aws-environment.install.service
       command: start
       enable: true
@@ -22,13 +29,13 @@ coreos:
         [Service]
         Type=oneshot
         RemainAfterExit=true
-        ExecStart=/opt/bin/install_aws_environment /etc/aws_environment
-    - name: disable-source-destination-check.service 
+        ExecStart=/usr/bin/bash -c '/opt/bin/echo_aws_environment > /etc/aws_environment'
+    - name: attach-nat-interface.service 
       enable: true
       command: start
       content: |
         [Unit]
-        Description=Remove source/destination check
+        Description=Attach subnet-specific NAT interface
         Requires=early-docker.service aws-environment.install.service
         After=early-docker.service aws-environment.install.service
         Before=early-docker.target
@@ -38,48 +45,18 @@ coreos:
         RemainAfterExit=true
         EnvironmentFile=/etc/aws_environment
         Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
-        ExecStart=/opt/bin/disable_source_destination_checks "$EC2_INSTANCE_ID" "$AWS_REGION"
-    - name: assign-subnet-default-route.service
-      enable: true
-      command: start
-      content: |
-        [Unit]
-        Description=Assign subnet default route
-        
-        [Service]
-        Type=oneshot
-        RemainAfterExit=true
-        EnvironmentFile=/etc/aws_environment
-        Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
-        ExecStart=/opt/bin/create_or_replace_default_route "$EC2_INSTANCE_ID" "$AWS_REGION"
-        
-        [Install]
+        ExecStart=/usr/bin/docker run --rm --net=host \
+          nordstrom/awscli:1.7.36 ec2 attach-network-interface \
+            --region "$AWS_REGION" \
+            --network-interface-id "${network_interface_id}" \
+            --instance-id $EC2_INSTANCE_ID \
+            --device-index 1
+        # thanks! https://wiki.archlinux.org/index.php/Network_configuration#Enabling_and_disabling_network_interfaces
+        ExecStartPost=/usr/bin/ip link set eth0 down
+        ExecStartPost=/usr/bin/sleep 30
+        ExecStartPost=/usr/bin/systemctl restart systemd-networkd
         WantedBy=early-docker.target
-    - name: subnet_egress_nat.iptables_rules.install.service
-      enable: false
-      command: stop
-      content: |
-        [Unit]
-        Description=Install iptables rules for subnet egress NAT
-         
-        [Service]
-        Type=oneshot
-        RemainAfterExit=true
-        ExecStart=/opt/bin/enable_nat
-        
-        [Install]
-        WantedBy=network.target
 write_files:
-  - path: /opt/bin/enable_nat
-    permissions: 0755
-    owner: root
-    content: |
-      #!/bin/bash
-      # thanks! https://github.com/ralex-aws/vpc/blob/master/ha-nat.sh
-      sysctl -q -w net.ipv4.ip_forward=1 net.ipv4.conf.eth0.send_redirects=0 && (
-         iptables -t nat -C POSTROUTING -o eth0 -s ${vpc_cidr_range} -j MASQUERADE 2> /dev/null ||
-         iptables -t nat -A POSTROUTING -o eth0 -s ${vpc_cidr_range} -j MASQUERADE ) ||
-             exit 1
   # /var/lib/iptables/rules-save from: http://www.jimmycuadra.com/posts/securing-coreos-with-iptables/
   # rules from: https://github.com/terraform-community-modules/tf_aws_nat/blob/e591cf826bc3fa096b7fffa835bd967bcea05b74/nat.conf
   - path: /var/lib/iptables/rules-save
@@ -93,7 +70,7 @@ write_files:
       -N LOGGINGF
       -N LOGGINGI
       [0:0] -A INPUT -i lo -j ACCEPT
-      [0:0] -A INPUT -s ${vpc_cidr_range} -j ACCEPT
+      [0:0] -A INPUT -s ${vpc_cidr_range} -i eth1 -j ACCEPT
       [0:0] -A INPUT -m state --state "ESTABLISHED,RELATED" -j ACCEPT
       [0:0] -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
       [0:0] -A INPUT -p icmp -m icmp --icmp-type 0 -j ACCEPT
@@ -114,86 +91,16 @@ write_files:
       :PREROUTING ACCEPT [0:0]
       :OUTPUT ACCEPT [0:0]
       :POSTROUTING ACCEPT [0:0]
-      [0:0] -A POSTROUTING -s ${vpc_cidr_range} -o eth0 -j MASQUERADE
+      [0:0] -A POSTROUTING -s ${vpc_cidr_range} -o eth1 -j MASQUERADE
       COMMIT
-  - path: /opt/bin/disable_source_destination_checks
+  - path: /opt/bin/echo_aws_environment
     permissions: 0755
     owner: root
     content: |
       #!/bin/bash
       function main {
-        local readonly ec2_instance_id=$1
-        local readonly aws_region=$2
-        # --source-dest-check "{\"Value\": false}" &&
-        docker run --rm --net=host \
-          nordstrom/awscli:1.7.36 ec2 modify-instance-attribute \
-            --region "$aws_region" \
-            --instance-id "$ec2_instance_id" \
-            --no-source-dest-check && \
-          echo "source/destination checks disabled for $ec2_instance_id."
-      };
-      if [[ -z "$1" ]] ; then
-        echo "Please provide an EC2 instance ID as the first argument."
-        exit 1
-      fi
-      if [[ -z "$2" ]] ; then
-        echo "Please provide an AWS region as the second argument."
-        exit 1
-      fi
-      main "$@"
-  - path: /opt/bin/install_aws_environment
-    permissions: 0755
-    owner: root
-    content: |
-      #!/bin/bash
-      function append {
-        echo "$2" | sudo tee -a "$1"
+        echo "AWS_REGION=${aws_region}"
+        echo "AWS_AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)"
+        echo "EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
       }
-      function main {
-        local readonly target_file=$1
-        local readonly ec2_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-        local readonly availability_zone=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-        # local readonly all_aws_autoscaling_groups=$(docker run --rm --net=host nordstrom/awscli:1.7.36 autoscaling describe-auto-scaling-groups --region ${aws_region})
-        local readonly aws_autoscaling_group=$(echo "$all_aws_autoscaling_groups" | jq --raw-output ".[] | map(select(.Instances[].InstanceId | contains(\"$ec2_instance_id\"))) | .[].AutoScalingGroupName")
-        # local readonly aws_autoscaling_group=$(docker run --rm --net=host nordstrom/awscli:1.7.36 autoscaling describe-auto-scaling-groups --region ${aws_region} | jq --raw-output ".[] | map(select(.Instances[].InstanceId | contains(\"$ec2_instance_id\"))) | .[].AutoScalingGroupName")
-        append "$target_file" "EC2_INSTANCE_ID=$ec2_instance_id"
-        append "$target_file" "AVAILABILITY_ZONE=$availability_zone"
-        append "$target_file" "AWS_REGION=${aws_region}"
-        # append "$target_file" "AWS_AUTOSCALING_GROUP=$aws_autoscaling_group"
-      }
-      if [[ -z "$1" ]] ; then
-        echo "Please provide a target file path as the first argument."
-        exit 1
-      fi
-      main "$@"
-  - path: /opt/bin/create_or_replace_default_route
-    permissions: 0755
-    owner: root
-    content: |
-      #!/bin/bash
-      function upsert_route {
-        local readonly command=$1
-        local readonly ec2_instance_id=$2
-        local readonly aws_region=$3
-        docker run --rm --net=host \
-          nordstrom/awscli:1.7.36 ec2 "$command" \
-            --region "$aws_region" \
-            --route-table-id "${private_route_table_id}" \
-            --destination-cidr-block 0.0.0.0/0 \
-            --instance-id "$ec2_instance_id"
-      }
-      function main {
-        local readonly ec2_instance_id=$1
-        local readonly aws_region=$2
-        upsert_route "create-route" "$ec2_instance_id" "$aws_region" &&
-          echo "${private_route_table_id} default route created pointing to $ec2_instance_id."
-        if [[ $? -ne 0 ]] ; then
-          echo "Route already exists, replacing existing route."
-          upsert_route "replace-route" "$ec2_instance_id" "$aws_region"
-        fi
-      };
-      if [[ -z "$1" ]] ; then
-        echo "Please provide an EC2 instance ID as the first argument."
-        exit 1
-      fi
       main "$@"

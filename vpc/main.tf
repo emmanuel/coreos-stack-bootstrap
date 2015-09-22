@@ -3,125 +3,85 @@ provider "aws" {
 }
 
 # Thanks! github.com/terraform-community-modules/tf_aws_vpc
-module "vpc" {
-    source = "../tf_aws_vpc"
-
-    name = "innovation-platform-vpc-dev"
-
-    cidr = "172.33.0.0/16"
-    private_subnets = "172.33.1.0/24,172.33.2.0/24,172.33.3.0/24"
-    public_subnets = "172.33.101.0/24,172.33.102.0/24,172.33.103.0/24"
-
-    availability_zones = "${var.availability_zones}"
+resource "aws_vpc" "main" {
+    cidr_block = "${var.vpc_cidr_range}"
+    enable_dns_support = true
+    enable_dns_hostnames = true
+    tags {
+        Name = "${var.vpc_name}"
+    }
 }
 
-resource "aws_security_group" "cluster_members" {
-    name = "${module.vpc.vpc_id}-cluster_members"
-    description = "Allow all traffic between cluster members"
-    vpc_id = "${module.vpc.vpc_id}"
+resource "aws_internet_gateway" "vpc" {
+    vpc_id = "${aws_vpc.main.id}"
+}
+
+resource "aws_route_table" "public" {
+    vpc_id = "${aws_vpc.main.id}"
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = "${aws_internet_gateway.vpc.id}"
+    }
+    tags {
+        Name = "${var.vpc_name}-public"
+    }
+}
+
+resource "aws_route_table" "private" {
+    count = "${length(split(",", var.vpc_private_subnets))}"
+    vpc_id = "${aws_vpc.main.id}"
+    route {
+        cidr_block = "0.0.0.0/0"
+        network_interface_id = "${element(aws_network_interface.subnet_egress_nat.*.id, count.index)}"
+    }
+    tags {
+        Name = "${var.vpc_name}-private-${element(split(",", var.availability_zones), count.index)}"
+    }
+}
+
+resource "aws_subnet" "private" {
+    count = "${length(split(",", var.vpc_private_subnets))}"
+    vpc_id = "${aws_vpc.main.id}"
+    cidr_block = "${element(split(",", var.vpc_private_subnets), count.index)}"
+    availability_zone = "${element(split(",", var.availability_zones), count.index)}"
 
     tags {
-        Name = "cluster_members"
+        Name = "${var.vpc_name}-private-${element(split(",", var.availability_zones), count.index)}"
     }
 }
 
-resource "aws_security_group_rule" "cluster_members_allow_all_intra_cluster_traffic_ingress" {
-    type = "ingress"
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+resource "aws_subnet" "public" {
+    count = "${length(split(",", var.vpc_public_subnets))}"
+    vpc_id = "${aws_vpc.main.id}"
+    cidr_block = "${element(split(",", var.vpc_public_subnets), count.index)}"
+    availability_zone = "${element(split(",", var.availability_zones), count.index)}"
+    tags {
+        Name = "${var.vpc_name}-public-${element(split(",", var.availability_zones), count.index)}"
+    }
 
-    security_group_id = "${aws_security_group.cluster_members.id}"
-    self = true
+    map_public_ip_on_launch = true
 }
 
-resource "aws_security_group_rule" "cluster_members_allow_all_intra_cluster_traffic_egress" {
-    type = "egress"
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-
-    security_group_id = "${aws_security_group.cluster_members.id}"
-    self = true
+resource "aws_route_table_association" "private" {
+    count = "${length(split(",", var.vpc_private_subnets))}"
+    subnet_id = "${element(aws_subnet.private.*.id, count.index)}"
+    route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
 }
 
-resource "aws_security_group_rule" "cluster_members_allow_bastion_instances_ssh_ingress" {
-    type = "ingress"
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-
-    security_group_id = "${aws_security_group.cluster_members.id}"
-    source_security_group_id = "${aws_security_group.bastion_instances.id}"
+resource "aws_route_table_association" "public" {
+    count = "${length(split(",", var.vpc_private_subnets))}"
+    subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
+    route_table_id = "${aws_route_table.public.id}"
 }
 
-resource "aws_security_group" "bastion_instances" {
-    name = "${module.vpc.vpc_id}-bastion_instances"
-    description = "Includes all bastion instances"
-    vpc_id = "${module.vpc.vpc_id}"
+resource "aws_route53_zone" "internal" {
+    name = "cloud.nlab.io"
+    comment = "DNS zone for internal split-horizon records"
+    vpc_id = "${aws_vpc.main.id}"
+    vpc_region = "${var.aws_region}"
 
     tags {
-        Name = "bastion_instances"
-    }
-}
-
-resource "aws_security_group_rule" "bastion_instances_allow_cidr_block_ssh_ingress" {
-    type = "ingress"
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-
-    security_group_id = "${aws_security_group.bastion_instances.id}"
-}
-
-resource "aws_security_group_rule" "bastion_instances_allow_ssh_egress_to_cluster_members" {
-    type = "egress"
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-
-    security_group_id = "${aws_security_group.bastion_instances.id}"
-    source_security_group_id = "${aws_security_group.cluster_members.id}"
-}
-
-resource "aws_security_group_rule" "bastion_instances_allow_ssh_egress_to_subnet_egress_nat_instances" {
-    type = "egress"
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-
-    security_group_id = "${aws_security_group.bastion_instances.id}"
-    source_security_group_id = "${aws_security_group.subnet_egress_nat_instances.id}"
-}
-
-resource "aws_security_group" "subnet_egress_nat_instances" {
-    name = "${module.vpc.vpc_id}-subnet_egress_nat_instances"
-    description = "Allow egress traffic from DMZ instances"
-    vpc_id = "${module.vpc.vpc_id}"
-
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        security_groups = [ "${aws_security_group.cluster_members.id}" ]
-    }
-
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        security_groups = [ "${aws_security_group.bastion_instances.id}" ]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = [ "0.0.0.0/0" ]
-    }
-
-    tags {
-        Name = "subnet_egress_nat_instances"
+        Name = "vpc_internal_zone"
+        Environment = "dev"
     }
 }
